@@ -15,7 +15,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 MIRROR_ROOT = REPO_ROOT / "site" / "repo" / "tree"
 RAW_ROOT = MIRROR_ROOT / "raw"
 BLOB_ROOT = MIRROR_ROOT / "blob"
-CSS_VERSION = "responsive-3"
+CSS_VERSION = "responsive-4"
 EXCLUDED_PREFIXES = ("site/repo/tree/",)
 TABLE_SEPARATOR_RE = re.compile(r"^:?-{3,}:?$")
 

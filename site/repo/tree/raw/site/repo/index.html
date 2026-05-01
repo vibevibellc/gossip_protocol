@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gossip Protocol Source Code</title>
+  <meta name="description" content="Open source repository and source map for Gossip Protocol.">
+  <meta property="og:title" content="Gossip Protocol Source Code">
+  <meta property="og:description" content="Explore the open source Rust implementation behind Gossip Protocol.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://gossip-protocol.com/repo/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/styles.css?v=responsive-3" as="style">
+  <link rel="stylesheet" href="/assets/styles.css?v=responsive-3">
+</head>
+<body>
+  <canvas id="network-canvas" aria-hidden="true"></canvas>
+
+  <main class="docs-page">
+    <nav class="docs-nav" aria-label="Repository navigation">
+      <a href="/">Home</a>
+      <a href="/docs/">Docs</a>
+      <a href="/repo/">Repo</a>
+      <a href="/repo/tree/">Source tree</a>
+      <a href="/docs/functionality.html">Functionality</a>
+      <a href="/docs/settings.html">Settings</a>
+    </nav>
+
+    <section class="docs-hero">
+      <p class="eyebrow">open source</p>
+      <h1>Read the implementation.</h1>
+      <p class="hero-text">
+        Gossip Protocol is open source under Apache-2.0. The public repository contains the Rust
+        validator, wallet, protocol types, browser runner contract, compute sandbox, storage host,
+        DNS route logic, smoke tests, and static site.
+      </p>
+      <div class="hero-actions hero-actions-left" aria-label="Repository actions">
+        <a class="cta-button cta-button-primary" href="https://github.com/vibevibellc/gossip_protocol">Open GitHub</a>
+        <a class="cta-button cta-button-secondary" href="/repo/tree/">Browse mirror</a>
+        <a class="cta-button cta-button-secondary" href="/docs/">Read docs</a>
+      </div>
+    </section>
+
+    <section class="docs-section">
+      <h2>Repository</h2>
+      <table class="docs-table">
+        <tbody>
+          <tr>
+            <th>GitHub</th>
+            <td><a href="https://github.com/vibevibellc/gossip_protocol">github.com/vibevibellc/gossip_protocol</a></td>
+          </tr>
+          <tr>
+            <th>Hosted mirror</th>
+            <td><a href="/repo/tree/">gossip-protocol.com/repo/tree</a></td>
+          </tr>
+          <tr>
+            <th>Package</th>
+            <td><code>gossip_protocol</code></td>
+          </tr>
+          <tr>
+            <th>Language</th>
+            <td>Rust 2024, plus static HTML/CSS/JS for the public site.</td>
+          </tr>
+          <tr>
+            <th>License</th>
+            <td>Apache-2.0</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="docs-section">
+      <h2>Source map</h2>
+      <div class="docs-grid">
+        <div class="docs-card">
+          <h3><a href="/repo/tree/blob/src/protocol.rs.html"><code>src/protocol.rs</code></a></h3>
+          <p>Core types, transaction variants, receipt bodies, genesis config, token constants, fees, limits, and validation rules.</p>
+        </div>
+        <div class="docs-card">
+          <h3><a href="/repo/tree/blob/src/node.rs.html"><code>src/node.rs</code></a></h3>
+          <p>Validator runtime, mempool, peer sync, gossip endpoints, block proposal, approval flow, persistence, and control API.</p>
+        </div>
+        <div class="docs-card">
+          <h3><a href="/repo/tree/blob/src/cli.rs.html"><code>src/cli.rs</code></a></h3>
+          <p>Command-line interface for wallets, genesis, nodes, transactions, swaps, monitors, browser checks, storage, and agents.</p>
+        </div>
+        <div class="docs-card">
+          <h3><a href="/repo/tree/blob/src/compute.rs.html"><code>src/compute.rs</code></a></h3>
+          <p>Compute job schemas, reducers, WASI settings, sandbox policy, cost model, output validation, and shard receipts.</p>
+        </div>
+        <div class="docs-card">
+          <h3><a href="/repo/tree/blob/src/compute_sandbox.rs.html"><code>src/compute_sandbox.rs</code></a></h3>
+          <p>Isolated compute execution, artifact capture, WASI runtime integration, and resource enforcement.</p>
+        </div>
+        <div class="docs-card">
+          <h3><a href="/repo/tree/blob/src/browser.rs.html"><code>src/browser.rs</code></a></h3>
+          <p>Browser journey package schema, runtime profile validation, artifact policy, package hashing, and runner IO.</p>
+        </div>
+        <div class="docs-card">
+          <h3><a href="/repo/tree/blob/src/storage.rs.html"><code>src/storage.rs</code></a></h3>
+          <p>Storage bundle builder, chunk server, Merkle proofs, encrypted bundles, public raw bundles, and domain gateway serving.</p>
+        </div>
+        <div class="docs-card">
+          <h3><a href="/repo/tree/blob/src/agent.rs.html"><code>src/agent.rs</code></a></h3>
+          <p>Delegated probe, browser, and compute agent runtime with lease verification and signed delegated receipts.</p>
+        </div>
+        <div class="docs-card">
+          <h3><a href="/repo/tree/blob/src/wallet.rs.html"><code>src/wallet.rs</code></a></h3>
+          <p>Wallet files, Ed25519 signing, verification helpers, and typed signature methods for protocol objects.</p>
+        </div>
+        <div class="docs-card">
+          <h3><a href="/repo/tree/blob/src/ledger.rs.html"><code>src/ledger.rs</code></a></h3>
+          <p>Chain state, account balances, finalized records, monitor state, storage contracts, domain leases, and swaps.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="docs-section">
+      <h2>Clone and verify</h2>
+      <pre><code>git clone https://github.com/vibevibellc/gossip_protocol.git
+cd gossip_protocol
+cargo fmt
+cargo test
+cargo clippy --all-targets -- -D warnings</code></pre>
+    </section>
+
+    <section class="docs-section">
+      <h2>Smoke tests</h2>
+      <pre><code>python3 scripts/local_compute_smoke.py
+python3 scripts/local_testnet_smoke.py
+python3 scripts/local_testnet_stress.py</code></pre>
+      <p class="copy-block">
+        These scripts exercise local compute, multi-validator testnet behavior, health checks,
+        storage proofs, swaps, and liveness recovery paths.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <span>Gossip Protocol</span>
+    <span>Peer-witnessed monitoring, compute, storage, DNS, swaps, and publishing.</span>
+  </footer>
+
+  <script src="/assets/app.js" defer></script>
+</body>
+</html>

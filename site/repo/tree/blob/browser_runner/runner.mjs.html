@@ -1,0 +1,996 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>browser_runner/runner.mjs - Gossip Protocol Source Mirror</title>
+  <meta name="description" content="Static source viewer for browser_runner/runner.mjs.">
+  <meta property="og:title" content="browser_runner/runner.mjs - Gossip Protocol Source Mirror">
+  <meta property="og:description" content="Static source viewer for browser_runner/runner.mjs.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://gossip-protocol.com/repo/tree/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/styles.css?v=responsive-3" as="style">
+  <link rel="stylesheet" href="/assets/styles.css?v=responsive-3">
+</head>
+<body>
+  <canvas id="network-canvas" aria-hidden="true"></canvas>
+
+  <main class="docs-page repo-browser">
+    <nav class="docs-nav" aria-label="Repository mirror navigation">
+      <a href="/">Home</a>
+      <a href="/docs/">Docs</a>
+      <a href="/repo/">Repo</a>
+      <a href="/repo/tree/">Source tree</a>
+      <a href="https://github.com/vibevibellc/gossip_protocol">GitHub</a>
+    </nav>
+
+    <section class="docs-hero repo-file-hero">
+      <p class="eyebrow">source file</p>
+      <h1>browser_runner/runner.mjs</h1>
+      <p class="hero-text">10.7 KB mirrored from the public source tree.</p>
+      <div class="hero-actions hero-actions-left" aria-label="Source file actions">
+        <a class="cta-button cta-button-primary" href="/repo/tree/raw/browser_runner/runner.mjs">Open raw</a>
+        <a class="cta-button cta-button-secondary" href="/repo/tree/browser_runner/">Parent directory</a>
+        
+      </div>
+    </section>
+
+    <section class="docs-section repo-file-section">
+      <h2>Source</h2>
+      <div class="repo-breadcrumbs"><a href="/repo/tree/">gossip_protocol</a><span>/</span><a href="/repo/tree/browser_runner/">browser_runner</a></div>
+      <div class="repo-code-wrap">
+        <table class="repo-code">
+          <tbody>
+            <tr id="L1">
+                  <td class="line-number"><a href="#L1">1</a></td>
+                  <td class="code-line"><code>import fs from &quot;fs/promises&quot;;</code></td>
+                </tr><tr id="L2">
+                  <td class="line-number"><a href="#L2">2</a></td>
+                  <td class="code-line"><code>import path from &quot;path&quot;;</code></td>
+                </tr><tr id="L3">
+                  <td class="line-number"><a href="#L3">3</a></td>
+                  <td class="code-line"><code>import { chromium } from &quot;playwright&quot;;</code></td>
+                </tr><tr id="L4">
+                  <td class="line-number"><a href="#L4">4</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L5">
+                  <td class="line-number"><a href="#L5">5</a></td>
+                  <td class="code-line"><code>function parseArgs(argv) {</code></td>
+                </tr><tr id="L6">
+                  <td class="line-number"><a href="#L6">6</a></td>
+                  <td class="code-line"><code>  const args = {};</code></td>
+                </tr><tr id="L7">
+                  <td class="line-number"><a href="#L7">7</a></td>
+                  <td class="code-line"><code>  for (let i = 0; i &lt; argv.length; i += 1) {</code></td>
+                </tr><tr id="L8">
+                  <td class="line-number"><a href="#L8">8</a></td>
+                  <td class="code-line"><code>    const part = argv[i];</code></td>
+                </tr><tr id="L9">
+                  <td class="line-number"><a href="#L9">9</a></td>
+                  <td class="code-line"><code>    if (!part.startsWith(&quot;--&quot;)) continue;</code></td>
+                </tr><tr id="L10">
+                  <td class="line-number"><a href="#L10">10</a></td>
+                  <td class="code-line"><code>    args[part.slice(2)] = argv[i + 1];</code></td>
+                </tr><tr id="L11">
+                  <td class="line-number"><a href="#L11">11</a></td>
+                  <td class="code-line"><code>    i += 1;</code></td>
+                </tr><tr id="L12">
+                  <td class="line-number"><a href="#L12">12</a></td>
+                  <td class="code-line"><code>  }</code></td>
+                </tr><tr id="L13">
+                  <td class="line-number"><a href="#L13">13</a></td>
+                  <td class="code-line"><code>  return args;</code></td>
+                </tr><tr id="L14">
+                  <td class="line-number"><a href="#L14">14</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L15">
+                  <td class="line-number"><a href="#L15">15</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L16">
+                  <td class="line-number"><a href="#L16">16</a></td>
+                  <td class="code-line"><code>function classifyError(error) {</code></td>
+                </tr><tr id="L17">
+                  <td class="line-number"><a href="#L17">17</a></td>
+                  <td class="code-line"><code>  const text = `${error?.message || error || &quot;&quot;}`.toLowerCase();</code></td>
+                </tr><tr id="L18">
+                  <td class="line-number"><a href="#L18">18</a></td>
+                  <td class="code-line"><code>  if (text.includes(&quot;timeout&quot;)) return &quot;navigation_timeout&quot;;</code></td>
+                </tr><tr id="L19">
+                  <td class="line-number"><a href="#L19">19</a></td>
+                  <td class="code-line"><code>  if (text.includes(&quot;locator&quot;) || text.includes(&quot;selector&quot;) || text.includes(&quot;strict mode violation&quot;)) {</code></td>
+                </tr><tr id="L20">
+                  <td class="line-number"><a href="#L20">20</a></td>
+                  <td class="code-line"><code>    return &quot;selector_missing&quot;;</code></td>
+                </tr><tr id="L21">
+                  <td class="line-number"><a href="#L21">21</a></td>
+                  <td class="code-line"><code>  }</code></td>
+                </tr><tr id="L22">
+                  <td class="line-number"><a href="#L22">22</a></td>
+                  <td class="code-line"><code>  if (text.includes(&quot;assert&quot;)) return &quot;assertion_failed&quot;;</code></td>
+                </tr><tr id="L23">
+                  <td class="line-number"><a href="#L23">23</a></td>
+                  <td class="code-line"><code>  if (text.includes(&quot;net::&quot;) || text.includes(&quot;connection&quot;) || text.includes(&quot;dns&quot;)) {</code></td>
+                </tr><tr id="L24">
+                  <td class="line-number"><a href="#L24">24</a></td>
+                  <td class="code-line"><code>    return &quot;network_error&quot;;</code></td>
+                </tr><tr id="L25">
+                  <td class="line-number"><a href="#L25">25</a></td>
+                  <td class="code-line"><code>  }</code></td>
+                </tr><tr id="L26">
+                  <td class="line-number"><a href="#L26">26</a></td>
+                  <td class="code-line"><code>  if (text.includes(&quot;browser&quot;)) return &quot;browser_crash&quot;;</code></td>
+                </tr><tr id="L27">
+                  <td class="line-number"><a href="#L27">27</a></td>
+                  <td class="code-line"><code>  return &quot;step_failed&quot;;</code></td>
+                </tr><tr id="L28">
+                  <td class="line-number"><a href="#L28">28</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L29">
+                  <td class="line-number"><a href="#L29">29</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L30">
+                  <td class="line-number"><a href="#L30">30</a></td>
+                  <td class="code-line"><code>function resolveInputValue(value, secrets) {</code></td>
+                </tr><tr id="L31">
+                  <td class="line-number"><a href="#L31">31</a></td>
+                  <td class="code-line"><code>  if (value.kind === &quot;literal&quot;) return value.value;</code></td>
+                </tr><tr id="L32">
+                  <td class="line-number"><a href="#L32">32</a></td>
+                  <td class="code-line"><code>  if (value.kind === &quot;secret_ref&quot;) {</code></td>
+                </tr><tr id="L33">
+                  <td class="line-number"><a href="#L33">33</a></td>
+                  <td class="code-line"><code>    const secret = secrets[value.key];</code></td>
+                </tr><tr id="L34">
+                  <td class="line-number"><a href="#L34">34</a></td>
+                  <td class="code-line"><code>    if (typeof secret !== &quot;string&quot;) {</code></td>
+                </tr><tr id="L35">
+                  <td class="line-number"><a href="#L35">35</a></td>
+                  <td class="code-line"><code>      throw new Error(`missing browser secret ref ${value.key}`);</code></td>
+                </tr><tr id="L36">
+                  <td class="line-number"><a href="#L36">36</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L37">
+                  <td class="line-number"><a href="#L37">37</a></td>
+                  <td class="code-line"><code>    return secret;</code></td>
+                </tr><tr id="L38">
+                  <td class="line-number"><a href="#L38">38</a></td>
+                  <td class="code-line"><code>  }</code></td>
+                </tr><tr id="L39">
+                  <td class="line-number"><a href="#L39">39</a></td>
+                  <td class="code-line"><code>  throw new Error(`unsupported browser input kind ${value.kind}`);</code></td>
+                </tr><tr id="L40">
+                  <td class="line-number"><a href="#L40">40</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L41">
+                  <td class="line-number"><a href="#L41">41</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L42">
+                  <td class="line-number"><a href="#L42">42</a></td>
+                  <td class="code-line"><code>function resolveLocator(page, target) {</code></td>
+                </tr><tr id="L43">
+                  <td class="line-number"><a href="#L43">43</a></td>
+                  <td class="code-line"><code>  switch (target) {</code></td>
+                </tr><tr id="L44">
+                  <td class="line-number"><a href="#L44">44</a></td>
+                  <td class="code-line"><code>    case undefined:</code></td>
+                </tr><tr id="L45">
+                  <td class="line-number"><a href="#L45">45</a></td>
+                  <td class="code-line"><code>      throw new Error(&quot;missing browser selector&quot;);</code></td>
+                </tr><tr id="L46">
+                  <td class="line-number"><a href="#L46">46</a></td>
+                  <td class="code-line"><code>    default:</code></td>
+                </tr><tr id="L47">
+                  <td class="line-number"><a href="#L47">47</a></td>
+                  <td class="code-line"><code>      break;</code></td>
+                </tr><tr id="L48">
+                  <td class="line-number"><a href="#L48">48</a></td>
+                  <td class="code-line"><code>  }</code></td>
+                </tr><tr id="L49">
+                  <td class="line-number"><a href="#L49">49</a></td>
+                  <td class="code-line"><code>  if (&quot;css&quot; === target.type || target.kind === &quot;css&quot;) {</code></td>
+                </tr><tr id="L50">
+                  <td class="line-number"><a href="#L50">50</a></td>
+                  <td class="code-line"><code>    return page.locator(target.value);</code></td>
+                </tr><tr id="L51">
+                  <td class="line-number"><a href="#L51">51</a></td>
+                  <td class="code-line"><code>  }</code></td>
+                </tr><tr id="L52">
+                  <td class="line-number"><a href="#L52">52</a></td>
+                  <td class="code-line"><code>  if (&quot;text&quot; === target.type || target.kind === &quot;text&quot;) {</code></td>
+                </tr><tr id="L53">
+                  <td class="line-number"><a href="#L53">53</a></td>
+                  <td class="code-line"><code>    return page.getByText(target.value, { exact: false });</code></td>
+                </tr><tr id="L54">
+                  <td class="line-number"><a href="#L54">54</a></td>
+                  <td class="code-line"><code>  }</code></td>
+                </tr><tr id="L55">
+                  <td class="line-number"><a href="#L55">55</a></td>
+                  <td class="code-line"><code>  if (&quot;label&quot; === target.type || target.kind === &quot;label&quot;) {</code></td>
+                </tr><tr id="L56">
+                  <td class="line-number"><a href="#L56">56</a></td>
+                  <td class="code-line"><code>    return page.getByLabel(target.value, { exact: false });</code></td>
+                </tr><tr id="L57">
+                  <td class="line-number"><a href="#L57">57</a></td>
+                  <td class="code-line"><code>  }</code></td>
+                </tr><tr id="L58">
+                  <td class="line-number"><a href="#L58">58</a></td>
+                  <td class="code-line"><code>  if (&quot;placeholder&quot; === target.type || target.kind === &quot;placeholder&quot;) {</code></td>
+                </tr><tr id="L59">
+                  <td class="line-number"><a href="#L59">59</a></td>
+                  <td class="code-line"><code>    return page.getByPlaceholder(target.value, { exact: false });</code></td>
+                </tr><tr id="L60">
+                  <td class="line-number"><a href="#L60">60</a></td>
+                  <td class="code-line"><code>  }</code></td>
+                </tr><tr id="L61">
+                  <td class="line-number"><a href="#L61">61</a></td>
+                  <td class="code-line"><code>  if (&quot;test_id&quot; === target.type || target.kind === &quot;test_id&quot;) {</code></td>
+                </tr><tr id="L62">
+                  <td class="line-number"><a href="#L62">62</a></td>
+                  <td class="code-line"><code>    return page.getByTestId(target.value);</code></td>
+                </tr><tr id="L63">
+                  <td class="line-number"><a href="#L63">63</a></td>
+                  <td class="code-line"><code>  }</code></td>
+                </tr><tr id="L64">
+                  <td class="line-number"><a href="#L64">64</a></td>
+                  <td class="code-line"><code>  if (&quot;role&quot; === target.type || target.kind === &quot;role&quot;) {</code></td>
+                </tr><tr id="L65">
+                  <td class="line-number"><a href="#L65">65</a></td>
+                  <td class="code-line"><code>    return page.getByRole(target.role, target.name ? { name: target.name } : {});</code></td>
+                </tr><tr id="L66">
+                  <td class="line-number"><a href="#L66">66</a></td>
+                  <td class="code-line"><code>  }</code></td>
+                </tr><tr id="L67">
+                  <td class="line-number"><a href="#L67">67</a></td>
+                  <td class="code-line"><code>  throw new Error(`unsupported browser selector ${JSON.stringify(target)}`);</code></td>
+                </tr><tr id="L68">
+                  <td class="line-number"><a href="#L68">68</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L69">
+                  <td class="line-number"><a href="#L69">69</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L70">
+                  <td class="line-number"><a href="#L70">70</a></td>
+                  <td class="code-line"><code>async function writeOutput(outputPath, payload) {</code></td>
+                </tr><tr id="L71">
+                  <td class="line-number"><a href="#L71">71</a></td>
+                  <td class="code-line"><code>  await fs.writeFile(outputPath, JSON.stringify(payload, null, 2));</code></td>
+                </tr><tr id="L72">
+                  <td class="line-number"><a href="#L72">72</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L73">
+                  <td class="line-number"><a href="#L73">73</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L74">
+                  <td class="line-number"><a href="#L74">74</a></td>
+                  <td class="code-line"><code>async function run() {</code></td>
+                </tr><tr id="L75">
+                  <td class="line-number"><a href="#L75">75</a></td>
+                  <td class="code-line"><code>  const args = parseArgs(process.argv.slice(2));</code></td>
+                </tr><tr id="L76">
+                  <td class="line-number"><a href="#L76">76</a></td>
+                  <td class="code-line"><code>  if (!args.input || !args.output) {</code></td>
+                </tr><tr id="L77">
+                  <td class="line-number"><a href="#L77">77</a></td>
+                  <td class="code-line"><code>    throw new Error(&quot;runner requires --input and --output&quot;);</code></td>
+                </tr><tr id="L78">
+                  <td class="line-number"><a href="#L78">78</a></td>
+                  <td class="code-line"><code>  }</code></td>
+                </tr><tr id="L79">
+                  <td class="line-number"><a href="#L79">79</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L80">
+                  <td class="line-number"><a href="#L80">80</a></td>
+                  <td class="code-line"><code>  const input = JSON.parse(await fs.readFile(args.input, &quot;utf8&quot;));</code></td>
+                </tr><tr id="L81">
+                  <td class="line-number"><a href="#L81">81</a></td>
+                  <td class="code-line"><code>  await fs.mkdir(input.artifact_dir, { recursive: true });</code></td>
+                </tr><tr id="L82">
+                  <td class="line-number"><a href="#L82">82</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L83">
+                  <td class="line-number"><a href="#L83">83</a></td>
+                  <td class="code-line"><code>  const start = Date.now();</code></td>
+                </tr><tr id="L84">
+                  <td class="line-number"><a href="#L84">84</a></td>
+                  <td class="code-line"><code>  const consoleErrors = [];</code></td>
+                </tr><tr id="L85">
+                  <td class="line-number"><a href="#L85">85</a></td>
+                  <td class="code-line"><code>  const networkErrors = [];</code></td>
+                </tr><tr id="L86">
+                  <td class="line-number"><a href="#L86">86</a></td>
+                  <td class="code-line"><code>  const contexts = new Map();</code></td>
+                </tr><tr id="L87">
+                  <td class="line-number"><a href="#L87">87</a></td>
+                  <td class="code-line"><code>  let currentContextId = &quot;default&quot;;</code></td>
+                </tr><tr id="L88">
+                  <td class="line-number"><a href="#L88">88</a></td>
+                  <td class="code-line"><code>  let failedStepIndex = null;</code></td>
+                </tr><tr id="L89">
+                  <td class="line-number"><a href="#L89">89</a></td>
+                  <td class="code-line"><code>  let finalUrl = input.package.journey.entry_url;</code></td>
+                </tr><tr id="L90">
+                  <td class="line-number"><a href="#L90">90</a></td>
+                  <td class="code-line"><code>  let screenshotPath = null;</code></td>
+                </tr><tr id="L91">
+                  <td class="line-number"><a href="#L91">91</a></td>
+                  <td class="code-line"><code>  let tracePath = null;</code></td>
+                </tr><tr id="L92">
+                  <td class="line-number"><a href="#L92">92</a></td>
+                  <td class="code-line"><code>  let videoPath = null;</code></td>
+                </tr><tr id="L93">
+                  <td class="line-number"><a href="#L93">93</a></td>
+                  <td class="code-line"><code>  let outcomeClass = &quot;success&quot;;</code></td>
+                </tr><tr id="L94">
+                  <td class="line-number"><a href="#L94">94</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L95">
+                  <td class="line-number"><a href="#L95">95</a></td>
+                  <td class="code-line"><code>  const browser = await chromium.launch({ headless: true });</code></td>
+                </tr><tr id="L96">
+                  <td class="line-number"><a href="#L96">96</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L97">
+                  <td class="line-number"><a href="#L97">97</a></td>
+                  <td class="code-line"><code>  async function createContext(contextId) {</code></td>
+                </tr><tr id="L98">
+                  <td class="line-number"><a href="#L98">98</a></td>
+                  <td class="code-line"><code>    const runtime = input.package.runtime;</code></td>
+                </tr><tr id="L99">
+                  <td class="line-number"><a href="#L99">99</a></td>
+                  <td class="code-line"><code>    const useSessionState =</code></td>
+                </tr><tr id="L100">
+                  <td class="line-number"><a href="#L100">100</a></td>
+                  <td class="code-line"><code>      runtime.cache_mode === &quot;session_state&quot; &amp;&amp;</code></td>
+                </tr><tr id="L101">
+                  <td class="line-number"><a href="#L101">101</a></td>
+                  <td class="code-line"><code>      typeof input.session_state_path === &quot;string&quot; &amp;&amp;</code></td>
+                </tr><tr id="L102">
+                  <td class="line-number"><a href="#L102">102</a></td>
+                  <td class="code-line"><code>      contextId === &quot;default&quot;;</code></td>
+                </tr><tr id="L103">
+                  <td class="line-number"><a href="#L103">103</a></td>
+                  <td class="code-line"><code>    const maybeStorageState = useSessionState ? await fileExists(input.session_state_path) : false;</code></td>
+                </tr><tr id="L104">
+                  <td class="line-number"><a href="#L104">104</a></td>
+                  <td class="code-line"><code>    const context = await browser.newContext({</code></td>
+                </tr><tr id="L105">
+                  <td class="line-number"><a href="#L105">105</a></td>
+                  <td class="code-line"><code>      locale: runtime.locale,</code></td>
+                </tr><tr id="L106">
+                  <td class="line-number"><a href="#L106">106</a></td>
+                  <td class="code-line"><code>      timezoneId: runtime.timezone,</code></td>
+                </tr><tr id="L107">
+                  <td class="line-number"><a href="#L107">107</a></td>
+                  <td class="code-line"><code>      viewport: {</code></td>
+                </tr><tr id="L108">
+                  <td class="line-number"><a href="#L108">108</a></td>
+                  <td class="code-line"><code>        width: runtime.viewport_width,</code></td>
+                </tr><tr id="L109">
+                  <td class="line-number"><a href="#L109">109</a></td>
+                  <td class="code-line"><code>        height: runtime.viewport_height</code></td>
+                </tr><tr id="L110">
+                  <td class="line-number"><a href="#L110">110</a></td>
+                  <td class="code-line"><code>      },</code></td>
+                </tr><tr id="L111">
+                  <td class="line-number"><a href="#L111">111</a></td>
+                  <td class="code-line"><code>      colorScheme: runtime.color_scheme === &quot;dark&quot; ? &quot;dark&quot; : &quot;light&quot;,</code></td>
+                </tr><tr id="L112">
+                  <td class="line-number"><a href="#L112">112</a></td>
+                  <td class="code-line"><code>      serviceWorkers: runtime.block_service_workers ? &quot;block&quot; : &quot;allow&quot;,</code></td>
+                </tr><tr id="L113">
+                  <td class="line-number"><a href="#L113">113</a></td>
+                  <td class="code-line"><code>      storageState: maybeStorageState ? input.session_state_path : undefined,</code></td>
+                </tr><tr id="L114">
+                  <td class="line-number"><a href="#L114">114</a></td>
+                  <td class="code-line"><code>      recordVideo: input.package.artifact_policy.capture_video</code></td>
+                </tr><tr id="L115">
+                  <td class="line-number"><a href="#L115">115</a></td>
+                  <td class="code-line"><code>        ? { dir: input.artifact_dir, size: { width: runtime.viewport_width, height: runtime.viewport_height } }</code></td>
+                </tr><tr id="L116">
+                  <td class="line-number"><a href="#L116">116</a></td>
+                  <td class="code-line"><code>        : undefined</code></td>
+                </tr><tr id="L117">
+                  <td class="line-number"><a href="#L117">117</a></td>
+                  <td class="code-line"><code>    });</code></td>
+                </tr><tr id="L118">
+                  <td class="line-number"><a href="#L118">118</a></td>
+                  <td class="code-line"><code>    if (input.package.artifact_policy.capture_trace) {</code></td>
+                </tr><tr id="L119">
+                  <td class="line-number"><a href="#L119">119</a></td>
+                  <td class="code-line"><code>      await context.tracing.start({ screenshots: true, snapshots: true });</code></td>
+                </tr><tr id="L120">
+                  <td class="line-number"><a href="#L120">120</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L121">
+                  <td class="line-number"><a href="#L121">121</a></td>
+                  <td class="code-line"><code>    const page = await context.newPage();</code></td>
+                </tr><tr id="L122">
+                  <td class="line-number"><a href="#L122">122</a></td>
+                  <td class="code-line"><code>    page.on(&quot;console&quot;, msg =&gt; {</code></td>
+                </tr><tr id="L123">
+                  <td class="line-number"><a href="#L123">123</a></td>
+                  <td class="code-line"><code>      if (msg.type() === &quot;error&quot;) {</code></td>
+                </tr><tr id="L124">
+                  <td class="line-number"><a href="#L124">124</a></td>
+                  <td class="code-line"><code>        consoleErrors.push(msg.text());</code></td>
+                </tr><tr id="L125">
+                  <td class="line-number"><a href="#L125">125</a></td>
+                  <td class="code-line"><code>      }</code></td>
+                </tr><tr id="L126">
+                  <td class="line-number"><a href="#L126">126</a></td>
+                  <td class="code-line"><code>    });</code></td>
+                </tr><tr id="L127">
+                  <td class="line-number"><a href="#L127">127</a></td>
+                  <td class="code-line"><code>    page.on(&quot;pageerror&quot;, error =&gt; {</code></td>
+                </tr><tr id="L128">
+                  <td class="line-number"><a href="#L128">128</a></td>
+                  <td class="code-line"><code>      consoleErrors.push(String(error));</code></td>
+                </tr><tr id="L129">
+                  <td class="line-number"><a href="#L129">129</a></td>
+                  <td class="code-line"><code>    });</code></td>
+                </tr><tr id="L130">
+                  <td class="line-number"><a href="#L130">130</a></td>
+                  <td class="code-line"><code>    page.on(&quot;requestfailed&quot;, request =&gt; {</code></td>
+                </tr><tr id="L131">
+                  <td class="line-number"><a href="#L131">131</a></td>
+                  <td class="code-line"><code>      const failure = request.failure();</code></td>
+                </tr><tr id="L132">
+                  <td class="line-number"><a href="#L132">132</a></td>
+                  <td class="code-line"><code>      networkErrors.push(`${request.method()} ${request.url()} ${failure?.errorText || &quot;failed&quot;}`);</code></td>
+                </tr><tr id="L133">
+                  <td class="line-number"><a href="#L133">133</a></td>
+                  <td class="code-line"><code>    });</code></td>
+                </tr><tr id="L134">
+                  <td class="line-number"><a href="#L134">134</a></td>
+                  <td class="code-line"><code>    contexts.set(contextId, { context, page });</code></td>
+                </tr><tr id="L135">
+                  <td class="line-number"><a href="#L135">135</a></td>
+                  <td class="code-line"><code>    return contexts.get(contextId);</code></td>
+                </tr><tr id="L136">
+                  <td class="line-number"><a href="#L136">136</a></td>
+                  <td class="code-line"><code>  }</code></td>
+                </tr><tr id="L137">
+                  <td class="line-number"><a href="#L137">137</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L138">
+                  <td class="line-number"><a href="#L138">138</a></td>
+                  <td class="code-line"><code>  async function ensureCurrentContext() {</code></td>
+                </tr><tr id="L139">
+                  <td class="line-number"><a href="#L139">139</a></td>
+                  <td class="code-line"><code>    let entry = contexts.get(currentContextId);</code></td>
+                </tr><tr id="L140">
+                  <td class="line-number"><a href="#L140">140</a></td>
+                  <td class="code-line"><code>    if (!entry) {</code></td>
+                </tr><tr id="L141">
+                  <td class="line-number"><a href="#L141">141</a></td>
+                  <td class="code-line"><code>      entry = await createContext(currentContextId);</code></td>
+                </tr><tr id="L142">
+                  <td class="line-number"><a href="#L142">142</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L143">
+                  <td class="line-number"><a href="#L143">143</a></td>
+                  <td class="code-line"><code>    return entry;</code></td>
+                </tr><tr id="L144">
+                  <td class="line-number"><a href="#L144">144</a></td>
+                  <td class="code-line"><code>  }</code></td>
+                </tr><tr id="L145">
+                  <td class="line-number"><a href="#L145">145</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L146">
+                  <td class="line-number"><a href="#L146">146</a></td>
+                  <td class="code-line"><code>  try {</code></td>
+                </tr><tr id="L147">
+                  <td class="line-number"><a href="#L147">147</a></td>
+                  <td class="code-line"><code>    await ensureCurrentContext();</code></td>
+                </tr><tr id="L148">
+                  <td class="line-number"><a href="#L148">148</a></td>
+                  <td class="code-line"><code>    for (let index = 0; index &lt; input.package.journey.steps.length; index += 1) {</code></td>
+                </tr><tr id="L149">
+                  <td class="line-number"><a href="#L149">149</a></td>
+                  <td class="code-line"><code>      const step = input.package.journey.steps[index];</code></td>
+                </tr><tr id="L150">
+                  <td class="line-number"><a href="#L150">150</a></td>
+                  <td class="code-line"><code>      const { page, context } = await ensureCurrentContext();</code></td>
+                </tr><tr id="L151">
+                  <td class="line-number"><a href="#L151">151</a></td>
+                  <td class="code-line"><code>      const timeout = input.package.journey.per_step_timeout_ms;</code></td>
+                </tr><tr id="L152">
+                  <td class="line-number"><a href="#L152">152</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L153">
+                  <td class="line-number"><a href="#L153">153</a></td>
+                  <td class="code-line"><code>      try {</code></td>
+                </tr><tr id="L154">
+                  <td class="line-number"><a href="#L154">154</a></td>
+                  <td class="code-line"><code>        switch (step.kind) {</code></td>
+                </tr><tr id="L155">
+                  <td class="line-number"><a href="#L155">155</a></td>
+                  <td class="code-line"><code>          case &quot;navigate&quot;:</code></td>
+                </tr><tr id="L156">
+                  <td class="line-number"><a href="#L156">156</a></td>
+                  <td class="code-line"><code>            await page.goto(step.url, { waitUntil: &quot;domcontentloaded&quot;, timeout });</code></td>
+                </tr><tr id="L157">
+                  <td class="line-number"><a href="#L157">157</a></td>
+                  <td class="code-line"><code>            break;</code></td>
+                </tr><tr id="L158">
+                  <td class="line-number"><a href="#L158">158</a></td>
+                  <td class="code-line"><code>          case &quot;click&quot;:</code></td>
+                </tr><tr id="L159">
+                  <td class="line-number"><a href="#L159">159</a></td>
+                  <td class="code-line"><code>            await resolveLocator(page, step.target).first().click({ timeout });</code></td>
+                </tr><tr id="L160">
+                  <td class="line-number"><a href="#L160">160</a></td>
+                  <td class="code-line"><code>            break;</code></td>
+                </tr><tr id="L161">
+                  <td class="line-number"><a href="#L161">161</a></td>
+                  <td class="code-line"><code>          case &quot;fill&quot;:</code></td>
+                </tr><tr id="L162">
+                  <td class="line-number"><a href="#L162">162</a></td>
+                  <td class="code-line"><code>            await resolveLocator(page, step.target)</code></td>
+                </tr><tr id="L163">
+                  <td class="line-number"><a href="#L163">163</a></td>
+                  <td class="code-line"><code>              .first()</code></td>
+                </tr><tr id="L164">
+                  <td class="line-number"><a href="#L164">164</a></td>
+                  <td class="code-line"><code>              .fill(resolveInputValue(step.value, input.secrets), { timeout });</code></td>
+                </tr><tr id="L165">
+                  <td class="line-number"><a href="#L165">165</a></td>
+                  <td class="code-line"><code>            break;</code></td>
+                </tr><tr id="L166">
+                  <td class="line-number"><a href="#L166">166</a></td>
+                  <td class="code-line"><code>          case &quot;press&quot;:</code></td>
+                </tr><tr id="L167">
+                  <td class="line-number"><a href="#L167">167</a></td>
+                  <td class="code-line"><code>            await page.keyboard.press(step.key);</code></td>
+                </tr><tr id="L168">
+                  <td class="line-number"><a href="#L168">168</a></td>
+                  <td class="code-line"><code>            break;</code></td>
+                </tr><tr id="L169">
+                  <td class="line-number"><a href="#L169">169</a></td>
+                  <td class="code-line"><code>          case &quot;wait_for_text&quot;:</code></td>
+                </tr><tr id="L170">
+                  <td class="line-number"><a href="#L170">170</a></td>
+                  <td class="code-line"><code>            await page.getByText(step.text, { exact: false }).waitFor({ state: &quot;visible&quot;, timeout });</code></td>
+                </tr><tr id="L171">
+                  <td class="line-number"><a href="#L171">171</a></td>
+                  <td class="code-line"><code>            break;</code></td>
+                </tr><tr id="L172">
+                  <td class="line-number"><a href="#L172">172</a></td>
+                  <td class="code-line"><code>          case &quot;assert_text&quot;:</code></td>
+                </tr><tr id="L173">
+                  <td class="line-number"><a href="#L173">173</a></td>
+                  <td class="code-line"><code>            if (!(await page.getByText(step.text, { exact: false }).first().isVisible({ timeout }))) {</code></td>
+                </tr><tr id="L174">
+                  <td class="line-number"><a href="#L174">174</a></td>
+                  <td class="code-line"><code>              throw new Error(`assertion failed: text not visible: ${step.text}`);</code></td>
+                </tr><tr id="L175">
+                  <td class="line-number"><a href="#L175">175</a></td>
+                  <td class="code-line"><code>            }</code></td>
+                </tr><tr id="L176">
+                  <td class="line-number"><a href="#L176">176</a></td>
+                  <td class="code-line"><code>            break;</code></td>
+                </tr><tr id="L177">
+                  <td class="line-number"><a href="#L177">177</a></td>
+                  <td class="code-line"><code>          case &quot;assert_url_contains&quot;:</code></td>
+                </tr><tr id="L178">
+                  <td class="line-number"><a href="#L178">178</a></td>
+                  <td class="code-line"><code>            if (!page.url().includes(step.text)) {</code></td>
+                </tr><tr id="L179">
+                  <td class="line-number"><a href="#L179">179</a></td>
+                  <td class="code-line"><code>              throw new Error(`assertion failed: url does not include ${step.text}`);</code></td>
+                </tr><tr id="L180">
+                  <td class="line-number"><a href="#L180">180</a></td>
+                  <td class="code-line"><code>            }</code></td>
+                </tr><tr id="L181">
+                  <td class="line-number"><a href="#L181">181</a></td>
+                  <td class="code-line"><code>            break;</code></td>
+                </tr><tr id="L182">
+                  <td class="line-number"><a href="#L182">182</a></td>
+                  <td class="code-line"><code>          case &quot;capture_screenshot&quot;: {</code></td>
+                </tr><tr id="L183">
+                  <td class="line-number"><a href="#L183">183</a></td>
+                  <td class="code-line"><code>            const label = step.label || `step-${index}`;</code></td>
+                </tr><tr id="L184">
+                  <td class="line-number"><a href="#L184">184</a></td>
+                  <td class="code-line"><code>            const file = path.join(input.artifact_dir, `${label}.png`);</code></td>
+                </tr><tr id="L185">
+                  <td class="line-number"><a href="#L185">185</a></td>
+                  <td class="code-line"><code>            await page.screenshot({ path: file, fullPage: true });</code></td>
+                </tr><tr id="L186">
+                  <td class="line-number"><a href="#L186">186</a></td>
+                  <td class="code-line"><code>            screenshotPath = file;</code></td>
+                </tr><tr id="L187">
+                  <td class="line-number"><a href="#L187">187</a></td>
+                  <td class="code-line"><code>            break;</code></td>
+                </tr><tr id="L188">
+                  <td class="line-number"><a href="#L188">188</a></td>
+                  <td class="code-line"><code>          }</code></td>
+                </tr><tr id="L189">
+                  <td class="line-number"><a href="#L189">189</a></td>
+                  <td class="code-line"><code>          case &quot;open_fresh_context&quot;:</code></td>
+                </tr><tr id="L190">
+                  <td class="line-number"><a href="#L190">190</a></td>
+                  <td class="code-line"><code>            currentContextId = step.context_id;</code></td>
+                </tr><tr id="L191">
+                  <td class="line-number"><a href="#L191">191</a></td>
+                  <td class="code-line"><code>            await createContext(step.context_id);</code></td>
+                </tr><tr id="L192">
+                  <td class="line-number"><a href="#L192">192</a></td>
+                  <td class="code-line"><code>            break;</code></td>
+                </tr><tr id="L193">
+                  <td class="line-number"><a href="#L193">193</a></td>
+                  <td class="code-line"><code>          case &quot;close_context&quot;: {</code></td>
+                </tr><tr id="L194">
+                  <td class="line-number"><a href="#L194">194</a></td>
+                  <td class="code-line"><code>            const entry = contexts.get(step.context_id);</code></td>
+                </tr><tr id="L195">
+                  <td class="line-number"><a href="#L195">195</a></td>
+                  <td class="code-line"><code>            if (entry) {</code></td>
+                </tr><tr id="L196">
+                  <td class="line-number"><a href="#L196">196</a></td>
+                  <td class="code-line"><code>              const maybeVideo = entry.page.video();</code></td>
+                </tr><tr id="L197">
+                  <td class="line-number"><a href="#L197">197</a></td>
+                  <td class="code-line"><code>              if (input.package.artifact_policy.capture_trace) {</code></td>
+                </tr><tr id="L198">
+                  <td class="line-number"><a href="#L198">198</a></td>
+                  <td class="code-line"><code>                const candidate = path.join(input.artifact_dir, `trace-${step.context_id}.zip`);</code></td>
+                </tr><tr id="L199">
+                  <td class="line-number"><a href="#L199">199</a></td>
+                  <td class="code-line"><code>                await entry.context.tracing.stop({ path: candidate });</code></td>
+                </tr><tr id="L200">
+                  <td class="line-number"><a href="#L200">200</a></td>
+                  <td class="code-line"><code>                tracePath = candidate;</code></td>
+                </tr><tr id="L201">
+                  <td class="line-number"><a href="#L201">201</a></td>
+                  <td class="code-line"><code>              }</code></td>
+                </tr><tr id="L202">
+                  <td class="line-number"><a href="#L202">202</a></td>
+                  <td class="code-line"><code>              await entry.context.close();</code></td>
+                </tr><tr id="L203">
+                  <td class="line-number"><a href="#L203">203</a></td>
+                  <td class="code-line"><code>              if (maybeVideo) {</code></td>
+                </tr><tr id="L204">
+                  <td class="line-number"><a href="#L204">204</a></td>
+                  <td class="code-line"><code>                videoPath = await maybeVideo.path().catch(() =&gt; videoPath);</code></td>
+                </tr><tr id="L205">
+                  <td class="line-number"><a href="#L205">205</a></td>
+                  <td class="code-line"><code>              }</code></td>
+                </tr><tr id="L206">
+                  <td class="line-number"><a href="#L206">206</a></td>
+                  <td class="code-line"><code>              contexts.delete(step.context_id);</code></td>
+                </tr><tr id="L207">
+                  <td class="line-number"><a href="#L207">207</a></td>
+                  <td class="code-line"><code>              if (currentContextId === step.context_id) {</code></td>
+                </tr><tr id="L208">
+                  <td class="line-number"><a href="#L208">208</a></td>
+                  <td class="code-line"><code>                currentContextId = &quot;default&quot;;</code></td>
+                </tr><tr id="L209">
+                  <td class="line-number"><a href="#L209">209</a></td>
+                  <td class="code-line"><code>              }</code></td>
+                </tr><tr id="L210">
+                  <td class="line-number"><a href="#L210">210</a></td>
+                  <td class="code-line"><code>            }</code></td>
+                </tr><tr id="L211">
+                  <td class="line-number"><a href="#L211">211</a></td>
+                  <td class="code-line"><code>            break;</code></td>
+                </tr><tr id="L212">
+                  <td class="line-number"><a href="#L212">212</a></td>
+                  <td class="code-line"><code>          }</code></td>
+                </tr><tr id="L213">
+                  <td class="line-number"><a href="#L213">213</a></td>
+                  <td class="code-line"><code>          default:</code></td>
+                </tr><tr id="L214">
+                  <td class="line-number"><a href="#L214">214</a></td>
+                  <td class="code-line"><code>            throw new Error(`unsupported browser step ${step.kind}`);</code></td>
+                </tr><tr id="L215">
+                  <td class="line-number"><a href="#L215">215</a></td>
+                  <td class="code-line"><code>        }</code></td>
+                </tr><tr id="L216">
+                  <td class="line-number"><a href="#L216">216</a></td>
+                  <td class="code-line"><code>        finalUrl = page.url();</code></td>
+                </tr><tr id="L217">
+                  <td class="line-number"><a href="#L217">217</a></td>
+                  <td class="code-line"><code>        void context;</code></td>
+                </tr><tr id="L218">
+                  <td class="line-number"><a href="#L218">218</a></td>
+                  <td class="code-line"><code>      } catch (error) {</code></td>
+                </tr><tr id="L219">
+                  <td class="line-number"><a href="#L219">219</a></td>
+                  <td class="code-line"><code>        failedStepIndex = index;</code></td>
+                </tr><tr id="L220">
+                  <td class="line-number"><a href="#L220">220</a></td>
+                  <td class="code-line"><code>        outcomeClass = classifyError(error);</code></td>
+                </tr><tr id="L221">
+                  <td class="line-number"><a href="#L221">221</a></td>
+                  <td class="code-line"><code>        if (input.package.artifact_policy.capture_screenshot_on_failure) {</code></td>
+                </tr><tr id="L222">
+                  <td class="line-number"><a href="#L222">222</a></td>
+                  <td class="code-line"><code>          const file = path.join(input.artifact_dir, `failure-step-${index}.png`);</code></td>
+                </tr><tr id="L223">
+                  <td class="line-number"><a href="#L223">223</a></td>
+                  <td class="code-line"><code>          await page.screenshot({ path: file, fullPage: true }).catch(() =&gt; {});</code></td>
+                </tr><tr id="L224">
+                  <td class="line-number"><a href="#L224">224</a></td>
+                  <td class="code-line"><code>          screenshotPath = file;</code></td>
+                </tr><tr id="L225">
+                  <td class="line-number"><a href="#L225">225</a></td>
+                  <td class="code-line"><code>        }</code></td>
+                </tr><tr id="L226">
+                  <td class="line-number"><a href="#L226">226</a></td>
+                  <td class="code-line"><code>        throw error;</code></td>
+                </tr><tr id="L227">
+                  <td class="line-number"><a href="#L227">227</a></td>
+                  <td class="code-line"><code>      }</code></td>
+                </tr><tr id="L228">
+                  <td class="line-number"><a href="#L228">228</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L229">
+                  <td class="line-number"><a href="#L229">229</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L230">
+                  <td class="line-number"><a href="#L230">230</a></td>
+                  <td class="code-line"><code>    const defaultEntry = contexts.get(&quot;default&quot;);</code></td>
+                </tr><tr id="L231">
+                  <td class="line-number"><a href="#L231">231</a></td>
+                  <td class="code-line"><code>    if (input.package.artifact_policy.capture_trace &amp;&amp; defaultEntry) {</code></td>
+                </tr><tr id="L232">
+                  <td class="line-number"><a href="#L232">232</a></td>
+                  <td class="code-line"><code>      const candidate = path.join(input.artifact_dir, &quot;trace-default.zip&quot;);</code></td>
+                </tr><tr id="L233">
+                  <td class="line-number"><a href="#L233">233</a></td>
+                  <td class="code-line"><code>      await defaultEntry.context.tracing.stop({ path: candidate });</code></td>
+                </tr><tr id="L234">
+                  <td class="line-number"><a href="#L234">234</a></td>
+                  <td class="code-line"><code>      tracePath = candidate;</code></td>
+                </tr><tr id="L235">
+                  <td class="line-number"><a href="#L235">235</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L236">
+                  <td class="line-number"><a href="#L236">236</a></td>
+                  <td class="code-line"><code>    if (</code></td>
+                </tr><tr id="L237">
+                  <td class="line-number"><a href="#L237">237</a></td>
+                  <td class="code-line"><code>      input.package.runtime.cache_mode === &quot;session_state&quot; &amp;&amp;</code></td>
+                </tr><tr id="L238">
+                  <td class="line-number"><a href="#L238">238</a></td>
+                  <td class="code-line"><code>      input.package.session_cache.enabled &amp;&amp;</code></td>
+                </tr><tr id="L239">
+                  <td class="line-number"><a href="#L239">239</a></td>
+                  <td class="code-line"><code>      typeof input.session_state_path === &quot;string&quot; &amp;&amp;</code></td>
+                </tr><tr id="L240">
+                  <td class="line-number"><a href="#L240">240</a></td>
+                  <td class="code-line"><code>      defaultEntry</code></td>
+                </tr><tr id="L241">
+                  <td class="line-number"><a href="#L241">241</a></td>
+                  <td class="code-line"><code>    ) {</code></td>
+                </tr><tr id="L242">
+                  <td class="line-number"><a href="#L242">242</a></td>
+                  <td class="code-line"><code>      await defaultEntry.context.storageState({ path: input.session_state_path });</code></td>
+                </tr><tr id="L243">
+                  <td class="line-number"><a href="#L243">243</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L244">
+                  <td class="line-number"><a href="#L244">244</a></td>
+                  <td class="code-line"><code>    for (const [, entry] of contexts) {</code></td>
+                </tr><tr id="L245">
+                  <td class="line-number"><a href="#L245">245</a></td>
+                  <td class="code-line"><code>      const maybeVideo = entry.page.video();</code></td>
+                </tr><tr id="L246">
+                  <td class="line-number"><a href="#L246">246</a></td>
+                  <td class="code-line"><code>      await entry.context.close();</code></td>
+                </tr><tr id="L247">
+                  <td class="line-number"><a href="#L247">247</a></td>
+                  <td class="code-line"><code>      if (!videoPath &amp;&amp; maybeVideo) {</code></td>
+                </tr><tr id="L248">
+                  <td class="line-number"><a href="#L248">248</a></td>
+                  <td class="code-line"><code>        videoPath = await maybeVideo.path().catch(() =&gt; videoPath);</code></td>
+                </tr><tr id="L249">
+                  <td class="line-number"><a href="#L249">249</a></td>
+                  <td class="code-line"><code>      }</code></td>
+                </tr><tr id="L250">
+                  <td class="line-number"><a href="#L250">250</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L251">
+                  <td class="line-number"><a href="#L251">251</a></td>
+                  <td class="code-line"><code>    await browser.close();</code></td>
+                </tr><tr id="L252">
+                  <td class="line-number"><a href="#L252">252</a></td>
+                  <td class="code-line"><code>    await writeOutput(args.output, {</code></td>
+                </tr><tr id="L253">
+                  <td class="line-number"><a href="#L253">253</a></td>
+                  <td class="code-line"><code>      success: true,</code></td>
+                </tr><tr id="L254">
+                  <td class="line-number"><a href="#L254">254</a></td>
+                  <td class="code-line"><code>      latency_ms: Date.now() - start,</code></td>
+                </tr><tr id="L255">
+                  <td class="line-number"><a href="#L255">255</a></td>
+                  <td class="code-line"><code>      failed_step_index: null,</code></td>
+                </tr><tr id="L256">
+                  <td class="line-number"><a href="#L256">256</a></td>
+                  <td class="code-line"><code>      final_url: finalUrl,</code></td>
+                </tr><tr id="L257">
+                  <td class="line-number"><a href="#L257">257</a></td>
+                  <td class="code-line"><code>      outcome_class: &quot;success&quot;,</code></td>
+                </tr><tr id="L258">
+                  <td class="line-number"><a href="#L258">258</a></td>
+                  <td class="code-line"><code>      console_error_count: consoleErrors.length,</code></td>
+                </tr><tr id="L259">
+                  <td class="line-number"><a href="#L259">259</a></td>
+                  <td class="code-line"><code>      network_error_count: networkErrors.length,</code></td>
+                </tr><tr id="L260">
+                  <td class="line-number"><a href="#L260">260</a></td>
+                  <td class="code-line"><code>      screenshot_path: screenshotPath,</code></td>
+                </tr><tr id="L261">
+                  <td class="line-number"><a href="#L261">261</a></td>
+                  <td class="code-line"><code>      trace_path: tracePath,</code></td>
+                </tr><tr id="L262">
+                  <td class="line-number"><a href="#L262">262</a></td>
+                  <td class="code-line"><code>      video_path: videoPath,</code></td>
+                </tr><tr id="L263">
+                  <td class="line-number"><a href="#L263">263</a></td>
+                  <td class="code-line"><code>      error: null</code></td>
+                </tr><tr id="L264">
+                  <td class="line-number"><a href="#L264">264</a></td>
+                  <td class="code-line"><code>    });</code></td>
+                </tr><tr id="L265">
+                  <td class="line-number"><a href="#L265">265</a></td>
+                  <td class="code-line"><code>  } catch (error) {</code></td>
+                </tr><tr id="L266">
+                  <td class="line-number"><a href="#L266">266</a></td>
+                  <td class="code-line"><code>    for (const [, entry] of contexts) {</code></td>
+                </tr><tr id="L267">
+                  <td class="line-number"><a href="#L267">267</a></td>
+                  <td class="code-line"><code>      try {</code></td>
+                </tr><tr id="L268">
+                  <td class="line-number"><a href="#L268">268</a></td>
+                  <td class="code-line"><code>        const maybeVideo = entry.page.video();</code></td>
+                </tr><tr id="L269">
+                  <td class="line-number"><a href="#L269">269</a></td>
+                  <td class="code-line"><code>        if (input.package.artifact_policy.capture_trace) {</code></td>
+                </tr><tr id="L270">
+                  <td class="line-number"><a href="#L270">270</a></td>
+                  <td class="code-line"><code>          const candidate = path.join(input.artifact_dir, `trace-${currentContextId}.zip`);</code></td>
+                </tr><tr id="L271">
+                  <td class="line-number"><a href="#L271">271</a></td>
+                  <td class="code-line"><code>          await entry.context.tracing.stop({ path: candidate }).catch(() =&gt; {});</code></td>
+                </tr><tr id="L272">
+                  <td class="line-number"><a href="#L272">272</a></td>
+                  <td class="code-line"><code>          if (!tracePath) tracePath = candidate;</code></td>
+                </tr><tr id="L273">
+                  <td class="line-number"><a href="#L273">273</a></td>
+                  <td class="code-line"><code>        }</code></td>
+                </tr><tr id="L274">
+                  <td class="line-number"><a href="#L274">274</a></td>
+                  <td class="code-line"><code>        await entry.context.close().catch(() =&gt; {});</code></td>
+                </tr><tr id="L275">
+                  <td class="line-number"><a href="#L275">275</a></td>
+                  <td class="code-line"><code>        if (!videoPath &amp;&amp; maybeVideo) {</code></td>
+                </tr><tr id="L276">
+                  <td class="line-number"><a href="#L276">276</a></td>
+                  <td class="code-line"><code>          videoPath = await maybeVideo.path().catch(() =&gt; videoPath);</code></td>
+                </tr><tr id="L277">
+                  <td class="line-number"><a href="#L277">277</a></td>
+                  <td class="code-line"><code>        }</code></td>
+                </tr><tr id="L278">
+                  <td class="line-number"><a href="#L278">278</a></td>
+                  <td class="code-line"><code>      } catch {</code></td>
+                </tr><tr id="L279">
+                  <td class="line-number"><a href="#L279">279</a></td>
+                  <td class="code-line"><code>        // ignore cleanup errors</code></td>
+                </tr><tr id="L280">
+                  <td class="line-number"><a href="#L280">280</a></td>
+                  <td class="code-line"><code>      }</code></td>
+                </tr><tr id="L281">
+                  <td class="line-number"><a href="#L281">281</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L282">
+                  <td class="line-number"><a href="#L282">282</a></td>
+                  <td class="code-line"><code>    await browser.close().catch(() =&gt; {});</code></td>
+                </tr><tr id="L283">
+                  <td class="line-number"><a href="#L283">283</a></td>
+                  <td class="code-line"><code>    await writeOutput(args.output, {</code></td>
+                </tr><tr id="L284">
+                  <td class="line-number"><a href="#L284">284</a></td>
+                  <td class="code-line"><code>      success: false,</code></td>
+                </tr><tr id="L285">
+                  <td class="line-number"><a href="#L285">285</a></td>
+                  <td class="code-line"><code>      latency_ms: Date.now() - start,</code></td>
+                </tr><tr id="L286">
+                  <td class="line-number"><a href="#L286">286</a></td>
+                  <td class="code-line"><code>      failed_step_index: failedStepIndex,</code></td>
+                </tr><tr id="L287">
+                  <td class="line-number"><a href="#L287">287</a></td>
+                  <td class="code-line"><code>      final_url: finalUrl,</code></td>
+                </tr><tr id="L288">
+                  <td class="line-number"><a href="#L288">288</a></td>
+                  <td class="code-line"><code>      outcome_class: outcomeClass,</code></td>
+                </tr><tr id="L289">
+                  <td class="line-number"><a href="#L289">289</a></td>
+                  <td class="code-line"><code>      console_error_count: consoleErrors.length,</code></td>
+                </tr><tr id="L290">
+                  <td class="line-number"><a href="#L290">290</a></td>
+                  <td class="code-line"><code>      network_error_count: networkErrors.length,</code></td>
+                </tr><tr id="L291">
+                  <td class="line-number"><a href="#L291">291</a></td>
+                  <td class="code-line"><code>      screenshot_path: screenshotPath,</code></td>
+                </tr><tr id="L292">
+                  <td class="line-number"><a href="#L292">292</a></td>
+                  <td class="code-line"><code>      trace_path: tracePath,</code></td>
+                </tr><tr id="L293">
+                  <td class="line-number"><a href="#L293">293</a></td>
+                  <td class="code-line"><code>      video_path: videoPath,</code></td>
+                </tr><tr id="L294">
+                  <td class="line-number"><a href="#L294">294</a></td>
+                  <td class="code-line"><code>      error: String(error?.message || error)</code></td>
+                </tr><tr id="L295">
+                  <td class="line-number"><a href="#L295">295</a></td>
+                  <td class="code-line"><code>    });</code></td>
+                </tr><tr id="L296">
+                  <td class="line-number"><a href="#L296">296</a></td>
+                  <td class="code-line"><code>    process.exitCode = 1;</code></td>
+                </tr><tr id="L297">
+                  <td class="line-number"><a href="#L297">297</a></td>
+                  <td class="code-line"><code>  }</code></td>
+                </tr><tr id="L298">
+                  <td class="line-number"><a href="#L298">298</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L299">
+                  <td class="line-number"><a href="#L299">299</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L300">
+                  <td class="line-number"><a href="#L300">300</a></td>
+                  <td class="code-line"><code>async function fileExists(candidate) {</code></td>
+                </tr><tr id="L301">
+                  <td class="line-number"><a href="#L301">301</a></td>
+                  <td class="code-line"><code>  try {</code></td>
+                </tr><tr id="L302">
+                  <td class="line-number"><a href="#L302">302</a></td>
+                  <td class="code-line"><code>    await fs.access(candidate);</code></td>
+                </tr><tr id="L303">
+                  <td class="line-number"><a href="#L303">303</a></td>
+                  <td class="code-line"><code>    return true;</code></td>
+                </tr><tr id="L304">
+                  <td class="line-number"><a href="#L304">304</a></td>
+                  <td class="code-line"><code>  } catch {</code></td>
+                </tr><tr id="L305">
+                  <td class="line-number"><a href="#L305">305</a></td>
+                  <td class="code-line"><code>    return false;</code></td>
+                </tr><tr id="L306">
+                  <td class="line-number"><a href="#L306">306</a></td>
+                  <td class="code-line"><code>  }</code></td>
+                </tr><tr id="L307">
+                  <td class="line-number"><a href="#L307">307</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L308">
+                  <td class="line-number"><a href="#L308">308</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L309">
+                  <td class="line-number"><a href="#L309">309</a></td>
+                  <td class="code-line"><code>run().catch(async error =&gt; {</code></td>
+                </tr><tr id="L310">
+                  <td class="line-number"><a href="#L310">310</a></td>
+                  <td class="code-line"><code>  console.error(error);</code></td>
+                </tr><tr id="L311">
+                  <td class="line-number"><a href="#L311">311</a></td>
+                  <td class="code-line"><code>  process.exit(1);</code></td>
+                </tr><tr id="L312">
+                  <td class="line-number"><a href="#L312">312</a></td>
+                  <td class="code-line"><code>});</code></td>
+                </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>Gossip Protocol</span>
+    <span>Peer-witnessed monitoring, compute, storage, DNS, swaps, and publishing.</span>
+  </footer>
+
+  <script src="/assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gossip Protocol Functionality</title>
+  <meta name="description" content="Functional overview of Gossip Protocol validators, agents, compute, storage, DNS, monitoring, swaps, and receipts.">
+  <meta property="og:title" content="Gossip Protocol Functionality">
+  <meta property="og:description" content="How the Gossip Protocol implementation works.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://gossip-protocol.com/docs/functionality.html">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/styles.css?v=responsive-3" as="style">
+  <link rel="stylesheet" href="/assets/styles.css?v=responsive-3">
+</head>
+<body>
+  <canvas id="network-canvas" aria-hidden="true"></canvas>
+
+  <main class="docs-page">
+    <nav class="docs-nav" aria-label="Documentation navigation">
+      <a href="/">Home</a>
+      <a href="/docs/">Docs</a>
+      <a href="/repo/">Repo</a>
+      <a href="/docs/functionality.html">Functionality</a>
+      <a href="/docs/settings.html">Settings</a>
+    </nav>
+
+    <section class="docs-hero">
+      <p class="eyebrow">functionality</p>
+      <h1>What the protocol does</h1>
+      <p class="hero-text">
+        Gossip Protocol coordinates useful work through signed transactions, signed execution
+        receipts, peer gossip, and block approval. The implementation separates each resource
+        class into its own balance: HT, CT, ST, and DNS.
+      </p>
+    </section>
+
+    <section class="docs-section">
+      <h2>Runtime roles</h2>
+      <table class="docs-table">
+        <thead>
+          <tr>
+            <th>Role</th>
+            <th>Purpose</th>
+            <th>Main commands</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Wallet</td>
+            <td>Creates Ed25519 identities, signs transactions, receipts, leases, and approvals.</td>
+            <td><code>wallet create</code>, <code>wallet address</code>, <code>wallet show</code></td>
+          </tr>
+          <tr>
+            <td>Validator node</td>
+            <td>Maintains chain state, accepts control transactions, executes local work, gossips receipts, proposes blocks, and approves blocks.</td>
+            <td><code>node run</code></td>
+          </tr>
+          <tr>
+            <td>Probe agent</td>
+            <td>Executes leased health checks, browser checks, and compute shards for a validator.</td>
+            <td><code>agent run</code></td>
+          </tr>
+          <tr>
+            <td>Storage host</td>
+            <td>Serves bundled content chunks, Merkle proofs, public raw files, and domain-routed static output.</td>
+            <td><code>storage host</code></td>
+          </tr>
+          <tr>
+            <td>Client</td>
+            <td>Builds specs and submits signed transactions for transfers, checks, monitors, compute jobs, storage contracts, and DNS leases.</td>
+            <td><code>tx *</code>, <code>swap *</code>, <code>storage bundle</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="docs-section">
+      <h2>Transaction and receipt flow</h2>
+      <ol class="docs-list">
+        <li>A user signs a transaction body with a wallet. The transaction includes the chain ID, nonce, creation time, and transaction kind.</li>
+        <li>A node validates the signature, nonce, balance, and protocol-specific spec limits before accepting it into the mempool.</li>
+        <li>Validators execute work locally or assign leased work to agents. Executors return signed receipts.</li>
+        <li>Nodes gossip transactions, receipts, heartbeat observations, storage proof receipts, blocks, and block approvals to peers.</li>
+        <li>A proposer builds a block from accepted work. Other validators approve exactly one block for a height and view.</li>
+        <li>Finalized state records balance changes, monitor status, storage payments, domain leases, and finalized work outputs.</li>
+      </ol>
+    </section>
+
+    <section class="docs-section">
+      <h2>Token ledgers</h2>
+      <div class="docs-grid">
+        <div class="docs-card">
+          <h3>HT</h3>
+          <p>Base token used for transfers, health checks, browser checks, monitor budgets, and swap locks.</p>
+        </div>
+        <div class="docs-card">
+          <h3>CT</h3>
+          <p>Compute token used to pay for distributed jobs and reward matching compute receipts.</p>
+        </div>
+        <div class="docs-card">
+          <h3>ST</h3>
+          <p>Storage token used for storage contract prepayment and proof-window rewards.</p>
+        </div>
+        <div class="docs-card">
+          <h3>DNS</h3>
+          <p>DNS token used to pay for subdomain lease duration and public route binding.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="docs-section">
+      <h2>Health checks</h2>
+      <p class="copy-block">
+        A health check is a signed request spec for an HTTP target. It can set method, headers,
+        query parameters, timeout, expected status, JSON assertions, header assertions, body
+        assertions, and optional JSON POST body. Validators execute the request and sign
+        <code>SignedHealthReceipt</code> records containing status, latency, assertion results,
+        sampled response headers, sampled body, and errors.
+      </p>
+    </section>
+
+    <section class="docs-section">
+      <h2>Monitors and heartbeats</h2>
+      <p class="copy-block">
+        A monitor turns repeated observations into ledger state. Schedules can be interval-based
+        or UTC cron expressions. Heartbeat monitors accept secret URL pings, delegated-key pings,
+        or dual-auth pings. Misses can be recorded only, confirmed by validators, or confirmed by
+        delegated agents. Browser monitors run a browser journey package on schedule and store
+        browser receipt status per slot.
+      </p>
+      <p class="copy-block">
+        Monitor statuses include up, running, late, down, paused, and insufficient funds. Slot
+        statuses distinguish pending, running, ok, explicit failure, unconfirmed miss, reachable
+        miss, confirmed down, late recovery, paused, and insufficient funds.
+      </p>
+    </section>
+
+    <section class="docs-section">
+      <h2>Browser checks</h2>
+      <p class="copy-block">
+        Browser checks run an approved journey package through a runner program. Supported steps
+        include navigate, click, fill, press, wait for text, assert text, assert URL contains,
+        capture screenshot, open a fresh context, and close a context. A package also defines
+        runtime profile, artifact policy, session cache policy, tags, owner, approver, and
+        approval time.
+      </p>
+    </section>
+
+    <section class="docs-section">
+      <h2>Compute</h2>
+      <p class="copy-block">
+        Compute jobs are sharded. Workloads include integer map operations, Monte Carlo pi, and
+        WASI Preview 1 modules. WASI modules can be sent inline as small hex blobs or referenced
+        from a storage contract through a module reference. Validators reduce matching shard
+        outputs through reducers such as sum, sum squares, count, min/max, Monte Carlo pi, or raw
+        shard outputs.
+      </p>
+      <p class="copy-block">
+        The sandbox policy controls memory, fuel, stdout/stderr sampling, and network access.
+        Production jobs reject network access. Artifact policies let jobs declare required output
+        paths and byte limits for persisted artifacts.
+      </p>
+    </section>
+
+    <section class="docs-section">
+      <h2>Storage and publishing</h2>
+      <p class="copy-block">
+        Storage bundles turn files into chunks with a Merkle root. Encrypted bundles produce a
+        client encryption secret file. Public raw bundles include static-site metadata such as
+        index path, content types, critical prefix hash, and critical prefix byte count. Storage
+        contracts prepay a host for availability, duration, proof cadence, sample count, and
+        reward rate.
+      </p>
+      <p class="copy-block">
+        A storage host serves manifests, chunks, Merkle proofs, and public files. It can also act
+        as a domain gateway by resolving the request host through the validator node's domain-route
+        endpoint and serving the leased storage contract.
+      </p>
+    </section>
+
+    <section class="docs-section">
+      <h2>DNS leases</h2>
+      <p class="copy-block">
+        Validators create domain offerings for suffixes they can serve through a gateway URL.
+        Users lease labels under an offering, bind the lease to a storage contract, renew the
+        lease, rebind it to another contract, or cancel it. A route response resolves host,
+        offering, lease, and target contract metadata.
+      </p>
+    </section>
+
+    <section class="docs-section">
+      <h2>Swaps</h2>
+      <p class="copy-block">
+        Swap adapters quote buy or sell flows against settlement assets. A quote can be locked,
+        cancelled, or settled. The example adapter config uses settlement assets such as USDC and
+        USDT and returns operational follow-up steps for treasury settlement.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <span>Gossip Protocol</span>
+    <span>Peer-witnessed monitoring, compute, storage, DNS, swaps, and publishing.</span>
+  </footer>
+
+  <script src="/assets/app.js" defer></script>
+</body>
+</html>

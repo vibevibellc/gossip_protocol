@@ -1,0 +1,24 @@
+{
+  "adapters": [
+    {
+      "type": "fixed_rate",
+      "id": "desk-usdc",
+      "settlement_asset": "usdc",
+      "micro_asset_per_token": 1250000,
+      "settlement_decimals": 6,
+      "instructions": [
+        "Receive USDC off-chain through your desk, exchange account, or bridge.",
+        "After settlement clears, submit an HT transfer from treasury inventory to the buyer wallet."
+      ]
+    },
+    {
+      "type": "http_bridge",
+      "id": "broker-usdt",
+      "settlement_asset": "usdt",
+      "quote_url": "https://swap-broker.example.com/quote",
+      "execution_url": "https://swap-broker.example.com/execute",
+      "auth_header_name": "x-broker-key",
+      "auth_header_value": "replace-me"
+    }
+  ]
+}

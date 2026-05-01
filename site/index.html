@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gossip Protocol</title>
+  <meta name="description" content="Gossip Protocol is a public, federated coordination network for monitoring, browser execution, compute, storage, DNS, swaps, and publishing through signed peer receipts.">
+  <meta property="og:title" content="Gossip Protocol">
+  <meta property="og:description" content="Public source, federated validators, resource tokens, and signed receipts for monitoring, compute, storage, DNS, swaps, and publishing.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://gossip-protocol.com/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/styles.css?v=responsive-3" as="style">
+  <link rel="stylesheet" href="/assets/styles.css?v=responsive-3">
+</head>
+<body>
+  <canvas id="network-canvas" aria-hidden="true"></canvas>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="Gossip Protocol home">
+      <span class="brand-mark">GP</span>
+      <span>Gossip Protocol</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="#network">Network</a>
+      <a href="#status">Status</a>
+      <a href="#tokens">Tokens</a>
+      <a href="#validators">Validators</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#team">Team</a>
+      <a href="/repo/">Source</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow">public federated infrastructure</p>
+        <h1 id="hero-title">Gossip Protocol</h1>
+        <p class="hero-text">
+          Live federated infrastructure for monitoring, browser execution, compute, storage, DNS,
+          and swaps. Validators exchange signed receipts before balances, leases, and public
+          outputs settle.
+        </p>
+        <div class="hero-actions" aria-label="Primary actions">
+          <a class="cta-button cta-button-primary" href="/docs/">Read the docs</a>
+          <a class="cta-button cta-button-secondary" href="https://github.com/vibevibellc/gossip_protocol">Open GitHub</a>
+          <a class="cta-button cta-button-secondary" href="#validators">Run a node</a>
+        </div>
+      </div>
+
+      <aside class="launch-card" aria-label="Launch status">
+        <p class="label">Network Status</p>
+        <div class="launch-meter">
+          <span>Federated live</span>
+          <strong>Validator onboarding open</strong>
+        </div>
+        <dl class="status-list">
+          <div>
+            <dt>Operator</dt>
+            <dd>Gossip Team</dd>
+          </div>
+          <div>
+            <dt>Lead</dt>
+            <dd>Gunther Schwartz</dd>
+          </div>
+          <div>
+            <dt>Code</dt>
+            <dd>Apache-2.0, public on GitHub</dd>
+          </div>
+          <div>
+            <dt>Entry</dt>
+            <dd>Contribution or 200 SOL commitment</dd>
+          </div>
+        </dl>
+      </aside>
+    </section>
+
+    <section id="status" class="section status-section">
+      <div class="section-heading">
+        <p class="eyebrow">launch surface</p>
+        <h2>Public source, operator contact, and validator path.</h2>
+      </div>
+      <div class="proof-grid">
+        <a class="proof-card" href="https://github.com/vibevibellc/gossip_protocol">
+          <span>GitHub</span>
+          <strong>Public implementation repository</strong>
+          <p>Apache-2.0 source for the validator, wallet, ledger, storage host, browser runner, compute sandbox, and static site.</p>
+        </a>
+        <a class="proof-card" href="/docs/">
+          <span>Docs</span>
+          <strong>Command and protocol reference</strong>
+          <p>Operator docs cover genesis, node flags, signed transactions, limits, endpoints, fees, and JSON specs.</p>
+        </a>
+        <a class="proof-card" href="/repo/">
+          <span>Source mirror</span>
+          <strong>Browsable code on this domain</strong>
+          <p>The hosted mirror exposes key Rust modules and raw files from the public site.</p>
+        </a>
+        <a class="proof-card" href="https://x.com/Gossip_Prot">
+          <span>X</span>
+          <strong>@Gossip_Prot</strong>
+          <p>Launch updates, validator recruiting, funding notes, and public coordination from the Gossip Team.</p>
+        </a>
+      </div>
+    </section>
+
+    <section id="network" class="section split">
+      <div>
+        <p class="eyebrow">why gossip</p>
+        <h2>One witness layer for many kinds of infrastructure.</h2>
+      </div>
+      <div class="copy-block">
+        <p>
+          Nodes relay transactions, health receipts, browser receipts, compute receipts, heartbeat
+          observations, storage proofs, domain leases, swap records, and block approvals. State
+          changes finalize only after enough independent witnesses agree.
+        </p>
+        <p>
+          The live launch is federated: the Gossip Team operates the first machines, admits new
+          validators, and expands through code contributions, infrastructure commitments, and
+          direct operator coordination.
+        </p>
+      </div>
+    </section>
+
+    <section id="tokens" class="section">
+      <div class="section-heading">
+        <p class="eyebrow">resource markets</p>
+        <h2>Four pegged resource markets, one receipt layer.</h2>
+      </div>
+      <div class="token-grid" aria-label="Protocol token types">
+        <article>
+          <strong class="token-icon token-icon-ht" aria-label="HT Credits icon">
+            <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+              <circle class="token-icon-ring" cx="32" cy="32" r="25"></circle>
+              <path class="token-icon-line" d="M15 33h8l4-10 7 20 5-10h10"></path>
+              <circle class="token-icon-dot" cx="15" cy="33" r="3"></circle>
+              <circle class="token-icon-dot" cx="49" cy="33" r="3"></circle>
+            </svg>
+            <span>HT</span>
+          </strong>
+          <h3>HT Credits</h3>
+          <p>Base credit for health checks, browser journeys, monitor budgets, validator rewards, and swap workflows.</p>
+        </article>
+        <article>
+          <strong class="token-icon token-icon-ct" aria-label="Compute Token icon">
+            <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+              <rect class="token-icon-ring" x="19" y="19" width="26" height="26" rx="5"></rect>
+              <path class="token-icon-line" d="M12 24h7M12 32h7M12 40h7M45 24h7M45 32h7M45 40h7M24 12v7M32 12v7M40 12v7M24 45v7M32 45v7M40 45v7"></path>
+              <circle class="token-icon-dot" cx="28" cy="28" r="2.5"></circle>
+              <circle class="token-icon-dot" cx="36" cy="28" r="2.5"></circle>
+              <circle class="token-icon-dot" cx="28" cy="36" r="2.5"></circle>
+              <circle class="token-icon-dot" cx="36" cy="36" r="2.5"></circle>
+            </svg>
+            <span>CT</span>
+          </strong>
+          <h3>Compute Token</h3>
+          <p>Pays for sharded compute, WASI execution, replication, consensus receipts, and returned artifacts.</p>
+        </article>
+        <article>
+          <strong class="token-icon token-icon-st" aria-label="Storage Token icon">
+            <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+              <path class="token-icon-ring" d="M17 20c0-5 30-5 30 0v20c0 5-30 5-30 0Z"></path>
+              <path class="token-icon-line" d="M17 20c0 5 30 5 30 0M17 30c0 5 30 5 30 0M17 40c0 5 30 5 30 0"></path>
+              <path class="token-icon-line" d="M32 45v8M24 53h16"></path>
+              <circle class="token-icon-dot" cx="24" cy="53" r="2.5"></circle>
+              <circle class="token-icon-dot" cx="40" cy="53" r="2.5"></circle>
+            </svg>
+            <span>ST</span>
+          </strong>
+          <h3>Storage Token</h3>
+          <p>Prepays storage contracts and rewards hosts that keep encrypted or public raw content available.</p>
+        </article>
+        <article>
+          <strong class="token-icon token-icon-dns" aria-label="DNS Token icon">
+            <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+              <circle class="token-icon-ring" cx="32" cy="32" r="24"></circle>
+              <path class="token-icon-line" d="M12 32h40M32 8c8 7 8 41 0 48M32 8c-8 7-8 41 0 48"></path>
+              <path class="token-icon-line" d="M20 45c6-5 18-5 24 0M20 19c6 5 18 5 24 0"></path>
+              <circle class="token-icon-dot" cx="18" cy="32" r="3"></circle>
+              <circle class="token-icon-dot" cx="46" cy="32" r="3"></circle>
+            </svg>
+            <span>DNS</span>
+          </strong>
+          <h3>DNS Token</h3>
+          <p>Leases names, renews routes, and binds public hostnames to active storage-backed content.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="economics" class="section split economics">
+      <div>
+        <p class="eyebrow">implemented economics</p>
+        <h2>Pegged accounting that already lives in the ledger.</h2>
+      </div>
+      <div class="copy-block">
+        <p>
+          All four resource tokens use six decimal places in the Rust implementation. Genesis can
+          assign starting balances for HT, CT, ST, and DNS independently, and transfers keep each
+          asset in its own balance.
+        </p>
+        <ul class="fact-list">
+          <li>Health checks start at 1 HT; browser checks start at 2 HT and scale with steps, runtime, video, and trace capture.</li>
+          <li>Compute jobs spend CT based on job cost and effective replication across validators.</li>
+          <li>Storage contracts prepay ST and reward hosts per 64 MiB-second after validator proof consensus.</li>
+          <li>DNS leases cost 1 DNS per subdomain-second and resolve to public raw storage contracts.</li>
+          <li>Swap adapters support signed HT quotes against USDC and USDT settlement rails.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="compute" class="section compute-band">
+      <div class="section-heading">
+        <p class="eyebrow">resource lifecycle</p>
+        <h2>Submit. Witness. Settle. Publish.</h2>
+      </div>
+      <div class="flow">
+        <div>
+          <span>1</span>
+          <h3>Submit</h3>
+          <p>Users sign checks, browser journeys, compute jobs, storage contracts, swaps, or DNS leases.</p>
+        </div>
+        <div>
+          <span>2</span>
+          <h3>Witness</h3>
+          <p>Validators and delegated agents execute work, observe heartbeats, prove storage, and sign receipts.</p>
+        </div>
+        <div>
+          <span>3</span>
+          <h3>Settle</h3>
+          <p>Blocks apply balances across HT, CT, ST, and DNS while rejecting conflicting evidence.</p>
+        </div>
+        <div>
+          <span>4</span>
+          <h3>Publish</h3>
+          <p>Artifacts, monitor state, storage routes, and lease bindings remain as verifiable public records.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="validators" class="section validator-band">
+      <div class="section-heading">
+        <p class="eyebrow">validator federation</p>
+        <h2>Run infrastructure, earn receipts, join governance.</h2>
+      </div>
+      <div class="validator-grid">
+        <article>
+          <span>01</span>
+          <h3>Contribute</h3>
+          <p>Ship code, operate storage or delegated agents, improve docs, or bring reliable hardware and network capacity.</p>
+        </article>
+        <article>
+          <span>02</span>
+          <h3>Commit</h3>
+          <p>Enter through accepted project contribution or a 200 SOL operator commitment coordinated with the Gossip Team.</p>
+        </article>
+        <article>
+          <span>03</span>
+          <h3>Federate</h3>
+          <p>Gunther Schwartz handles validator admission, treasury coordination, and governance during the federated launch.</p>
+        </article>
+      </div>
+      <div class="hero-actions hero-actions-left validator-actions" aria-label="Validator actions">
+        <a class="cta-button cta-button-primary" href="mailto:schwartz.gunther@gmail.com">Contact operator</a>
+        <a class="cta-button cta-button-secondary" href="/docs/settings.html">Node settings</a>
+        <a class="cta-button cta-button-secondary" href="https://github.com/vibevibellc/gossip_protocol">Clone repo</a>
+      </div>
+    </section>
+
+    <section id="publish" class="section split publish">
+      <div>
+        <p class="eyebrow">public output</p>
+        <h2>Turn verified work into reachable systems.</h2>
+      </div>
+      <div class="copy-block">
+        <p>
+          A finalized result can become a monitor status, a compute artifact, a storage contract,
+          a public static bundle, or a leased DNS route served by active nodes.
+        </p>
+        <div class="route-line">
+          <span>alice.pages.gossip-protocol.com</span>
+          <span>illustrative verified storage route</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="roadmap" class="section roadmap-section">
+      <div class="section-heading">
+        <p class="eyebrow">two-year roadmap</p>
+        <h2>From federated launch to open resource markets.</h2>
+      </div>
+      <div class="timeline">
+        <article>
+          <span>2026 Q2</span>
+          <h3>Public source launch</h3>
+          <p>Open the Rust implementation, docs, source mirror, and validator onboarding channel.</p>
+        </article>
+        <article>
+          <span>2026 Q3</span>
+          <h3>Node and user expansion</h3>
+          <p>Add external validators, storage hosts, delegated agents, and first production users for checks and public bundles.</p>
+        </article>
+        <article>
+          <span>2026 Q4</span>
+          <h3>Funding stack</h3>
+          <p>Coordinate validator commitments, community coin sale experiments, Web3 grants, strategic partners, and VC conversations.</p>
+        </article>
+        <article>
+          <span>2027 H1</span>
+          <h3>Explorer and marketplace</h3>
+          <p>Publish network visibility for blocks, receipts, balances, storage contracts, DNS leases, and validator performance.</p>
+        </article>
+        <article>
+          <span>2027 H2</span>
+          <h3>Tokenomics finalization</h3>
+          <p>Finalize supply, distribution, treasury policy, validator incentives, contribution credits, and resource-market pricing.</p>
+        </article>
+        <article>
+          <span>2028 Q1</span>
+          <h3>Broader federation</h3>
+          <p>Grow beyond the founding operator into a larger validator federation with clearer delegated governance.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="team" class="section split team-section">
+      <div>
+        <p class="eyebrow">operator</p>
+        <h2>The Gossip Team is led by Gunther Schwartz.</h2>
+      </div>
+      <div class="copy-block">
+        <p>
+          Gunther Schwartz is a senior backend engineer with distributed systems and global payment
+          infrastructure experience, including monetization infrastructure work at Meta and
+          independent engineering across backend systems, data pipelines, and ML-driven trading
+          infrastructure.
+        </p>
+        <div class="contact-grid" aria-label="Gossip Team contact links">
+          <a href="mailto:schwartz.gunther@gmail.com">schwartz.gunther@gmail.com</a>
+          <a href="tel:+12134446225">(213) 444-6225</a>
+          <a href="https://linkedin.com/in/gunther99">linkedin.com/in/gunther99</a>
+          <a href="https://x.com/Gossip_Prot">x.com/Gossip_Prot</a>
+          <a href="https://github.com/vibevibellc/gossip_protocol">GitHub repository</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>Gossip Protocol</span>
+    <span>Public source. Federated validators. Monitoring, compute, storage, DNS, swaps, and publishing.</span>
+  </footer>
+
+  <script src="/assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,2808 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>src/browser.rs - Gossip Protocol Source Mirror</title>
+  <meta name="description" content="Static source viewer for src/browser.rs.">
+  <meta property="og:title" content="src/browser.rs - Gossip Protocol Source Mirror">
+  <meta property="og:description" content="Static source viewer for src/browser.rs.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://gossip-protocol.com/repo/tree/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/styles.css?v=responsive-3" as="style">
+  <link rel="stylesheet" href="/assets/styles.css?v=responsive-3">
+</head>
+<body>
+  <canvas id="network-canvas" aria-hidden="true"></canvas>
+
+  <main class="docs-page repo-browser">
+    <nav class="docs-nav" aria-label="Repository mirror navigation">
+      <a href="/">Home</a>
+      <a href="/docs/">Docs</a>
+      <a href="/repo/">Repo</a>
+      <a href="/repo/tree/">Source tree</a>
+      <a href="https://github.com/vibevibellc/gossip_protocol">GitHub</a>
+    </nav>
+
+    <section class="docs-hero repo-file-hero">
+      <p class="eyebrow">source file</p>
+      <h1>src/browser.rs</h1>
+      <p class="hero-text">29.3 KB mirrored from the public source tree.</p>
+      <div class="hero-actions hero-actions-left" aria-label="Source file actions">
+        <a class="cta-button cta-button-primary" href="/repo/tree/raw/src/browser.rs">Open raw</a>
+        <a class="cta-button cta-button-secondary" href="/repo/tree/src/">Parent directory</a>
+        
+      </div>
+    </section>
+
+    <section class="docs-section repo-file-section">
+      <h2>Source</h2>
+      <div class="repo-breadcrumbs"><a href="/repo/tree/">gossip_protocol</a><span>/</span><a href="/repo/tree/src/">src</a></div>
+      <div class="repo-code-wrap">
+        <table class="repo-code">
+          <tbody>
+            <tr id="L1">
+                  <td class="line-number"><a href="#L1">1</a></td>
+                  <td class="code-line"><code>use std::{</code></td>
+                </tr><tr id="L2">
+                  <td class="line-number"><a href="#L2">2</a></td>
+                  <td class="code-line"><code>    collections::{BTreeMap, BTreeSet},</code></td>
+                </tr><tr id="L3">
+                  <td class="line-number"><a href="#L3">3</a></td>
+                  <td class="code-line"><code>    path::{Path, PathBuf},</code></td>
+                </tr><tr id="L4">
+                  <td class="line-number"><a href="#L4">4</a></td>
+                  <td class="code-line"><code>    process::Stdio,</code></td>
+                </tr><tr id="L5">
+                  <td class="line-number"><a href="#L5">5</a></td>
+                  <td class="code-line"><code>};</code></td>
+                </tr><tr id="L6">
+                  <td class="line-number"><a href="#L6">6</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L7">
+                  <td class="line-number"><a href="#L7">7</a></td>
+                  <td class="code-line"><code>use anyhow::{Context, Result, anyhow, bail};</code></td>
+                </tr><tr id="L8">
+                  <td class="line-number"><a href="#L8">8</a></td>
+                  <td class="code-line"><code>use chrono::{DateTime, Utc};</code></td>
+                </tr><tr id="L9">
+                  <td class="line-number"><a href="#L9">9</a></td>
+                  <td class="code-line"><code>use serde::{Deserialize, Serialize};</code></td>
+                </tr><tr id="L10">
+                  <td class="line-number"><a href="#L10">10</a></td>
+                  <td class="code-line"><code>use sha2::{Digest, Sha256};</code></td>
+                </tr><tr id="L11">
+                  <td class="line-number"><a href="#L11">11</a></td>
+                  <td class="code-line"><code>use tokio::{fs, process::Command};</code></td>
+                </tr><tr id="L12">
+                  <td class="line-number"><a href="#L12">12</a></td>
+                  <td class="code-line"><code>use url::Url;</code></td>
+                </tr><tr id="L13">
+                  <td class="line-number"><a href="#L13">13</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L14">
+                  <td class="line-number"><a href="#L14">14</a></td>
+                  <td class="code-line"><code>use crate::protocol::{Address, TxHash, compute_hash};</code></td>
+                </tr><tr id="L15">
+                  <td class="line-number"><a href="#L15">15</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L16">
+                  <td class="line-number"><a href="#L16">16</a></td>
+                  <td class="code-line"><code>pub const BROWSER_CHECK_BASE_COST: u64 = 2_000_000;</code></td>
+                </tr><tr id="L17">
+                  <td class="line-number"><a href="#L17">17</a></td>
+                  <td class="code-line"><code>pub const INCLUDED_BROWSER_STEPS: usize = 8;</code></td>
+                </tr><tr id="L18">
+                  <td class="line-number"><a href="#L18">18</a></td>
+                  <td class="code-line"><code>pub const BROWSER_STEP_SURCHARGE_COST: u64 = 125_000;</code></td>
+                </tr><tr id="L19">
+                  <td class="line-number"><a href="#L19">19</a></td>
+                  <td class="code-line"><code>pub const INCLUDED_BROWSER_RUNTIME_SECS: u64 = 20;</code></td>
+                </tr><tr id="L20">
+                  <td class="line-number"><a href="#L20">20</a></td>
+                  <td class="code-line"><code>pub const BROWSER_RUNTIME_SURCHARGE_SECS: u64 = 10;</code></td>
+                </tr><tr id="L21">
+                  <td class="line-number"><a href="#L21">21</a></td>
+                  <td class="code-line"><code>pub const BROWSER_RUNTIME_SURCHARGE_COST: u64 = 250_000;</code></td>
+                </tr><tr id="L22">
+                  <td class="line-number"><a href="#L22">22</a></td>
+                  <td class="code-line"><code>pub const BROWSER_VIDEO_SURCHARGE_COST: u64 = 750_000;</code></td>
+                </tr><tr id="L23">
+                  <td class="line-number"><a href="#L23">23</a></td>
+                  <td class="code-line"><code>pub const BROWSER_TRACE_SURCHARGE_COST: u64 = 250_000;</code></td>
+                </tr><tr id="L24">
+                  <td class="line-number"><a href="#L24">24</a></td>
+                  <td class="code-line"><code>pub const MAX_BROWSER_PACKAGE_ID_BYTES: usize = 128;</code></td>
+                </tr><tr id="L25">
+                  <td class="line-number"><a href="#L25">25</a></td>
+                  <td class="code-line"><code>pub const MAX_BROWSER_JOURNEY_ID_BYTES: usize = 128;</code></td>
+                </tr><tr id="L26">
+                  <td class="line-number"><a href="#L26">26</a></td>
+                  <td class="code-line"><code>pub const MAX_BROWSER_STEPS: usize = 64;</code></td>
+                </tr><tr id="L27">
+                  <td class="line-number"><a href="#L27">27</a></td>
+                  <td class="code-line"><code>pub const MAX_BROWSER_TEXT_BYTES: usize = 512;</code></td>
+                </tr><tr id="L28">
+                  <td class="line-number"><a href="#L28">28</a></td>
+                  <td class="code-line"><code>pub const MAX_BROWSER_SELECTOR_BYTES: usize = 256;</code></td>
+                </tr><tr id="L29">
+                  <td class="line-number"><a href="#L29">29</a></td>
+                  <td class="code-line"><code>pub const MAX_BROWSER_URL_BYTES: usize = 2_048;</code></td>
+                </tr><tr id="L30">
+                  <td class="line-number"><a href="#L30">30</a></td>
+                  <td class="code-line"><code>pub const MAX_BROWSER_ARTIFACT_URI_BYTES: usize = 2_048;</code></td>
+                </tr><tr id="L31">
+                  <td class="line-number"><a href="#L31">31</a></td>
+                  <td class="code-line"><code>pub const MAX_BROWSER_TAGS: usize = 32;</code></td>
+                </tr><tr id="L32">
+                  <td class="line-number"><a href="#L32">32</a></td>
+                  <td class="code-line"><code>pub const MAX_BROWSER_TAG_KEY_BYTES: usize = 64;</code></td>
+                </tr><tr id="L33">
+                  <td class="line-number"><a href="#L33">33</a></td>
+                  <td class="code-line"><code>pub const MAX_BROWSER_TAG_VALUE_BYTES: usize = 256;</code></td>
+                </tr><tr id="L34">
+                  <td class="line-number"><a href="#L34">34</a></td>
+                  <td class="code-line"><code>pub const MAX_BROWSER_SECRETS: usize = 32;</code></td>
+                </tr><tr id="L35">
+                  <td class="line-number"><a href="#L35">35</a></td>
+                  <td class="code-line"><code>pub const MAX_BROWSER_SECRET_KEY_BYTES: usize = 128;</code></td>
+                </tr><tr id="L36">
+                  <td class="line-number"><a href="#L36">36</a></td>
+                  <td class="code-line"><code>pub const MAX_BROWSER_SECRET_VALUE_BYTES: usize = 2_048;</code></td>
+                </tr><tr id="L37">
+                  <td class="line-number"><a href="#L37">37</a></td>
+                  <td class="code-line"><code>pub const MAX_BROWSER_RUNTIME_SECS: u64 = 600;</code></td>
+                </tr><tr id="L38">
+                  <td class="line-number"><a href="#L38">38</a></td>
+                  <td class="code-line"><code>pub const MIN_BROWSER_RUNTIME_SECS: u64 = 1;</code></td>
+                </tr><tr id="L39">
+                  <td class="line-number"><a href="#L39">39</a></td>
+                  <td class="code-line"><code>pub const MIN_BROWSER_STEP_TIMEOUT_MS: u64 = 100;</code></td>
+                </tr><tr id="L40">
+                  <td class="line-number"><a href="#L40">40</a></td>
+                  <td class="code-line"><code>pub const MAX_BROWSER_STEP_TIMEOUT_MS: u64 = 60_000;</code></td>
+                </tr><tr id="L41">
+                  <td class="line-number"><a href="#L41">41</a></td>
+                  <td class="code-line"><code>pub const MAX_BROWSER_VIEWPORT: u32 = 4_096;</code></td>
+                </tr><tr id="L42">
+                  <td class="line-number"><a href="#L42">42</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L43">
+                  <td class="line-number"><a href="#L43">43</a></td>
+                  <td class="code-line"><code>#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]</code></td>
+                </tr><tr id="L44">
+                  <td class="line-number"><a href="#L44">44</a></td>
+                  <td class="code-line"><code>#[serde(rename_all = &quot;snake_case&quot;)]</code></td>
+                </tr><tr id="L45">
+                  <td class="line-number"><a href="#L45">45</a></td>
+                  <td class="code-line"><code>pub enum BrowserEngine {</code></td>
+                </tr><tr id="L46">
+                  <td class="line-number"><a href="#L46">46</a></td>
+                  <td class="code-line"><code>    Chromium,</code></td>
+                </tr><tr id="L47">
+                  <td class="line-number"><a href="#L47">47</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L48">
+                  <td class="line-number"><a href="#L48">48</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L49">
+                  <td class="line-number"><a href="#L49">49</a></td>
+                  <td class="code-line"><code>#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Default)]</code></td>
+                </tr><tr id="L50">
+                  <td class="line-number"><a href="#L50">50</a></td>
+                  <td class="code-line"><code>#[serde(rename_all = &quot;snake_case&quot;)]</code></td>
+                </tr><tr id="L51">
+                  <td class="line-number"><a href="#L51">51</a></td>
+                  <td class="code-line"><code>pub enum BrowserCacheMode {</code></td>
+                </tr><tr id="L52">
+                  <td class="line-number"><a href="#L52">52</a></td>
+                  <td class="code-line"><code>    #[default]</code></td>
+                </tr><tr id="L53">
+                  <td class="line-number"><a href="#L53">53</a></td>
+                  <td class="code-line"><code>    Disabled,</code></td>
+                </tr><tr id="L54">
+                  <td class="line-number"><a href="#L54">54</a></td>
+                  <td class="code-line"><code>    SessionState,</code></td>
+                </tr><tr id="L55">
+                  <td class="line-number"><a href="#L55">55</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L56">
+                  <td class="line-number"><a href="#L56">56</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L57">
+                  <td class="line-number"><a href="#L57">57</a></td>
+                  <td class="code-line"><code>#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]</code></td>
+                </tr><tr id="L58">
+                  <td class="line-number"><a href="#L58">58</a></td>
+                  <td class="code-line"><code>#[serde(tag = &quot;kind&quot;, rename_all = &quot;snake_case&quot;)]</code></td>
+                </tr><tr id="L59">
+                  <td class="line-number"><a href="#L59">59</a></td>
+                  <td class="code-line"><code>pub enum BrowserSelector {</code></td>
+                </tr><tr id="L60">
+                  <td class="line-number"><a href="#L60">60</a></td>
+                  <td class="code-line"><code>    Css { value: String },</code></td>
+                </tr><tr id="L61">
+                  <td class="line-number"><a href="#L61">61</a></td>
+                  <td class="code-line"><code>    Text { value: String },</code></td>
+                </tr><tr id="L62">
+                  <td class="line-number"><a href="#L62">62</a></td>
+                  <td class="code-line"><code>    Label { value: String },</code></td>
+                </tr><tr id="L63">
+                  <td class="line-number"><a href="#L63">63</a></td>
+                  <td class="code-line"><code>    Placeholder { value: String },</code></td>
+                </tr><tr id="L64">
+                  <td class="line-number"><a href="#L64">64</a></td>
+                  <td class="code-line"><code>    TestId { value: String },</code></td>
+                </tr><tr id="L65">
+                  <td class="line-number"><a href="#L65">65</a></td>
+                  <td class="code-line"><code>    Role { role: String, name: Option&lt;String&gt; },</code></td>
+                </tr><tr id="L66">
+                  <td class="line-number"><a href="#L66">66</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L67">
+                  <td class="line-number"><a href="#L67">67</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L68">
+                  <td class="line-number"><a href="#L68">68</a></td>
+                  <td class="code-line"><code>#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]</code></td>
+                </tr><tr id="L69">
+                  <td class="line-number"><a href="#L69">69</a></td>
+                  <td class="code-line"><code>#[serde(tag = &quot;kind&quot;, rename_all = &quot;snake_case&quot;)]</code></td>
+                </tr><tr id="L70">
+                  <td class="line-number"><a href="#L70">70</a></td>
+                  <td class="code-line"><code>pub enum BrowserInputValue {</code></td>
+                </tr><tr id="L71">
+                  <td class="line-number"><a href="#L71">71</a></td>
+                  <td class="code-line"><code>    Literal { value: String },</code></td>
+                </tr><tr id="L72">
+                  <td class="line-number"><a href="#L72">72</a></td>
+                  <td class="code-line"><code>    SecretRef { key: String },</code></td>
+                </tr><tr id="L73">
+                  <td class="line-number"><a href="#L73">73</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L74">
+                  <td class="line-number"><a href="#L74">74</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L75">
+                  <td class="line-number"><a href="#L75">75</a></td>
+                  <td class="code-line"><code>#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]</code></td>
+                </tr><tr id="L76">
+                  <td class="line-number"><a href="#L76">76</a></td>
+                  <td class="code-line"><code>#[serde(tag = &quot;kind&quot;, rename_all = &quot;snake_case&quot;)]</code></td>
+                </tr><tr id="L77">
+                  <td class="line-number"><a href="#L77">77</a></td>
+                  <td class="code-line"><code>pub enum BrowserStep {</code></td>
+                </tr><tr id="L78">
+                  <td class="line-number"><a href="#L78">78</a></td>
+                  <td class="code-line"><code>    Navigate {</code></td>
+                </tr><tr id="L79">
+                  <td class="line-number"><a href="#L79">79</a></td>
+                  <td class="code-line"><code>        url: String,</code></td>
+                </tr><tr id="L80">
+                  <td class="line-number"><a href="#L80">80</a></td>
+                  <td class="code-line"><code>    },</code></td>
+                </tr><tr id="L81">
+                  <td class="line-number"><a href="#L81">81</a></td>
+                  <td class="code-line"><code>    Click {</code></td>
+                </tr><tr id="L82">
+                  <td class="line-number"><a href="#L82">82</a></td>
+                  <td class="code-line"><code>        target: BrowserSelector,</code></td>
+                </tr><tr id="L83">
+                  <td class="line-number"><a href="#L83">83</a></td>
+                  <td class="code-line"><code>    },</code></td>
+                </tr><tr id="L84">
+                  <td class="line-number"><a href="#L84">84</a></td>
+                  <td class="code-line"><code>    Fill {</code></td>
+                </tr><tr id="L85">
+                  <td class="line-number"><a href="#L85">85</a></td>
+                  <td class="code-line"><code>        target: BrowserSelector,</code></td>
+                </tr><tr id="L86">
+                  <td class="line-number"><a href="#L86">86</a></td>
+                  <td class="code-line"><code>        value: BrowserInputValue,</code></td>
+                </tr><tr id="L87">
+                  <td class="line-number"><a href="#L87">87</a></td>
+                  <td class="code-line"><code>    },</code></td>
+                </tr><tr id="L88">
+                  <td class="line-number"><a href="#L88">88</a></td>
+                  <td class="code-line"><code>    Press {</code></td>
+                </tr><tr id="L89">
+                  <td class="line-number"><a href="#L89">89</a></td>
+                  <td class="code-line"><code>        key: String,</code></td>
+                </tr><tr id="L90">
+                  <td class="line-number"><a href="#L90">90</a></td>
+                  <td class="code-line"><code>    },</code></td>
+                </tr><tr id="L91">
+                  <td class="line-number"><a href="#L91">91</a></td>
+                  <td class="code-line"><code>    WaitForText {</code></td>
+                </tr><tr id="L92">
+                  <td class="line-number"><a href="#L92">92</a></td>
+                  <td class="code-line"><code>        text: String,</code></td>
+                </tr><tr id="L93">
+                  <td class="line-number"><a href="#L93">93</a></td>
+                  <td class="code-line"><code>    },</code></td>
+                </tr><tr id="L94">
+                  <td class="line-number"><a href="#L94">94</a></td>
+                  <td class="code-line"><code>    AssertText {</code></td>
+                </tr><tr id="L95">
+                  <td class="line-number"><a href="#L95">95</a></td>
+                  <td class="code-line"><code>        text: String,</code></td>
+                </tr><tr id="L96">
+                  <td class="line-number"><a href="#L96">96</a></td>
+                  <td class="code-line"><code>    },</code></td>
+                </tr><tr id="L97">
+                  <td class="line-number"><a href="#L97">97</a></td>
+                  <td class="code-line"><code>    AssertUrlContains {</code></td>
+                </tr><tr id="L98">
+                  <td class="line-number"><a href="#L98">98</a></td>
+                  <td class="code-line"><code>        text: String,</code></td>
+                </tr><tr id="L99">
+                  <td class="line-number"><a href="#L99">99</a></td>
+                  <td class="code-line"><code>    },</code></td>
+                </tr><tr id="L100">
+                  <td class="line-number"><a href="#L100">100</a></td>
+                  <td class="code-line"><code>    CaptureScreenshot {</code></td>
+                </tr><tr id="L101">
+                  <td class="line-number"><a href="#L101">101</a></td>
+                  <td class="code-line"><code>        label: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L102">
+                  <td class="line-number"><a href="#L102">102</a></td>
+                  <td class="code-line"><code>    },</code></td>
+                </tr><tr id="L103">
+                  <td class="line-number"><a href="#L103">103</a></td>
+                  <td class="code-line"><code>    OpenFreshContext {</code></td>
+                </tr><tr id="L104">
+                  <td class="line-number"><a href="#L104">104</a></td>
+                  <td class="code-line"><code>        context_id: String,</code></td>
+                </tr><tr id="L105">
+                  <td class="line-number"><a href="#L105">105</a></td>
+                  <td class="code-line"><code>    },</code></td>
+                </tr><tr id="L106">
+                  <td class="line-number"><a href="#L106">106</a></td>
+                  <td class="code-line"><code>    CloseContext {</code></td>
+                </tr><tr id="L107">
+                  <td class="line-number"><a href="#L107">107</a></td>
+                  <td class="code-line"><code>        context_id: String,</code></td>
+                </tr><tr id="L108">
+                  <td class="line-number"><a href="#L108">108</a></td>
+                  <td class="code-line"><code>    },</code></td>
+                </tr><tr id="L109">
+                  <td class="line-number"><a href="#L109">109</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L110">
+                  <td class="line-number"><a href="#L110">110</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L111">
+                  <td class="line-number"><a href="#L111">111</a></td>
+                  <td class="code-line"><code>#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]</code></td>
+                </tr><tr id="L112">
+                  <td class="line-number"><a href="#L112">112</a></td>
+                  <td class="code-line"><code>pub struct BrowserRuntimeProfile {</code></td>
+                </tr><tr id="L113">
+                  <td class="line-number"><a href="#L113">113</a></td>
+                  <td class="code-line"><code>    pub engine: BrowserEngine,</code></td>
+                </tr><tr id="L114">
+                  <td class="line-number"><a href="#L114">114</a></td>
+                  <td class="code-line"><code>    pub engine_version: String,</code></td>
+                </tr><tr id="L115">
+                  <td class="line-number"><a href="#L115">115</a></td>
+                  <td class="code-line"><code>    pub locale: String,</code></td>
+                </tr><tr id="L116">
+                  <td class="line-number"><a href="#L116">116</a></td>
+                  <td class="code-line"><code>    pub timezone: String,</code></td>
+                </tr><tr id="L117">
+                  <td class="line-number"><a href="#L117">117</a></td>
+                  <td class="code-line"><code>    pub viewport_width: u32,</code></td>
+                </tr><tr id="L118">
+                  <td class="line-number"><a href="#L118">118</a></td>
+                  <td class="code-line"><code>    pub viewport_height: u32,</code></td>
+                </tr><tr id="L119">
+                  <td class="line-number"><a href="#L119">119</a></td>
+                  <td class="code-line"><code>    pub color_scheme: String,</code></td>
+                </tr><tr id="L120">
+                  <td class="line-number"><a href="#L120">120</a></td>
+                  <td class="code-line"><code>    #[serde(default)]</code></td>
+                </tr><tr id="L121">
+                  <td class="line-number"><a href="#L121">121</a></td>
+                  <td class="code-line"><code>    pub block_service_workers: bool,</code></td>
+                </tr><tr id="L122">
+                  <td class="line-number"><a href="#L122">122</a></td>
+                  <td class="code-line"><code>    #[serde(default)]</code></td>
+                </tr><tr id="L123">
+                  <td class="line-number"><a href="#L123">123</a></td>
+                  <td class="code-line"><code>    pub cache_mode: BrowserCacheMode,</code></td>
+                </tr><tr id="L124">
+                  <td class="line-number"><a href="#L124">124</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L125">
+                  <td class="line-number"><a href="#L125">125</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L126">
+                  <td class="line-number"><a href="#L126">126</a></td>
+                  <td class="code-line"><code>#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]</code></td>
+                </tr><tr id="L127">
+                  <td class="line-number"><a href="#L127">127</a></td>
+                  <td class="code-line"><code>pub struct BrowserArtifactPolicy {</code></td>
+                </tr><tr id="L128">
+                  <td class="line-number"><a href="#L128">128</a></td>
+                  <td class="code-line"><code>    #[serde(default)]</code></td>
+                </tr><tr id="L129">
+                  <td class="line-number"><a href="#L129">129</a></td>
+                  <td class="code-line"><code>    pub capture_video: bool,</code></td>
+                </tr><tr id="L130">
+                  <td class="line-number"><a href="#L130">130</a></td>
+                  <td class="code-line"><code>    #[serde(default)]</code></td>
+                </tr><tr id="L131">
+                  <td class="line-number"><a href="#L131">131</a></td>
+                  <td class="code-line"><code>    pub capture_trace: bool,</code></td>
+                </tr><tr id="L132">
+                  <td class="line-number"><a href="#L132">132</a></td>
+                  <td class="code-line"><code>    #[serde(default)]</code></td>
+                </tr><tr id="L133">
+                  <td class="line-number"><a href="#L133">133</a></td>
+                  <td class="code-line"><code>    pub capture_screenshot_on_failure: bool,</code></td>
+                </tr><tr id="L134">
+                  <td class="line-number"><a href="#L134">134</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L135">
+                  <td class="line-number"><a href="#L135">135</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L136">
+                  <td class="line-number"><a href="#L136">136</a></td>
+                  <td class="code-line"><code>#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]</code></td>
+                </tr><tr id="L137">
+                  <td class="line-number"><a href="#L137">137</a></td>
+                  <td class="code-line"><code>pub struct SessionCachePolicy {</code></td>
+                </tr><tr id="L138">
+                  <td class="line-number"><a href="#L138">138</a></td>
+                  <td class="code-line"><code>    #[serde(default)]</code></td>
+                </tr><tr id="L139">
+                  <td class="line-number"><a href="#L139">139</a></td>
+                  <td class="code-line"><code>    pub enabled: bool,</code></td>
+                </tr><tr id="L140">
+                  <td class="line-number"><a href="#L140">140</a></td>
+                  <td class="code-line"><code>    #[serde(default)]</code></td>
+                </tr><tr id="L141">
+                  <td class="line-number"><a href="#L141">141</a></td>
+                  <td class="code-line"><code>    pub namespace: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L142">
+                  <td class="line-number"><a href="#L142">142</a></td>
+                  <td class="code-line"><code>    #[serde(default)]</code></td>
+                </tr><tr id="L143">
+                  <td class="line-number"><a href="#L143">143</a></td>
+                  <td class="code-line"><code>    pub max_age_secs: u64,</code></td>
+                </tr><tr id="L144">
+                  <td class="line-number"><a href="#L144">144</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L145">
+                  <td class="line-number"><a href="#L145">145</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L146">
+                  <td class="line-number"><a href="#L146">146</a></td>
+                  <td class="code-line"><code>#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]</code></td>
+                </tr><tr id="L147">
+                  <td class="line-number"><a href="#L147">147</a></td>
+                  <td class="code-line"><code>pub struct BrowserJourneySpec {</code></td>
+                </tr><tr id="L148">
+                  <td class="line-number"><a href="#L148">148</a></td>
+                  <td class="code-line"><code>    pub journey_id: String,</code></td>
+                </tr><tr id="L149">
+                  <td class="line-number"><a href="#L149">149</a></td>
+                  <td class="code-line"><code>    pub entry_url: String,</code></td>
+                </tr><tr id="L150">
+                  <td class="line-number"><a href="#L150">150</a></td>
+                  <td class="code-line"><code>    #[serde(default)]</code></td>
+                </tr><tr id="L151">
+                  <td class="line-number"><a href="#L151">151</a></td>
+                  <td class="code-line"><code>    pub steps: Vec&lt;BrowserStep&gt;,</code></td>
+                </tr><tr id="L152">
+                  <td class="line-number"><a href="#L152">152</a></td>
+                  <td class="code-line"><code>    pub max_runtime_secs: u64,</code></td>
+                </tr><tr id="L153">
+                  <td class="line-number"><a href="#L153">153</a></td>
+                  <td class="code-line"><code>    pub per_step_timeout_ms: u64,</code></td>
+                </tr><tr id="L154">
+                  <td class="line-number"><a href="#L154">154</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L155">
+                  <td class="line-number"><a href="#L155">155</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L156">
+                  <td class="line-number"><a href="#L156">156</a></td>
+                  <td class="code-line"><code>#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]</code></td>
+                </tr><tr id="L157">
+                  <td class="line-number"><a href="#L157">157</a></td>
+                  <td class="code-line"><code>pub struct BrowserJourneyPackage {</code></td>
+                </tr><tr id="L158">
+                  <td class="line-number"><a href="#L158">158</a></td>
+                  <td class="code-line"><code>    pub package_id: String,</code></td>
+                </tr><tr id="L159">
+                  <td class="line-number"><a href="#L159">159</a></td>
+                  <td class="code-line"><code>    pub owner: Address,</code></td>
+                </tr><tr id="L160">
+                  <td class="line-number"><a href="#L160">160</a></td>
+                  <td class="code-line"><code>    pub manifest_version: u32,</code></td>
+                </tr><tr id="L161">
+                  <td class="line-number"><a href="#L161">161</a></td>
+                  <td class="code-line"><code>    pub runtime: BrowserRuntimeProfile,</code></td>
+                </tr><tr id="L162">
+                  <td class="line-number"><a href="#L162">162</a></td>
+                  <td class="code-line"><code>    pub journey: BrowserJourneySpec,</code></td>
+                </tr><tr id="L163">
+                  <td class="line-number"><a href="#L163">163</a></td>
+                  <td class="code-line"><code>    pub artifact_policy: BrowserArtifactPolicy,</code></td>
+                </tr><tr id="L164">
+                  <td class="line-number"><a href="#L164">164</a></td>
+                  <td class="code-line"><code>    pub session_cache: SessionCachePolicy,</code></td>
+                </tr><tr id="L165">
+                  <td class="line-number"><a href="#L165">165</a></td>
+                  <td class="code-line"><code>    pub approved_at: DateTime&lt;Utc&gt;,</code></td>
+                </tr><tr id="L166">
+                  <td class="line-number"><a href="#L166">166</a></td>
+                  <td class="code-line"><code>    pub approved_by: Address,</code></td>
+                </tr><tr id="L167">
+                  <td class="line-number"><a href="#L167">167</a></td>
+                  <td class="code-line"><code>    #[serde(default)]</code></td>
+                </tr><tr id="L168">
+                  <td class="line-number"><a href="#L168">168</a></td>
+                  <td class="code-line"><code>    pub tags: BTreeMap&lt;String, String&gt;,</code></td>
+                </tr><tr id="L169">
+                  <td class="line-number"><a href="#L169">169</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L170">
+                  <td class="line-number"><a href="#L170">170</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L171">
+                  <td class="line-number"><a href="#L171">171</a></td>
+                  <td class="code-line"><code>#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]</code></td>
+                </tr><tr id="L172">
+                  <td class="line-number"><a href="#L172">172</a></td>
+                  <td class="code-line"><code>pub struct BrowserCheckSpec {</code></td>
+                </tr><tr id="L173">
+                  <td class="line-number"><a href="#L173">173</a></td>
+                  <td class="code-line"><code>    pub request_id: String,</code></td>
+                </tr><tr id="L174">
+                  <td class="line-number"><a href="#L174">174</a></td>
+                  <td class="code-line"><code>    pub package: BrowserJourneyPackage,</code></td>
+                </tr><tr id="L175">
+                  <td class="line-number"><a href="#L175">175</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L176">
+                  <td class="line-number"><a href="#L176">176</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L177">
+                  <td class="line-number"><a href="#L177">177</a></td>
+                  <td class="code-line"><code>#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]</code></td>
+                </tr><tr id="L178">
+                  <td class="line-number"><a href="#L178">178</a></td>
+                  <td class="code-line"><code>pub struct BrowserArtifactRef {</code></td>
+                </tr><tr id="L179">
+                  <td class="line-number"><a href="#L179">179</a></td>
+                  <td class="code-line"><code>    pub uri: String,</code></td>
+                </tr><tr id="L180">
+                  <td class="line-number"><a href="#L180">180</a></td>
+                  <td class="code-line"><code>    pub sha256: String,</code></td>
+                </tr><tr id="L181">
+                  <td class="line-number"><a href="#L181">181</a></td>
+                  <td class="code-line"><code>    pub media_type: String,</code></td>
+                </tr><tr id="L182">
+                  <td class="line-number"><a href="#L182">182</a></td>
+                  <td class="code-line"><code>    pub bytes: u64,</code></td>
+                </tr><tr id="L183">
+                  <td class="line-number"><a href="#L183">183</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L184">
+                  <td class="line-number"><a href="#L184">184</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L185">
+                  <td class="line-number"><a href="#L185">185</a></td>
+                  <td class="code-line"><code>#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]</code></td>
+                </tr><tr id="L186">
+                  <td class="line-number"><a href="#L186">186</a></td>
+                  <td class="code-line"><code>#[serde(rename_all = &quot;snake_case&quot;)]</code></td>
+                </tr><tr id="L187">
+                  <td class="line-number"><a href="#L187">187</a></td>
+                  <td class="code-line"><code>pub enum BrowserOutcomeClass {</code></td>
+                </tr><tr id="L188">
+                  <td class="line-number"><a href="#L188">188</a></td>
+                  <td class="code-line"><code>    Success,</code></td>
+                </tr><tr id="L189">
+                  <td class="line-number"><a href="#L189">189</a></td>
+                  <td class="code-line"><code>    StepFailed,</code></td>
+                </tr><tr id="L190">
+                  <td class="line-number"><a href="#L190">190</a></td>
+                  <td class="code-line"><code>    NavigationTimeout,</code></td>
+                </tr><tr id="L191">
+                  <td class="line-number"><a href="#L191">191</a></td>
+                  <td class="code-line"><code>    AssertionFailed,</code></td>
+                </tr><tr id="L192">
+                  <td class="line-number"><a href="#L192">192</a></td>
+                  <td class="code-line"><code>    SelectorMissing,</code></td>
+                </tr><tr id="L193">
+                  <td class="line-number"><a href="#L193">193</a></td>
+                  <td class="code-line"><code>    BrowserCrash,</code></td>
+                </tr><tr id="L194">
+                  <td class="line-number"><a href="#L194">194</a></td>
+                  <td class="code-line"><code>    NetworkError,</code></td>
+                </tr><tr id="L195">
+                  <td class="line-number"><a href="#L195">195</a></td>
+                  <td class="code-line"><code>    ScriptError,</code></td>
+                </tr><tr id="L196">
+                  <td class="line-number"><a href="#L196">196</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L197">
+                  <td class="line-number"><a href="#L197">197</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L198">
+                  <td class="line-number"><a href="#L198">198</a></td>
+                  <td class="code-line"><code>#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]</code></td>
+                </tr><tr id="L199">
+                  <td class="line-number"><a href="#L199">199</a></td>
+                  <td class="code-line"><code>pub struct BrowserExecution {</code></td>
+                </tr><tr id="L200">
+                  <td class="line-number"><a href="#L200">200</a></td>
+                  <td class="code-line"><code>    pub success: bool,</code></td>
+                </tr><tr id="L201">
+                  <td class="line-number"><a href="#L201">201</a></td>
+                  <td class="code-line"><code>    pub latency_ms: u64,</code></td>
+                </tr><tr id="L202">
+                  <td class="line-number"><a href="#L202">202</a></td>
+                  <td class="code-line"><code>    pub failed_step_index: Option&lt;usize&gt;,</code></td>
+                </tr><tr id="L203">
+                  <td class="line-number"><a href="#L203">203</a></td>
+                  <td class="code-line"><code>    pub final_url: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L204">
+                  <td class="line-number"><a href="#L204">204</a></td>
+                  <td class="code-line"><code>    pub outcome_class: BrowserOutcomeClass,</code></td>
+                </tr><tr id="L205">
+                  <td class="line-number"><a href="#L205">205</a></td>
+                  <td class="code-line"><code>    pub console_error_count: u32,</code></td>
+                </tr><tr id="L206">
+                  <td class="line-number"><a href="#L206">206</a></td>
+                  <td class="code-line"><code>    pub network_error_count: u32,</code></td>
+                </tr><tr id="L207">
+                  <td class="line-number"><a href="#L207">207</a></td>
+                  <td class="code-line"><code>    pub screenshot_artifact: Option&lt;BrowserArtifactRef&gt;,</code></td>
+                </tr><tr id="L208">
+                  <td class="line-number"><a href="#L208">208</a></td>
+                  <td class="code-line"><code>    pub trace_artifact: Option&lt;BrowserArtifactRef&gt;,</code></td>
+                </tr><tr id="L209">
+                  <td class="line-number"><a href="#L209">209</a></td>
+                  <td class="code-line"><code>    pub video_artifact: Option&lt;BrowserArtifactRef&gt;,</code></td>
+                </tr><tr id="L210">
+                  <td class="line-number"><a href="#L210">210</a></td>
+                  <td class="code-line"><code>    pub error: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L211">
+                  <td class="line-number"><a href="#L211">211</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L212">
+                  <td class="line-number"><a href="#L212">212</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L213">
+                  <td class="line-number"><a href="#L213">213</a></td>
+                  <td class="code-line"><code>#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]</code></td>
+                </tr><tr id="L214">
+                  <td class="line-number"><a href="#L214">214</a></td>
+                  <td class="code-line"><code>pub struct BrowserReceiptBody {</code></td>
+                </tr><tr id="L215">
+                  <td class="line-number"><a href="#L215">215</a></td>
+                  <td class="code-line"><code>    pub chain_id: String,</code></td>
+                </tr><tr id="L216">
+                  <td class="line-number"><a href="#L216">216</a></td>
+                  <td class="code-line"><code>    pub tx_hash: TxHash,</code></td>
+                </tr><tr id="L217">
+                  <td class="line-number"><a href="#L217">217</a></td>
+                  <td class="code-line"><code>    pub request_id: String,</code></td>
+                </tr><tr id="L218">
+                  <td class="line-number"><a href="#L218">218</a></td>
+                  <td class="code-line"><code>    #[serde(default)]</code></td>
+                </tr><tr id="L219">
+                  <td class="line-number"><a href="#L219">219</a></td>
+                  <td class="code-line"><code>    pub monitor_id: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L220">
+                  <td class="line-number"><a href="#L220">220</a></td>
+                  <td class="code-line"><code>    #[serde(default)]</code></td>
+                </tr><tr id="L221">
+                  <td class="line-number"><a href="#L221">221</a></td>
+                  <td class="code-line"><code>    pub slot_key: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L222">
+                  <td class="line-number"><a href="#L222">222</a></td>
+                  <td class="code-line"><code>    pub executor: Address,</code></td>
+                </tr><tr id="L223">
+                  <td class="line-number"><a href="#L223">223</a></td>
+                  <td class="code-line"><code>    pub observed_at: DateTime&lt;Utc&gt;,</code></td>
+                </tr><tr id="L224">
+                  <td class="line-number"><a href="#L224">224</a></td>
+                  <td class="code-line"><code>    pub package_hash: String,</code></td>
+                </tr><tr id="L225">
+                  <td class="line-number"><a href="#L225">225</a></td>
+                  <td class="code-line"><code>    pub runtime_hash: String,</code></td>
+                </tr><tr id="L226">
+                  <td class="line-number"><a href="#L226">226</a></td>
+                  <td class="code-line"><code>    pub latency_ms: u64,</code></td>
+                </tr><tr id="L227">
+                  <td class="line-number"><a href="#L227">227</a></td>
+                  <td class="code-line"><code>    pub success: bool,</code></td>
+                </tr><tr id="L228">
+                  <td class="line-number"><a href="#L228">228</a></td>
+                  <td class="code-line"><code>    pub failed_step_index: Option&lt;usize&gt;,</code></td>
+                </tr><tr id="L229">
+                  <td class="line-number"><a href="#L229">229</a></td>
+                  <td class="code-line"><code>    pub final_url: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L230">
+                  <td class="line-number"><a href="#L230">230</a></td>
+                  <td class="code-line"><code>    pub outcome_class: BrowserOutcomeClass,</code></td>
+                </tr><tr id="L231">
+                  <td class="line-number"><a href="#L231">231</a></td>
+                  <td class="code-line"><code>    pub console_error_count: u32,</code></td>
+                </tr><tr id="L232">
+                  <td class="line-number"><a href="#L232">232</a></td>
+                  <td class="code-line"><code>    pub network_error_count: u32,</code></td>
+                </tr><tr id="L233">
+                  <td class="line-number"><a href="#L233">233</a></td>
+                  <td class="code-line"><code>    pub screenshot_artifact: Option&lt;BrowserArtifactRef&gt;,</code></td>
+                </tr><tr id="L234">
+                  <td class="line-number"><a href="#L234">234</a></td>
+                  <td class="code-line"><code>    pub trace_artifact: Option&lt;BrowserArtifactRef&gt;,</code></td>
+                </tr><tr id="L235">
+                  <td class="line-number"><a href="#L235">235</a></td>
+                  <td class="code-line"><code>    pub video_artifact: Option&lt;BrowserArtifactRef&gt;,</code></td>
+                </tr><tr id="L236">
+                  <td class="line-number"><a href="#L236">236</a></td>
+                  <td class="code-line"><code>    pub error: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L237">
+                  <td class="line-number"><a href="#L237">237</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L238">
+                  <td class="line-number"><a href="#L238">238</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L239">
+                  <td class="line-number"><a href="#L239">239</a></td>
+                  <td class="code-line"><code>#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]</code></td>
+                </tr><tr id="L240">
+                  <td class="line-number"><a href="#L240">240</a></td>
+                  <td class="code-line"><code>pub struct SignedBrowserReceipt {</code></td>
+                </tr><tr id="L241">
+                  <td class="line-number"><a href="#L241">241</a></td>
+                  <td class="code-line"><code>    pub id: String,</code></td>
+                </tr><tr id="L242">
+                  <td class="line-number"><a href="#L242">242</a></td>
+                  <td class="code-line"><code>    pub body: BrowserReceiptBody,</code></td>
+                </tr><tr id="L243">
+                  <td class="line-number"><a href="#L243">243</a></td>
+                  <td class="code-line"><code>    pub signature: String,</code></td>
+                </tr><tr id="L244">
+                  <td class="line-number"><a href="#L244">244</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L245">
+                  <td class="line-number"><a href="#L245">245</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L246">
+                  <td class="line-number"><a href="#L246">246</a></td>
+                  <td class="code-line"><code>#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]</code></td>
+                </tr><tr id="L247">
+                  <td class="line-number"><a href="#L247">247</a></td>
+                  <td class="code-line"><code>pub struct BrowserAgentLeaseBody {</code></td>
+                </tr><tr id="L248">
+                  <td class="line-number"><a href="#L248">248</a></td>
+                  <td class="code-line"><code>    pub chain_id: String,</code></td>
+                </tr><tr id="L249">
+                  <td class="line-number"><a href="#L249">249</a></td>
+                  <td class="code-line"><code>    pub lease_id: String,</code></td>
+                </tr><tr id="L250">
+                  <td class="line-number"><a href="#L250">250</a></td>
+                  <td class="code-line"><code>    pub parent_validator: Address,</code></td>
+                </tr><tr id="L251">
+                  <td class="line-number"><a href="#L251">251</a></td>
+                  <td class="code-line"><code>    pub agent_public_key: String,</code></td>
+                </tr><tr id="L252">
+                  <td class="line-number"><a href="#L252">252</a></td>
+                  <td class="code-line"><code>    pub tx_hash: TxHash,</code></td>
+                </tr><tr id="L253">
+                  <td class="line-number"><a href="#L253">253</a></td>
+                  <td class="code-line"><code>    pub request_id: String,</code></td>
+                </tr><tr id="L254">
+                  <td class="line-number"><a href="#L254">254</a></td>
+                  <td class="code-line"><code>    #[serde(default)]</code></td>
+                </tr><tr id="L255">
+                  <td class="line-number"><a href="#L255">255</a></td>
+                  <td class="code-line"><code>    pub monitor_id: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L256">
+                  <td class="line-number"><a href="#L256">256</a></td>
+                  <td class="code-line"><code>    #[serde(default)]</code></td>
+                </tr><tr id="L257">
+                  <td class="line-number"><a href="#L257">257</a></td>
+                  <td class="code-line"><code>    pub slot_key: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L258">
+                  <td class="line-number"><a href="#L258">258</a></td>
+                  <td class="code-line"><code>    pub spec: BrowserCheckSpec,</code></td>
+                </tr><tr id="L259">
+                  <td class="line-number"><a href="#L259">259</a></td>
+                  <td class="code-line"><code>    pub issued_at: DateTime&lt;Utc&gt;,</code></td>
+                </tr><tr id="L260">
+                  <td class="line-number"><a href="#L260">260</a></td>
+                  <td class="code-line"><code>    pub expires_at: DateTime&lt;Utc&gt;,</code></td>
+                </tr><tr id="L261">
+                  <td class="line-number"><a href="#L261">261</a></td>
+                  <td class="code-line"><code>    #[serde(default)]</code></td>
+                </tr><tr id="L262">
+                  <td class="line-number"><a href="#L262">262</a></td>
+                  <td class="code-line"><code>    pub audit: bool,</code></td>
+                </tr><tr id="L263">
+                  <td class="line-number"><a href="#L263">263</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L264">
+                  <td class="line-number"><a href="#L264">264</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L265">
+                  <td class="line-number"><a href="#L265">265</a></td>
+                  <td class="code-line"><code>#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]</code></td>
+                </tr><tr id="L266">
+                  <td class="line-number"><a href="#L266">266</a></td>
+                  <td class="code-line"><code>pub struct SignedBrowserAgentLease {</code></td>
+                </tr><tr id="L267">
+                  <td class="line-number"><a href="#L267">267</a></td>
+                  <td class="code-line"><code>    pub id: String,</code></td>
+                </tr><tr id="L268">
+                  <td class="line-number"><a href="#L268">268</a></td>
+                  <td class="code-line"><code>    pub body: BrowserAgentLeaseBody,</code></td>
+                </tr><tr id="L269">
+                  <td class="line-number"><a href="#L269">269</a></td>
+                  <td class="code-line"><code>    pub signature: String,</code></td>
+                </tr><tr id="L270">
+                  <td class="line-number"><a href="#L270">270</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L271">
+                  <td class="line-number"><a href="#L271">271</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L272">
+                  <td class="line-number"><a href="#L272">272</a></td>
+                  <td class="code-line"><code>#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]</code></td>
+                </tr><tr id="L273">
+                  <td class="line-number"><a href="#L273">273</a></td>
+                  <td class="code-line"><code>pub struct DelegatedBrowserReceiptBody {</code></td>
+                </tr><tr id="L274">
+                  <td class="line-number"><a href="#L274">274</a></td>
+                  <td class="code-line"><code>    pub chain_id: String,</code></td>
+                </tr><tr id="L275">
+                  <td class="line-number"><a href="#L275">275</a></td>
+                  <td class="code-line"><code>    pub tx_hash: TxHash,</code></td>
+                </tr><tr id="L276">
+                  <td class="line-number"><a href="#L276">276</a></td>
+                  <td class="code-line"><code>    pub request_id: String,</code></td>
+                </tr><tr id="L277">
+                  <td class="line-number"><a href="#L277">277</a></td>
+                  <td class="code-line"><code>    #[serde(default)]</code></td>
+                </tr><tr id="L278">
+                  <td class="line-number"><a href="#L278">278</a></td>
+                  <td class="code-line"><code>    pub monitor_id: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L279">
+                  <td class="line-number"><a href="#L279">279</a></td>
+                  <td class="code-line"><code>    #[serde(default)]</code></td>
+                </tr><tr id="L280">
+                  <td class="line-number"><a href="#L280">280</a></td>
+                  <td class="code-line"><code>    pub slot_key: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L281">
+                  <td class="line-number"><a href="#L281">281</a></td>
+                  <td class="code-line"><code>    pub agent_public_key: String,</code></td>
+                </tr><tr id="L282">
+                  <td class="line-number"><a href="#L282">282</a></td>
+                  <td class="code-line"><code>    pub parent_validator: Address,</code></td>
+                </tr><tr id="L283">
+                  <td class="line-number"><a href="#L283">283</a></td>
+                  <td class="code-line"><code>    #[serde(default)]</code></td>
+                </tr><tr id="L284">
+                  <td class="line-number"><a href="#L284">284</a></td>
+                  <td class="code-line"><code>    pub lease_id: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L285">
+                  <td class="line-number"><a href="#L285">285</a></td>
+                  <td class="code-line"><code>    #[serde(default)]</code></td>
+                </tr><tr id="L286">
+                  <td class="line-number"><a href="#L286">286</a></td>
+                  <td class="code-line"><code>    pub region: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L287">
+                  <td class="line-number"><a href="#L287">287</a></td>
+                  <td class="code-line"><code>    #[serde(default)]</code></td>
+                </tr><tr id="L288">
+                  <td class="line-number"><a href="#L288">288</a></td>
+                  <td class="code-line"><code>    pub network: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L289">
+                  <td class="line-number"><a href="#L289">289</a></td>
+                  <td class="code-line"><code>    pub observed_at: DateTime&lt;Utc&gt;,</code></td>
+                </tr><tr id="L290">
+                  <td class="line-number"><a href="#L290">290</a></td>
+                  <td class="code-line"><code>    pub package_hash: String,</code></td>
+                </tr><tr id="L291">
+                  <td class="line-number"><a href="#L291">291</a></td>
+                  <td class="code-line"><code>    pub runtime_hash: String,</code></td>
+                </tr><tr id="L292">
+                  <td class="line-number"><a href="#L292">292</a></td>
+                  <td class="code-line"><code>    pub latency_ms: u64,</code></td>
+                </tr><tr id="L293">
+                  <td class="line-number"><a href="#L293">293</a></td>
+                  <td class="code-line"><code>    pub success: bool,</code></td>
+                </tr><tr id="L294">
+                  <td class="line-number"><a href="#L294">294</a></td>
+                  <td class="code-line"><code>    pub failed_step_index: Option&lt;usize&gt;,</code></td>
+                </tr><tr id="L295">
+                  <td class="line-number"><a href="#L295">295</a></td>
+                  <td class="code-line"><code>    pub final_url: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L296">
+                  <td class="line-number"><a href="#L296">296</a></td>
+                  <td class="code-line"><code>    pub outcome_class: BrowserOutcomeClass,</code></td>
+                </tr><tr id="L297">
+                  <td class="line-number"><a href="#L297">297</a></td>
+                  <td class="code-line"><code>    pub console_error_count: u32,</code></td>
+                </tr><tr id="L298">
+                  <td class="line-number"><a href="#L298">298</a></td>
+                  <td class="code-line"><code>    pub network_error_count: u32,</code></td>
+                </tr><tr id="L299">
+                  <td class="line-number"><a href="#L299">299</a></td>
+                  <td class="code-line"><code>    pub screenshot_artifact: Option&lt;BrowserArtifactRef&gt;,</code></td>
+                </tr><tr id="L300">
+                  <td class="line-number"><a href="#L300">300</a></td>
+                  <td class="code-line"><code>    pub trace_artifact: Option&lt;BrowserArtifactRef&gt;,</code></td>
+                </tr><tr id="L301">
+                  <td class="line-number"><a href="#L301">301</a></td>
+                  <td class="code-line"><code>    pub video_artifact: Option&lt;BrowserArtifactRef&gt;,</code></td>
+                </tr><tr id="L302">
+                  <td class="line-number"><a href="#L302">302</a></td>
+                  <td class="code-line"><code>    pub error: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L303">
+                  <td class="line-number"><a href="#L303">303</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L304">
+                  <td class="line-number"><a href="#L304">304</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L305">
+                  <td class="line-number"><a href="#L305">305</a></td>
+                  <td class="code-line"><code>#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]</code></td>
+                </tr><tr id="L306">
+                  <td class="line-number"><a href="#L306">306</a></td>
+                  <td class="code-line"><code>pub struct SignedDelegatedBrowserReceipt {</code></td>
+                </tr><tr id="L307">
+                  <td class="line-number"><a href="#L307">307</a></td>
+                  <td class="code-line"><code>    pub id: String,</code></td>
+                </tr><tr id="L308">
+                  <td class="line-number"><a href="#L308">308</a></td>
+                  <td class="code-line"><code>    pub body: DelegatedBrowserReceiptBody,</code></td>
+                </tr><tr id="L309">
+                  <td class="line-number"><a href="#L309">309</a></td>
+                  <td class="code-line"><code>    pub signature: String,</code></td>
+                </tr><tr id="L310">
+                  <td class="line-number"><a href="#L310">310</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L311">
+                  <td class="line-number"><a href="#L311">311</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L312">
+                  <td class="line-number"><a href="#L312">312</a></td>
+                  <td class="code-line"><code>#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]</code></td>
+                </tr><tr id="L313">
+                  <td class="line-number"><a href="#L313">313</a></td>
+                  <td class="code-line"><code>pub struct BlockBrowserBatch {</code></td>
+                </tr><tr id="L314">
+                  <td class="line-number"><a href="#L314">314</a></td>
+                  <td class="code-line"><code>    pub tx_hash: TxHash,</code></td>
+                </tr><tr id="L315">
+                  <td class="line-number"><a href="#L315">315</a></td>
+                  <td class="code-line"><code>    pub receipts: Vec&lt;SignedBrowserReceipt&gt;,</code></td>
+                </tr><tr id="L316">
+                  <td class="line-number"><a href="#L316">316</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L317">
+                  <td class="line-number"><a href="#L317">317</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L318">
+                  <td class="line-number"><a href="#L318">318</a></td>
+                  <td class="code-line"><code>#[derive(Debug, Clone)]</code></td>
+                </tr><tr id="L319">
+                  <td class="line-number"><a href="#L319">319</a></td>
+                  <td class="code-line"><code>pub struct BrowserRunnerConfig {</code></td>
+                </tr><tr id="L320">
+                  <td class="line-number"><a href="#L320">320</a></td>
+                  <td class="code-line"><code>    pub program: Option&lt;PathBuf&gt;,</code></td>
+                </tr><tr id="L321">
+                  <td class="line-number"><a href="#L321">321</a></td>
+                  <td class="code-line"><code>    pub args: Vec&lt;String&gt;,</code></td>
+                </tr><tr id="L322">
+                  <td class="line-number"><a href="#L322">322</a></td>
+                  <td class="code-line"><code>    pub cache_dir: PathBuf,</code></td>
+                </tr><tr id="L323">
+                  <td class="line-number"><a href="#L323">323</a></td>
+                  <td class="code-line"><code>    pub artifact_root: PathBuf,</code></td>
+                </tr><tr id="L324">
+                  <td class="line-number"><a href="#L324">324</a></td>
+                  <td class="code-line"><code>    pub secret_store_path: Option&lt;PathBuf&gt;,</code></td>
+                </tr><tr id="L325">
+                  <td class="line-number"><a href="#L325">325</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L326">
+                  <td class="line-number"><a href="#L326">326</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L327">
+                  <td class="line-number"><a href="#L327">327</a></td>
+                  <td class="code-line"><code>#[derive(Debug, Clone, Serialize, Deserialize, Default)]</code></td>
+                </tr><tr id="L328">
+                  <td class="line-number"><a href="#L328">328</a></td>
+                  <td class="code-line"><code>pub struct BrowserSecretStore {</code></td>
+                </tr><tr id="L329">
+                  <td class="line-number"><a href="#L329">329</a></td>
+                  <td class="code-line"><code>    #[serde(default)]</code></td>
+                </tr><tr id="L330">
+                  <td class="line-number"><a href="#L330">330</a></td>
+                  <td class="code-line"><code>    pub secrets: BTreeMap&lt;String, String&gt;,</code></td>
+                </tr><tr id="L331">
+                  <td class="line-number"><a href="#L331">331</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L332">
+                  <td class="line-number"><a href="#L332">332</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L333">
+                  <td class="line-number"><a href="#L333">333</a></td>
+                  <td class="code-line"><code>#[derive(Debug, Clone, Serialize, Deserialize)]</code></td>
+                </tr><tr id="L334">
+                  <td class="line-number"><a href="#L334">334</a></td>
+                  <td class="code-line"><code>struct RunnerArtifactPaths {</code></td>
+                </tr><tr id="L335">
+                  <td class="line-number"><a href="#L335">335</a></td>
+                  <td class="code-line"><code>    screenshot_path: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L336">
+                  <td class="line-number"><a href="#L336">336</a></td>
+                  <td class="code-line"><code>    trace_path: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L337">
+                  <td class="line-number"><a href="#L337">337</a></td>
+                  <td class="code-line"><code>    video_path: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L338">
+                  <td class="line-number"><a href="#L338">338</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L339">
+                  <td class="line-number"><a href="#L339">339</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L340">
+                  <td class="line-number"><a href="#L340">340</a></td>
+                  <td class="code-line"><code>#[derive(Debug, Clone, Serialize, Deserialize)]</code></td>
+                </tr><tr id="L341">
+                  <td class="line-number"><a href="#L341">341</a></td>
+                  <td class="code-line"><code>struct RunnerInput {</code></td>
+                </tr><tr id="L342">
+                  <td class="line-number"><a href="#L342">342</a></td>
+                  <td class="code-line"><code>    package: BrowserJourneyPackage,</code></td>
+                </tr><tr id="L343">
+                  <td class="line-number"><a href="#L343">343</a></td>
+                  <td class="code-line"><code>    package_hash: String,</code></td>
+                </tr><tr id="L344">
+                  <td class="line-number"><a href="#L344">344</a></td>
+                  <td class="code-line"><code>    runtime_hash: String,</code></td>
+                </tr><tr id="L345">
+                  <td class="line-number"><a href="#L345">345</a></td>
+                  <td class="code-line"><code>    artifact_dir: String,</code></td>
+                </tr><tr id="L346">
+                  <td class="line-number"><a href="#L346">346</a></td>
+                  <td class="code-line"><code>    session_state_path: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L347">
+                  <td class="line-number"><a href="#L347">347</a></td>
+                  <td class="code-line"><code>    #[serde(default)]</code></td>
+                </tr><tr id="L348">
+                  <td class="line-number"><a href="#L348">348</a></td>
+                  <td class="code-line"><code>    secrets: BTreeMap&lt;String, String&gt;,</code></td>
+                </tr><tr id="L349">
+                  <td class="line-number"><a href="#L349">349</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L350">
+                  <td class="line-number"><a href="#L350">350</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L351">
+                  <td class="line-number"><a href="#L351">351</a></td>
+                  <td class="code-line"><code>#[derive(Debug, Clone, Serialize, Deserialize)]</code></td>
+                </tr><tr id="L352">
+                  <td class="line-number"><a href="#L352">352</a></td>
+                  <td class="code-line"><code>struct RunnerOutput {</code></td>
+                </tr><tr id="L353">
+                  <td class="line-number"><a href="#L353">353</a></td>
+                  <td class="code-line"><code>    success: bool,</code></td>
+                </tr><tr id="L354">
+                  <td class="line-number"><a href="#L354">354</a></td>
+                  <td class="code-line"><code>    latency_ms: u64,</code></td>
+                </tr><tr id="L355">
+                  <td class="line-number"><a href="#L355">355</a></td>
+                  <td class="code-line"><code>    failed_step_index: Option&lt;usize&gt;,</code></td>
+                </tr><tr id="L356">
+                  <td class="line-number"><a href="#L356">356</a></td>
+                  <td class="code-line"><code>    final_url: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L357">
+                  <td class="line-number"><a href="#L357">357</a></td>
+                  <td class="code-line"><code>    outcome_class: BrowserOutcomeClass,</code></td>
+                </tr><tr id="L358">
+                  <td class="line-number"><a href="#L358">358</a></td>
+                  <td class="code-line"><code>    console_error_count: u32,</code></td>
+                </tr><tr id="L359">
+                  <td class="line-number"><a href="#L359">359</a></td>
+                  <td class="code-line"><code>    network_error_count: u32,</code></td>
+                </tr><tr id="L360">
+                  <td class="line-number"><a href="#L360">360</a></td>
+                  <td class="code-line"><code>    screenshot_path: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L361">
+                  <td class="line-number"><a href="#L361">361</a></td>
+                  <td class="code-line"><code>    trace_path: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L362">
+                  <td class="line-number"><a href="#L362">362</a></td>
+                  <td class="code-line"><code>    video_path: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L363">
+                  <td class="line-number"><a href="#L363">363</a></td>
+                  <td class="code-line"><code>    error: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L364">
+                  <td class="line-number"><a href="#L364">364</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L365">
+                  <td class="line-number"><a href="#L365">365</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L366">
+                  <td class="line-number"><a href="#L366">366</a></td>
+                  <td class="code-line"><code>pub fn browser_package_hash(package: &amp;BrowserJourneyPackage) -&gt; Result&lt;String&gt; {</code></td>
+                </tr><tr id="L367">
+                  <td class="line-number"><a href="#L367">367</a></td>
+                  <td class="code-line"><code>    validate_browser_journey_package(package)?;</code></td>
+                </tr><tr id="L368">
+                  <td class="line-number"><a href="#L368">368</a></td>
+                  <td class="code-line"><code>    compute_hash(package)</code></td>
+                </tr><tr id="L369">
+                  <td class="line-number"><a href="#L369">369</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L370">
+                  <td class="line-number"><a href="#L370">370</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L371">
+                  <td class="line-number"><a href="#L371">371</a></td>
+                  <td class="code-line"><code>pub fn browser_runtime_hash(runtime: &amp;BrowserRuntimeProfile) -&gt; Result&lt;String&gt; {</code></td>
+                </tr><tr id="L372">
+                  <td class="line-number"><a href="#L372">372</a></td>
+                  <td class="code-line"><code>    validate_browser_runtime_profile(runtime)?;</code></td>
+                </tr><tr id="L373">
+                  <td class="line-number"><a href="#L373">373</a></td>
+                  <td class="code-line"><code>    compute_hash(runtime)</code></td>
+                </tr><tr id="L374">
+                  <td class="line-number"><a href="#L374">374</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L375">
+                  <td class="line-number"><a href="#L375">375</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L376">
+                  <td class="line-number"><a href="#L376">376</a></td>
+                  <td class="code-line"><code>pub fn browser_check_cost(spec: &amp;BrowserCheckSpec) -&gt; Result&lt;u64&gt; {</code></td>
+                </tr><tr id="L377">
+                  <td class="line-number"><a href="#L377">377</a></td>
+                  <td class="code-line"><code>    validate_browser_check_spec(spec)?;</code></td>
+                </tr><tr id="L378">
+                  <td class="line-number"><a href="#L378">378</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L379">
+                  <td class="line-number"><a href="#L379">379</a></td>
+                  <td class="code-line"><code>    let mut total = BROWSER_CHECK_BASE_COST;</code></td>
+                </tr><tr id="L380">
+                  <td class="line-number"><a href="#L380">380</a></td>
+                  <td class="code-line"><code>    let step_count = spec.package.journey.steps.len();</code></td>
+                </tr><tr id="L381">
+                  <td class="line-number"><a href="#L381">381</a></td>
+                  <td class="code-line"><code>    if step_count &gt; INCLUDED_BROWSER_STEPS {</code></td>
+                </tr><tr id="L382">
+                  <td class="line-number"><a href="#L382">382</a></td>
+                  <td class="code-line"><code>        let extra_steps = (step_count - INCLUDED_BROWSER_STEPS).div_ceil(4) as u64;</code></td>
+                </tr><tr id="L383">
+                  <td class="line-number"><a href="#L383">383</a></td>
+                  <td class="code-line"><code>        total = total</code></td>
+                </tr><tr id="L384">
+                  <td class="line-number"><a href="#L384">384</a></td>
+                  <td class="code-line"><code>            .checked_add(extra_steps * BROWSER_STEP_SURCHARGE_COST)</code></td>
+                </tr><tr id="L385">
+                  <td class="line-number"><a href="#L385">385</a></td>
+                  <td class="code-line"><code>            .ok_or_else(|| anyhow!(&quot;browser check cost overflow&quot;))?;</code></td>
+                </tr><tr id="L386">
+                  <td class="line-number"><a href="#L386">386</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L387">
+                  <td class="line-number"><a href="#L387">387</a></td>
+                  <td class="code-line"><code>    if spec.package.journey.max_runtime_secs &gt; INCLUDED_BROWSER_RUNTIME_SECS {</code></td>
+                </tr><tr id="L388">
+                  <td class="line-number"><a href="#L388">388</a></td>
+                  <td class="code-line"><code>        let extra_runtime = spec.package.journey.max_runtime_secs - INCLUDED_BROWSER_RUNTIME_SECS;</code></td>
+                </tr><tr id="L389">
+                  <td class="line-number"><a href="#L389">389</a></td>
+                  <td class="code-line"><code>        let runtime_units = extra_runtime.div_ceil(BROWSER_RUNTIME_SURCHARGE_SECS);</code></td>
+                </tr><tr id="L390">
+                  <td class="line-number"><a href="#L390">390</a></td>
+                  <td class="code-line"><code>        total = total</code></td>
+                </tr><tr id="L391">
+                  <td class="line-number"><a href="#L391">391</a></td>
+                  <td class="code-line"><code>            .checked_add(runtime_units * BROWSER_RUNTIME_SURCHARGE_COST)</code></td>
+                </tr><tr id="L392">
+                  <td class="line-number"><a href="#L392">392</a></td>
+                  <td class="code-line"><code>            .ok_or_else(|| anyhow!(&quot;browser check cost overflow&quot;))?;</code></td>
+                </tr><tr id="L393">
+                  <td class="line-number"><a href="#L393">393</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L394">
+                  <td class="line-number"><a href="#L394">394</a></td>
+                  <td class="code-line"><code>    if spec.package.artifact_policy.capture_video {</code></td>
+                </tr><tr id="L395">
+                  <td class="line-number"><a href="#L395">395</a></td>
+                  <td class="code-line"><code>        total = total</code></td>
+                </tr><tr id="L396">
+                  <td class="line-number"><a href="#L396">396</a></td>
+                  <td class="code-line"><code>            .checked_add(BROWSER_VIDEO_SURCHARGE_COST)</code></td>
+                </tr><tr id="L397">
+                  <td class="line-number"><a href="#L397">397</a></td>
+                  <td class="code-line"><code>            .ok_or_else(|| anyhow!(&quot;browser check cost overflow&quot;))?;</code></td>
+                </tr><tr id="L398">
+                  <td class="line-number"><a href="#L398">398</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L399">
+                  <td class="line-number"><a href="#L399">399</a></td>
+                  <td class="code-line"><code>    if spec.package.artifact_policy.capture_trace {</code></td>
+                </tr><tr id="L400">
+                  <td class="line-number"><a href="#L400">400</a></td>
+                  <td class="code-line"><code>        total = total</code></td>
+                </tr><tr id="L401">
+                  <td class="line-number"><a href="#L401">401</a></td>
+                  <td class="code-line"><code>            .checked_add(BROWSER_TRACE_SURCHARGE_COST)</code></td>
+                </tr><tr id="L402">
+                  <td class="line-number"><a href="#L402">402</a></td>
+                  <td class="code-line"><code>            .ok_or_else(|| anyhow!(&quot;browser check cost overflow&quot;))?;</code></td>
+                </tr><tr id="L403">
+                  <td class="line-number"><a href="#L403">403</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L404">
+                  <td class="line-number"><a href="#L404">404</a></td>
+                  <td class="code-line"><code>    Ok(total)</code></td>
+                </tr><tr id="L405">
+                  <td class="line-number"><a href="#L405">405</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L406">
+                  <td class="line-number"><a href="#L406">406</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L407">
+                  <td class="line-number"><a href="#L407">407</a></td>
+                  <td class="code-line"><code>pub fn validate_browser_check_spec(spec: &amp;BrowserCheckSpec) -&gt; Result&lt;()&gt; {</code></td>
+                </tr><tr id="L408">
+                  <td class="line-number"><a href="#L408">408</a></td>
+                  <td class="code-line"><code>    if spec.request_id.trim().is_empty() {</code></td>
+                </tr><tr id="L409">
+                  <td class="line-number"><a href="#L409">409</a></td>
+                  <td class="code-line"><code>        bail!(&quot;browser check request_id cannot be empty&quot;);</code></td>
+                </tr><tr id="L410">
+                  <td class="line-number"><a href="#L410">410</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L411">
+                  <td class="line-number"><a href="#L411">411</a></td>
+                  <td class="code-line"><code>    validate_browser_journey_package(&amp;spec.package)</code></td>
+                </tr><tr id="L412">
+                  <td class="line-number"><a href="#L412">412</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L413">
+                  <td class="line-number"><a href="#L413">413</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L414">
+                  <td class="line-number"><a href="#L414">414</a></td>
+                  <td class="code-line"><code>pub fn validate_browser_journey_package(package: &amp;BrowserJourneyPackage) -&gt; Result&lt;()&gt; {</code></td>
+                </tr><tr id="L415">
+                  <td class="line-number"><a href="#L415">415</a></td>
+                  <td class="code-line"><code>    if package.package_id.trim().is_empty()</code></td>
+                </tr><tr id="L416">
+                  <td class="line-number"><a href="#L416">416</a></td>
+                  <td class="code-line"><code>        || package.package_id.len() &gt; MAX_BROWSER_PACKAGE_ID_BYTES</code></td>
+                </tr><tr id="L417">
+                  <td class="line-number"><a href="#L417">417</a></td>
+                  <td class="code-line"><code>    {</code></td>
+                </tr><tr id="L418">
+                  <td class="line-number"><a href="#L418">418</a></td>
+                  <td class="code-line"><code>        bail!(&quot;browser package_id is invalid&quot;);</code></td>
+                </tr><tr id="L419">
+                  <td class="line-number"><a href="#L419">419</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L420">
+                  <td class="line-number"><a href="#L420">420</a></td>
+                  <td class="code-line"><code>    if package.owner.trim().is_empty() {</code></td>
+                </tr><tr id="L421">
+                  <td class="line-number"><a href="#L421">421</a></td>
+                  <td class="code-line"><code>        bail!(&quot;browser package owner cannot be empty&quot;);</code></td>
+                </tr><tr id="L422">
+                  <td class="line-number"><a href="#L422">422</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L423">
+                  <td class="line-number"><a href="#L423">423</a></td>
+                  <td class="code-line"><code>    if package.approved_by.trim().is_empty() {</code></td>
+                </tr><tr id="L424">
+                  <td class="line-number"><a href="#L424">424</a></td>
+                  <td class="code-line"><code>        bail!(&quot;browser package approved_by cannot be empty&quot;);</code></td>
+                </tr><tr id="L425">
+                  <td class="line-number"><a href="#L425">425</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L426">
+                  <td class="line-number"><a href="#L426">426</a></td>
+                  <td class="code-line"><code>    if package.manifest_version == 0 {</code></td>
+                </tr><tr id="L427">
+                  <td class="line-number"><a href="#L427">427</a></td>
+                  <td class="code-line"><code>        bail!(&quot;browser package manifest_version must be greater than zero&quot;);</code></td>
+                </tr><tr id="L428">
+                  <td class="line-number"><a href="#L428">428</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L429">
+                  <td class="line-number"><a href="#L429">429</a></td>
+                  <td class="code-line"><code>    validate_browser_runtime_profile(&amp;package.runtime)?;</code></td>
+                </tr><tr id="L430">
+                  <td class="line-number"><a href="#L430">430</a></td>
+                  <td class="code-line"><code>    validate_browser_journey_spec(&amp;package.journey)?;</code></td>
+                </tr><tr id="L431">
+                  <td class="line-number"><a href="#L431">431</a></td>
+                  <td class="code-line"><code>    validate_browser_artifact_policy(&amp;package.artifact_policy)?;</code></td>
+                </tr><tr id="L432">
+                  <td class="line-number"><a href="#L432">432</a></td>
+                  <td class="code-line"><code>    validate_session_cache_policy(&amp;package.session_cache)?;</code></td>
+                </tr><tr id="L433">
+                  <td class="line-number"><a href="#L433">433</a></td>
+                  <td class="code-line"><code>    validate_browser_tags(&amp;package.tags)?;</code></td>
+                </tr><tr id="L434">
+                  <td class="line-number"><a href="#L434">434</a></td>
+                  <td class="code-line"><code>    Ok(())</code></td>
+                </tr><tr id="L435">
+                  <td class="line-number"><a href="#L435">435</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L436">
+                  <td class="line-number"><a href="#L436">436</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L437">
+                  <td class="line-number"><a href="#L437">437</a></td>
+                  <td class="code-line"><code>pub fn validate_browser_runtime_profile(runtime: &amp;BrowserRuntimeProfile) -&gt; Result&lt;()&gt; {</code></td>
+                </tr><tr id="L438">
+                  <td class="line-number"><a href="#L438">438</a></td>
+                  <td class="code-line"><code>    if runtime.engine_version.trim().is_empty() {</code></td>
+                </tr><tr id="L439">
+                  <td class="line-number"><a href="#L439">439</a></td>
+                  <td class="code-line"><code>        bail!(&quot;browser engine_version cannot be empty&quot;);</code></td>
+                </tr><tr id="L440">
+                  <td class="line-number"><a href="#L440">440</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L441">
+                  <td class="line-number"><a href="#L441">441</a></td>
+                  <td class="code-line"><code>    if runtime.locale.trim().is_empty() {</code></td>
+                </tr><tr id="L442">
+                  <td class="line-number"><a href="#L442">442</a></td>
+                  <td class="code-line"><code>        bail!(&quot;browser locale cannot be empty&quot;);</code></td>
+                </tr><tr id="L443">
+                  <td class="line-number"><a href="#L443">443</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L444">
+                  <td class="line-number"><a href="#L444">444</a></td>
+                  <td class="code-line"><code>    if runtime.timezone.trim().is_empty() {</code></td>
+                </tr><tr id="L445">
+                  <td class="line-number"><a href="#L445">445</a></td>
+                  <td class="code-line"><code>        bail!(&quot;browser timezone cannot be empty&quot;);</code></td>
+                </tr><tr id="L446">
+                  <td class="line-number"><a href="#L446">446</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L447">
+                  <td class="line-number"><a href="#L447">447</a></td>
+                  <td class="code-line"><code>    if runtime.color_scheme.trim().is_empty() {</code></td>
+                </tr><tr id="L448">
+                  <td class="line-number"><a href="#L448">448</a></td>
+                  <td class="code-line"><code>        bail!(&quot;browser color_scheme cannot be empty&quot;);</code></td>
+                </tr><tr id="L449">
+                  <td class="line-number"><a href="#L449">449</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L450">
+                  <td class="line-number"><a href="#L450">450</a></td>
+                  <td class="code-line"><code>    if runtime.viewport_width == 0</code></td>
+                </tr><tr id="L451">
+                  <td class="line-number"><a href="#L451">451</a></td>
+                  <td class="code-line"><code>        || runtime.viewport_height == 0</code></td>
+                </tr><tr id="L452">
+                  <td class="line-number"><a href="#L452">452</a></td>
+                  <td class="code-line"><code>        || runtime.viewport_width &gt; MAX_BROWSER_VIEWPORT</code></td>
+                </tr><tr id="L453">
+                  <td class="line-number"><a href="#L453">453</a></td>
+                  <td class="code-line"><code>        || runtime.viewport_height &gt; MAX_BROWSER_VIEWPORT</code></td>
+                </tr><tr id="L454">
+                  <td class="line-number"><a href="#L454">454</a></td>
+                  <td class="code-line"><code>    {</code></td>
+                </tr><tr id="L455">
+                  <td class="line-number"><a href="#L455">455</a></td>
+                  <td class="code-line"><code>        bail!(&quot;browser viewport is invalid&quot;);</code></td>
+                </tr><tr id="L456">
+                  <td class="line-number"><a href="#L456">456</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L457">
+                  <td class="line-number"><a href="#L457">457</a></td>
+                  <td class="code-line"><code>    Ok(())</code></td>
+                </tr><tr id="L458">
+                  <td class="line-number"><a href="#L458">458</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L459">
+                  <td class="line-number"><a href="#L459">459</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L460">
+                  <td class="line-number"><a href="#L460">460</a></td>
+                  <td class="code-line"><code>pub fn validate_browser_journey_spec(spec: &amp;BrowserJourneySpec) -&gt; Result&lt;()&gt; {</code></td>
+                </tr><tr id="L461">
+                  <td class="line-number"><a href="#L461">461</a></td>
+                  <td class="code-line"><code>    if spec.journey_id.trim().is_empty() || spec.journey_id.len() &gt; MAX_BROWSER_JOURNEY_ID_BYTES {</code></td>
+                </tr><tr id="L462">
+                  <td class="line-number"><a href="#L462">462</a></td>
+                  <td class="code-line"><code>        bail!(&quot;browser journey_id is invalid&quot;);</code></td>
+                </tr><tr id="L463">
+                  <td class="line-number"><a href="#L463">463</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L464">
+                  <td class="line-number"><a href="#L464">464</a></td>
+                  <td class="code-line"><code>    validate_browser_url(&amp;spec.entry_url, &quot;browser entry_url&quot;)?;</code></td>
+                </tr><tr id="L465">
+                  <td class="line-number"><a href="#L465">465</a></td>
+                  <td class="code-line"><code>    if spec.steps.is_empty() {</code></td>
+                </tr><tr id="L466">
+                  <td class="line-number"><a href="#L466">466</a></td>
+                  <td class="code-line"><code>        bail!(&quot;browser journey must include at least one step&quot;);</code></td>
+                </tr><tr id="L467">
+                  <td class="line-number"><a href="#L467">467</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L468">
+                  <td class="line-number"><a href="#L468">468</a></td>
+                  <td class="code-line"><code>    if spec.steps.len() &gt; MAX_BROWSER_STEPS {</code></td>
+                </tr><tr id="L469">
+                  <td class="line-number"><a href="#L469">469</a></td>
+                  <td class="code-line"><code>        bail!(&quot;browser journey has too many steps&quot;);</code></td>
+                </tr><tr id="L470">
+                  <td class="line-number"><a href="#L470">470</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L471">
+                  <td class="line-number"><a href="#L471">471</a></td>
+                  <td class="code-line"><code>    if spec.max_runtime_secs &lt; MIN_BROWSER_RUNTIME_SECS</code></td>
+                </tr><tr id="L472">
+                  <td class="line-number"><a href="#L472">472</a></td>
+                  <td class="code-line"><code>        || spec.max_runtime_secs &gt; MAX_BROWSER_RUNTIME_SECS</code></td>
+                </tr><tr id="L473">
+                  <td class="line-number"><a href="#L473">473</a></td>
+                  <td class="code-line"><code>    {</code></td>
+                </tr><tr id="L474">
+                  <td class="line-number"><a href="#L474">474</a></td>
+                  <td class="code-line"><code>        bail!(&quot;browser max_runtime_secs is invalid&quot;);</code></td>
+                </tr><tr id="L475">
+                  <td class="line-number"><a href="#L475">475</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L476">
+                  <td class="line-number"><a href="#L476">476</a></td>
+                  <td class="code-line"><code>    if spec.per_step_timeout_ms &lt; MIN_BROWSER_STEP_TIMEOUT_MS</code></td>
+                </tr><tr id="L477">
+                  <td class="line-number"><a href="#L477">477</a></td>
+                  <td class="code-line"><code>        || spec.per_step_timeout_ms &gt; MAX_BROWSER_STEP_TIMEOUT_MS</code></td>
+                </tr><tr id="L478">
+                  <td class="line-number"><a href="#L478">478</a></td>
+                  <td class="code-line"><code>    {</code></td>
+                </tr><tr id="L479">
+                  <td class="line-number"><a href="#L479">479</a></td>
+                  <td class="code-line"><code>        bail!(&quot;browser per_step_timeout_ms is invalid&quot;);</code></td>
+                </tr><tr id="L480">
+                  <td class="line-number"><a href="#L480">480</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L481">
+                  <td class="line-number"><a href="#L481">481</a></td>
+                  <td class="code-line"><code>    let mut open_contexts = BTreeSet::new();</code></td>
+                </tr><tr id="L482">
+                  <td class="line-number"><a href="#L482">482</a></td>
+                  <td class="code-line"><code>    for step in &amp;spec.steps {</code></td>
+                </tr><tr id="L483">
+                  <td class="line-number"><a href="#L483">483</a></td>
+                  <td class="code-line"><code>        match step {</code></td>
+                </tr><tr id="L484">
+                  <td class="line-number"><a href="#L484">484</a></td>
+                  <td class="code-line"><code>            BrowserStep::Navigate { url } =&gt; validate_browser_url(url, &quot;browser navigate url&quot;)?,</code></td>
+                </tr><tr id="L485">
+                  <td class="line-number"><a href="#L485">485</a></td>
+                  <td class="code-line"><code>            BrowserStep::Click { target } =&gt; validate_browser_selector(target)?,</code></td>
+                </tr><tr id="L486">
+                  <td class="line-number"><a href="#L486">486</a></td>
+                  <td class="code-line"><code>            BrowserStep::Fill { target, value } =&gt; {</code></td>
+                </tr><tr id="L487">
+                  <td class="line-number"><a href="#L487">487</a></td>
+                  <td class="code-line"><code>                validate_browser_selector(target)?;</code></td>
+                </tr><tr id="L488">
+                  <td class="line-number"><a href="#L488">488</a></td>
+                  <td class="code-line"><code>                validate_browser_input_value(value)?;</code></td>
+                </tr><tr id="L489">
+                  <td class="line-number"><a href="#L489">489</a></td>
+                  <td class="code-line"><code>            }</code></td>
+                </tr><tr id="L490">
+                  <td class="line-number"><a href="#L490">490</a></td>
+                  <td class="code-line"><code>            BrowserStep::Press { key } =&gt; validate_browser_text(key, &quot;browser press key&quot;)?,</code></td>
+                </tr><tr id="L491">
+                  <td class="line-number"><a href="#L491">491</a></td>
+                  <td class="code-line"><code>            BrowserStep::WaitForText { text }</code></td>
+                </tr><tr id="L492">
+                  <td class="line-number"><a href="#L492">492</a></td>
+                  <td class="code-line"><code>            | BrowserStep::AssertText { text }</code></td>
+                </tr><tr id="L493">
+                  <td class="line-number"><a href="#L493">493</a></td>
+                  <td class="code-line"><code>            | BrowserStep::AssertUrlContains { text } =&gt; {</code></td>
+                </tr><tr id="L494">
+                  <td class="line-number"><a href="#L494">494</a></td>
+                  <td class="code-line"><code>                validate_browser_text(text, &quot;browser text assertion&quot;)?</code></td>
+                </tr><tr id="L495">
+                  <td class="line-number"><a href="#L495">495</a></td>
+                  <td class="code-line"><code>            }</code></td>
+                </tr><tr id="L496">
+                  <td class="line-number"><a href="#L496">496</a></td>
+                  <td class="code-line"><code>            BrowserStep::CaptureScreenshot { label } =&gt; {</code></td>
+                </tr><tr id="L497">
+                  <td class="line-number"><a href="#L497">497</a></td>
+                  <td class="code-line"><code>                if let Some(label) = label {</code></td>
+                </tr><tr id="L498">
+                  <td class="line-number"><a href="#L498">498</a></td>
+                  <td class="code-line"><code>                    validate_browser_text(label, &quot;browser screenshot label&quot;)?;</code></td>
+                </tr><tr id="L499">
+                  <td class="line-number"><a href="#L499">499</a></td>
+                  <td class="code-line"><code>                }</code></td>
+                </tr><tr id="L500">
+                  <td class="line-number"><a href="#L500">500</a></td>
+                  <td class="code-line"><code>            }</code></td>
+                </tr><tr id="L501">
+                  <td class="line-number"><a href="#L501">501</a></td>
+                  <td class="code-line"><code>            BrowserStep::OpenFreshContext { context_id } =&gt; {</code></td>
+                </tr><tr id="L502">
+                  <td class="line-number"><a href="#L502">502</a></td>
+                  <td class="code-line"><code>                validate_browser_text(context_id, &quot;browser context_id&quot;)?;</code></td>
+                </tr><tr id="L503">
+                  <td class="line-number"><a href="#L503">503</a></td>
+                  <td class="code-line"><code>                open_contexts.insert(context_id.clone());</code></td>
+                </tr><tr id="L504">
+                  <td class="line-number"><a href="#L504">504</a></td>
+                  <td class="code-line"><code>            }</code></td>
+                </tr><tr id="L505">
+                  <td class="line-number"><a href="#L505">505</a></td>
+                  <td class="code-line"><code>            BrowserStep::CloseContext { context_id } =&gt; {</code></td>
+                </tr><tr id="L506">
+                  <td class="line-number"><a href="#L506">506</a></td>
+                  <td class="code-line"><code>                validate_browser_text(context_id, &quot;browser context_id&quot;)?;</code></td>
+                </tr><tr id="L507">
+                  <td class="line-number"><a href="#L507">507</a></td>
+                  <td class="code-line"><code>            }</code></td>
+                </tr><tr id="L508">
+                  <td class="line-number"><a href="#L508">508</a></td>
+                  <td class="code-line"><code>        }</code></td>
+                </tr><tr id="L509">
+                  <td class="line-number"><a href="#L509">509</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L510">
+                  <td class="line-number"><a href="#L510">510</a></td>
+                  <td class="code-line"><code>    Ok(())</code></td>
+                </tr><tr id="L511">
+                  <td class="line-number"><a href="#L511">511</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L512">
+                  <td class="line-number"><a href="#L512">512</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L513">
+                  <td class="line-number"><a href="#L513">513</a></td>
+                  <td class="code-line"><code>fn validate_browser_artifact_policy(policy: &amp;BrowserArtifactPolicy) -&gt; Result&lt;()&gt; {</code></td>
+                </tr><tr id="L514">
+                  <td class="line-number"><a href="#L514">514</a></td>
+                  <td class="code-line"><code>    if policy.capture_video &amp;&amp; !policy.capture_trace &amp;&amp; !policy.capture_screenshot_on_failure {</code></td>
+                </tr><tr id="L515">
+                  <td class="line-number"><a href="#L515">515</a></td>
+                  <td class="code-line"><code>        // No-op validation hook to keep policy combinations explicit.</code></td>
+                </tr><tr id="L516">
+                  <td class="line-number"><a href="#L516">516</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L517">
+                  <td class="line-number"><a href="#L517">517</a></td>
+                  <td class="code-line"><code>    Ok(())</code></td>
+                </tr><tr id="L518">
+                  <td class="line-number"><a href="#L518">518</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L519">
+                  <td class="line-number"><a href="#L519">519</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L520">
+                  <td class="line-number"><a href="#L520">520</a></td>
+                  <td class="code-line"><code>fn validate_session_cache_policy(policy: &amp;SessionCachePolicy) -&gt; Result&lt;()&gt; {</code></td>
+                </tr><tr id="L521">
+                  <td class="line-number"><a href="#L521">521</a></td>
+                  <td class="code-line"><code>    if !policy.enabled {</code></td>
+                </tr><tr id="L522">
+                  <td class="line-number"><a href="#L522">522</a></td>
+                  <td class="code-line"><code>        return Ok(());</code></td>
+                </tr><tr id="L523">
+                  <td class="line-number"><a href="#L523">523</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L524">
+                  <td class="line-number"><a href="#L524">524</a></td>
+                  <td class="code-line"><code>    if let Some(namespace) = &amp;policy.namespace {</code></td>
+                </tr><tr id="L525">
+                  <td class="line-number"><a href="#L525">525</a></td>
+                  <td class="code-line"><code>        validate_browser_text(namespace, &quot;browser session cache namespace&quot;)?;</code></td>
+                </tr><tr id="L526">
+                  <td class="line-number"><a href="#L526">526</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L527">
+                  <td class="line-number"><a href="#L527">527</a></td>
+                  <td class="code-line"><code>    if policy.max_age_secs &gt; 86_400 * 30 {</code></td>
+                </tr><tr id="L528">
+                  <td class="line-number"><a href="#L528">528</a></td>
+                  <td class="code-line"><code>        bail!(&quot;browser session cache max_age_secs is too large&quot;);</code></td>
+                </tr><tr id="L529">
+                  <td class="line-number"><a href="#L529">529</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L530">
+                  <td class="line-number"><a href="#L530">530</a></td>
+                  <td class="code-line"><code>    Ok(())</code></td>
+                </tr><tr id="L531">
+                  <td class="line-number"><a href="#L531">531</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L532">
+                  <td class="line-number"><a href="#L532">532</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L533">
+                  <td class="line-number"><a href="#L533">533</a></td>
+                  <td class="code-line"><code>fn validate_browser_tags(tags: &amp;BTreeMap&lt;String, String&gt;) -&gt; Result&lt;()&gt; {</code></td>
+                </tr><tr id="L534">
+                  <td class="line-number"><a href="#L534">534</a></td>
+                  <td class="code-line"><code>    if tags.len() &gt; MAX_BROWSER_TAGS {</code></td>
+                </tr><tr id="L535">
+                  <td class="line-number"><a href="#L535">535</a></td>
+                  <td class="code-line"><code>        bail!(&quot;browser package has too many tags&quot;);</code></td>
+                </tr><tr id="L536">
+                  <td class="line-number"><a href="#L536">536</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L537">
+                  <td class="line-number"><a href="#L537">537</a></td>
+                  <td class="code-line"><code>    for (key, value) in tags {</code></td>
+                </tr><tr id="L538">
+                  <td class="line-number"><a href="#L538">538</a></td>
+                  <td class="code-line"><code>        if key.trim().is_empty() || key.len() &gt; MAX_BROWSER_TAG_KEY_BYTES {</code></td>
+                </tr><tr id="L539">
+                  <td class="line-number"><a href="#L539">539</a></td>
+                  <td class="code-line"><code>            bail!(&quot;browser tag key is invalid&quot;);</code></td>
+                </tr><tr id="L540">
+                  <td class="line-number"><a href="#L540">540</a></td>
+                  <td class="code-line"><code>        }</code></td>
+                </tr><tr id="L541">
+                  <td class="line-number"><a href="#L541">541</a></td>
+                  <td class="code-line"><code>        if value.len() &gt; MAX_BROWSER_TAG_VALUE_BYTES {</code></td>
+                </tr><tr id="L542">
+                  <td class="line-number"><a href="#L542">542</a></td>
+                  <td class="code-line"><code>            bail!(&quot;browser tag value is invalid&quot;);</code></td>
+                </tr><tr id="L543">
+                  <td class="line-number"><a href="#L543">543</a></td>
+                  <td class="code-line"><code>        }</code></td>
+                </tr><tr id="L544">
+                  <td class="line-number"><a href="#L544">544</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L545">
+                  <td class="line-number"><a href="#L545">545</a></td>
+                  <td class="code-line"><code>    Ok(())</code></td>
+                </tr><tr id="L546">
+                  <td class="line-number"><a href="#L546">546</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L547">
+                  <td class="line-number"><a href="#L547">547</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L548">
+                  <td class="line-number"><a href="#L548">548</a></td>
+                  <td class="code-line"><code>fn validate_browser_selector(selector: &amp;BrowserSelector) -&gt; Result&lt;()&gt; {</code></td>
+                </tr><tr id="L549">
+                  <td class="line-number"><a href="#L549">549</a></td>
+                  <td class="code-line"><code>    match selector {</code></td>
+                </tr><tr id="L550">
+                  <td class="line-number"><a href="#L550">550</a></td>
+                  <td class="code-line"><code>        BrowserSelector::Css { value }</code></td>
+                </tr><tr id="L551">
+                  <td class="line-number"><a href="#L551">551</a></td>
+                  <td class="code-line"><code>        | BrowserSelector::Text { value }</code></td>
+                </tr><tr id="L552">
+                  <td class="line-number"><a href="#L552">552</a></td>
+                  <td class="code-line"><code>        | BrowserSelector::Label { value }</code></td>
+                </tr><tr id="L553">
+                  <td class="line-number"><a href="#L553">553</a></td>
+                  <td class="code-line"><code>        | BrowserSelector::Placeholder { value }</code></td>
+                </tr><tr id="L554">
+                  <td class="line-number"><a href="#L554">554</a></td>
+                  <td class="code-line"><code>        | BrowserSelector::TestId { value } =&gt; {</code></td>
+                </tr><tr id="L555">
+                  <td class="line-number"><a href="#L555">555</a></td>
+                  <td class="code-line"><code>            validate_browser_text(value, &quot;browser selector&quot;)?;</code></td>
+                </tr><tr id="L556">
+                  <td class="line-number"><a href="#L556">556</a></td>
+                  <td class="code-line"><code>            if value.len() &gt; MAX_BROWSER_SELECTOR_BYTES {</code></td>
+                </tr><tr id="L557">
+                  <td class="line-number"><a href="#L557">557</a></td>
+                  <td class="code-line"><code>                bail!(&quot;browser selector exceeds maximum length&quot;);</code></td>
+                </tr><tr id="L558">
+                  <td class="line-number"><a href="#L558">558</a></td>
+                  <td class="code-line"><code>            }</code></td>
+                </tr><tr id="L559">
+                  <td class="line-number"><a href="#L559">559</a></td>
+                  <td class="code-line"><code>        }</code></td>
+                </tr><tr id="L560">
+                  <td class="line-number"><a href="#L560">560</a></td>
+                  <td class="code-line"><code>        BrowserSelector::Role { role, name } =&gt; {</code></td>
+                </tr><tr id="L561">
+                  <td class="line-number"><a href="#L561">561</a></td>
+                  <td class="code-line"><code>            validate_browser_text(role, &quot;browser role&quot;)?;</code></td>
+                </tr><tr id="L562">
+                  <td class="line-number"><a href="#L562">562</a></td>
+                  <td class="code-line"><code>            if let Some(name) = name {</code></td>
+                </tr><tr id="L563">
+                  <td class="line-number"><a href="#L563">563</a></td>
+                  <td class="code-line"><code>                validate_browser_text(name, &quot;browser role name&quot;)?;</code></td>
+                </tr><tr id="L564">
+                  <td class="line-number"><a href="#L564">564</a></td>
+                  <td class="code-line"><code>            }</code></td>
+                </tr><tr id="L565">
+                  <td class="line-number"><a href="#L565">565</a></td>
+                  <td class="code-line"><code>        }</code></td>
+                </tr><tr id="L566">
+                  <td class="line-number"><a href="#L566">566</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L567">
+                  <td class="line-number"><a href="#L567">567</a></td>
+                  <td class="code-line"><code>    Ok(())</code></td>
+                </tr><tr id="L568">
+                  <td class="line-number"><a href="#L568">568</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L569">
+                  <td class="line-number"><a href="#L569">569</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L570">
+                  <td class="line-number"><a href="#L570">570</a></td>
+                  <td class="code-line"><code>fn validate_browser_input_value(value: &amp;BrowserInputValue) -&gt; Result&lt;()&gt; {</code></td>
+                </tr><tr id="L571">
+                  <td class="line-number"><a href="#L571">571</a></td>
+                  <td class="code-line"><code>    match value {</code></td>
+                </tr><tr id="L572">
+                  <td class="line-number"><a href="#L572">572</a></td>
+                  <td class="code-line"><code>        BrowserInputValue::Literal { value } =&gt; validate_browser_text(value, &quot;browser literal&quot;)?,</code></td>
+                </tr><tr id="L573">
+                  <td class="line-number"><a href="#L573">573</a></td>
+                  <td class="code-line"><code>        BrowserInputValue::SecretRef { key } =&gt; validate_browser_secret_key(key)?,</code></td>
+                </tr><tr id="L574">
+                  <td class="line-number"><a href="#L574">574</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L575">
+                  <td class="line-number"><a href="#L575">575</a></td>
+                  <td class="code-line"><code>    Ok(())</code></td>
+                </tr><tr id="L576">
+                  <td class="line-number"><a href="#L576">576</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L577">
+                  <td class="line-number"><a href="#L577">577</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L578">
+                  <td class="line-number"><a href="#L578">578</a></td>
+                  <td class="code-line"><code>fn validate_browser_secret_key(key: &amp;str) -&gt; Result&lt;()&gt; {</code></td>
+                </tr><tr id="L579">
+                  <td class="line-number"><a href="#L579">579</a></td>
+                  <td class="code-line"><code>    if key.trim().is_empty() || key.len() &gt; MAX_BROWSER_SECRET_KEY_BYTES {</code></td>
+                </tr><tr id="L580">
+                  <td class="line-number"><a href="#L580">580</a></td>
+                  <td class="code-line"><code>        bail!(&quot;browser secret key is invalid&quot;);</code></td>
+                </tr><tr id="L581">
+                  <td class="line-number"><a href="#L581">581</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L582">
+                  <td class="line-number"><a href="#L582">582</a></td>
+                  <td class="code-line"><code>    Ok(())</code></td>
+                </tr><tr id="L583">
+                  <td class="line-number"><a href="#L583">583</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L584">
+                  <td class="line-number"><a href="#L584">584</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L585">
+                  <td class="line-number"><a href="#L585">585</a></td>
+                  <td class="code-line"><code>fn validate_browser_text(value: &amp;str, label: &amp;str) -&gt; Result&lt;()&gt; {</code></td>
+                </tr><tr id="L586">
+                  <td class="line-number"><a href="#L586">586</a></td>
+                  <td class="code-line"><code>    if value.trim().is_empty() || value.len() &gt; MAX_BROWSER_TEXT_BYTES {</code></td>
+                </tr><tr id="L587">
+                  <td class="line-number"><a href="#L587">587</a></td>
+                  <td class="code-line"><code>        bail!(&quot;{label} is invalid&quot;);</code></td>
+                </tr><tr id="L588">
+                  <td class="line-number"><a href="#L588">588</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L589">
+                  <td class="line-number"><a href="#L589">589</a></td>
+                  <td class="code-line"><code>    Ok(())</code></td>
+                </tr><tr id="L590">
+                  <td class="line-number"><a href="#L590">590</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L591">
+                  <td class="line-number"><a href="#L591">591</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L592">
+                  <td class="line-number"><a href="#L592">592</a></td>
+                  <td class="code-line"><code>fn validate_browser_url(value: &amp;str, label: &amp;str) -&gt; Result&lt;()&gt; {</code></td>
+                </tr><tr id="L593">
+                  <td class="line-number"><a href="#L593">593</a></td>
+                  <td class="code-line"><code>    if value.trim().is_empty() || value.len() &gt; MAX_BROWSER_URL_BYTES {</code></td>
+                </tr><tr id="L594">
+                  <td class="line-number"><a href="#L594">594</a></td>
+                  <td class="code-line"><code>        bail!(&quot;{label} is invalid&quot;);</code></td>
+                </tr><tr id="L595">
+                  <td class="line-number"><a href="#L595">595</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L596">
+                  <td class="line-number"><a href="#L596">596</a></td>
+                  <td class="code-line"><code>    let url = Url::parse(value)?;</code></td>
+                </tr><tr id="L597">
+                  <td class="line-number"><a href="#L597">597</a></td>
+                  <td class="code-line"><code>    match url.scheme() {</code></td>
+                </tr><tr id="L598">
+                  <td class="line-number"><a href="#L598">598</a></td>
+                  <td class="code-line"><code>        &quot;http&quot; | &quot;https&quot; | &quot;file&quot; =&gt; {}</code></td>
+                </tr><tr id="L599">
+                  <td class="line-number"><a href="#L599">599</a></td>
+                  <td class="code-line"><code>        _ =&gt; bail!(&quot;{label} must use http, https, or file&quot;),</code></td>
+                </tr><tr id="L600">
+                  <td class="line-number"><a href="#L600">600</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L601">
+                  <td class="line-number"><a href="#L601">601</a></td>
+                  <td class="code-line"><code>    Ok(())</code></td>
+                </tr><tr id="L602">
+                  <td class="line-number"><a href="#L602">602</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L603">
+                  <td class="line-number"><a href="#L603">603</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L604">
+                  <td class="line-number"><a href="#L604">604</a></td>
+                  <td class="code-line"><code>pub async fn execute_browser_check(</code></td>
+                </tr><tr id="L605">
+                  <td class="line-number"><a href="#L605">605</a></td>
+                  <td class="code-line"><code>    spec: &amp;BrowserCheckSpec,</code></td>
+                </tr><tr id="L606">
+                  <td class="line-number"><a href="#L606">606</a></td>
+                  <td class="code-line"><code>    tx_hash: &amp;str,</code></td>
+                </tr><tr id="L607">
+                  <td class="line-number"><a href="#L607">607</a></td>
+                  <td class="code-line"><code>    config: &amp;BrowserRunnerConfig,</code></td>
+                </tr><tr id="L608">
+                  <td class="line-number"><a href="#L608">608</a></td>
+                  <td class="code-line"><code>) -&gt; Result&lt;BrowserExecution&gt; {</code></td>
+                </tr><tr id="L609">
+                  <td class="line-number"><a href="#L609">609</a></td>
+                  <td class="code-line"><code>    validate_browser_check_spec(spec)?;</code></td>
+                </tr><tr id="L610">
+                  <td class="line-number"><a href="#L610">610</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L611">
+                  <td class="line-number"><a href="#L611">611</a></td>
+                  <td class="code-line"><code>    fs::create_dir_all(&amp;config.cache_dir).await?;</code></td>
+                </tr><tr id="L612">
+                  <td class="line-number"><a href="#L612">612</a></td>
+                  <td class="code-line"><code>    fs::create_dir_all(&amp;config.artifact_root).await?;</code></td>
+                </tr><tr id="L613">
+                  <td class="line-number"><a href="#L613">613</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L614">
+                  <td class="line-number"><a href="#L614">614</a></td>
+                  <td class="code-line"><code>    let package_hash = browser_package_hash(&amp;spec.package)?;</code></td>
+                </tr><tr id="L615">
+                  <td class="line-number"><a href="#L615">615</a></td>
+                  <td class="code-line"><code>    let runtime_hash = browser_runtime_hash(&amp;spec.package.runtime)?;</code></td>
+                </tr><tr id="L616">
+                  <td class="line-number"><a href="#L616">616</a></td>
+                  <td class="code-line"><code>    let artifact_dir = config</code></td>
+                </tr><tr id="L617">
+                  <td class="line-number"><a href="#L617">617</a></td>
+                  <td class="code-line"><code>        .artifact_root</code></td>
+                </tr><tr id="L618">
+                  <td class="line-number"><a href="#L618">618</a></td>
+                  <td class="code-line"><code>        .join(tx_hash)</code></td>
+                </tr><tr id="L619">
+                  <td class="line-number"><a href="#L619">619</a></td>
+                  <td class="code-line"><code>        .join(format!(&quot;{}-{}&quot;, spec.package.package_id, package_hash));</code></td>
+                </tr><tr id="L620">
+                  <td class="line-number"><a href="#L620">620</a></td>
+                  <td class="code-line"><code>    fs::create_dir_all(&amp;artifact_dir).await?;</code></td>
+                </tr><tr id="L621">
+                  <td class="line-number"><a href="#L621">621</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L622">
+                  <td class="line-number"><a href="#L622">622</a></td>
+                  <td class="code-line"><code>    let secrets = resolve_browser_secrets(spec, config.secret_store_path.as_deref()).await?;</code></td>
+                </tr><tr id="L623">
+                  <td class="line-number"><a href="#L623">623</a></td>
+                  <td class="code-line"><code>    let session_state_path =</code></td>
+                </tr><tr id="L624">
+                  <td class="line-number"><a href="#L624">624</a></td>
+                  <td class="code-line"><code>        resolve_session_state_path(spec, &amp;package_hash, &amp;config.cache_dir, &amp;secrets).await?;</code></td>
+                </tr><tr id="L625">
+                  <td class="line-number"><a href="#L625">625</a></td>
+                  <td class="code-line"><code>    let input = RunnerInput {</code></td>
+                </tr><tr id="L626">
+                  <td class="line-number"><a href="#L626">626</a></td>
+                  <td class="code-line"><code>        package: spec.package.clone(),</code></td>
+                </tr><tr id="L627">
+                  <td class="line-number"><a href="#L627">627</a></td>
+                  <td class="code-line"><code>        package_hash,</code></td>
+                </tr><tr id="L628">
+                  <td class="line-number"><a href="#L628">628</a></td>
+                  <td class="code-line"><code>        runtime_hash,</code></td>
+                </tr><tr id="L629">
+                  <td class="line-number"><a href="#L629">629</a></td>
+                  <td class="code-line"><code>        artifact_dir: artifact_dir.to_string_lossy().into_owned(),</code></td>
+                </tr><tr id="L630">
+                  <td class="line-number"><a href="#L630">630</a></td>
+                  <td class="code-line"><code>        session_state_path: session_state_path</code></td>
+                </tr><tr id="L631">
+                  <td class="line-number"><a href="#L631">631</a></td>
+                  <td class="code-line"><code>            .as_ref()</code></td>
+                </tr><tr id="L632">
+                  <td class="line-number"><a href="#L632">632</a></td>
+                  <td class="code-line"><code>            .map(|path| path.to_string_lossy().into_owned()),</code></td>
+                </tr><tr id="L633">
+                  <td class="line-number"><a href="#L633">633</a></td>
+                  <td class="code-line"><code>        secrets,</code></td>
+                </tr><tr id="L634">
+                  <td class="line-number"><a href="#L634">634</a></td>
+                  <td class="code-line"><code>    };</code></td>
+                </tr><tr id="L635">
+                  <td class="line-number"><a href="#L635">635</a></td>
+                  <td class="code-line"><code>    let output = run_browser_runner(&amp;input, config).await?;</code></td>
+                </tr><tr id="L636">
+                  <td class="line-number"><a href="#L636">636</a></td>
+                  <td class="code-line"><code>    let artifacts = RunnerArtifactPaths {</code></td>
+                </tr><tr id="L637">
+                  <td class="line-number"><a href="#L637">637</a></td>
+                  <td class="code-line"><code>        screenshot_path: output.screenshot_path.clone(),</code></td>
+                </tr><tr id="L638">
+                  <td class="line-number"><a href="#L638">638</a></td>
+                  <td class="code-line"><code>        trace_path: output.trace_path.clone(),</code></td>
+                </tr><tr id="L639">
+                  <td class="line-number"><a href="#L639">639</a></td>
+                  <td class="code-line"><code>        video_path: output.video_path.clone(),</code></td>
+                </tr><tr id="L640">
+                  <td class="line-number"><a href="#L640">640</a></td>
+                  <td class="code-line"><code>    };</code></td>
+                </tr><tr id="L641">
+                  <td class="line-number"><a href="#L641">641</a></td>
+                  <td class="code-line"><code>    Ok(BrowserExecution {</code></td>
+                </tr><tr id="L642">
+                  <td class="line-number"><a href="#L642">642</a></td>
+                  <td class="code-line"><code>        success: output.success,</code></td>
+                </tr><tr id="L643">
+                  <td class="line-number"><a href="#L643">643</a></td>
+                  <td class="code-line"><code>        latency_ms: output.latency_ms,</code></td>
+                </tr><tr id="L644">
+                  <td class="line-number"><a href="#L644">644</a></td>
+                  <td class="code-line"><code>        failed_step_index: output.failed_step_index,</code></td>
+                </tr><tr id="L645">
+                  <td class="line-number"><a href="#L645">645</a></td>
+                  <td class="code-line"><code>        final_url: output.final_url,</code></td>
+                </tr><tr id="L646">
+                  <td class="line-number"><a href="#L646">646</a></td>
+                  <td class="code-line"><code>        outcome_class: output.outcome_class,</code></td>
+                </tr><tr id="L647">
+                  <td class="line-number"><a href="#L647">647</a></td>
+                  <td class="code-line"><code>        console_error_count: output.console_error_count,</code></td>
+                </tr><tr id="L648">
+                  <td class="line-number"><a href="#L648">648</a></td>
+                  <td class="code-line"><code>        network_error_count: output.network_error_count,</code></td>
+                </tr><tr id="L649">
+                  <td class="line-number"><a href="#L649">649</a></td>
+                  <td class="code-line"><code>        screenshot_artifact: materialize_artifact(</code></td>
+                </tr><tr id="L650">
+                  <td class="line-number"><a href="#L650">650</a></td>
+                  <td class="code-line"><code>            tx_hash,</code></td>
+                </tr><tr id="L651">
+                  <td class="line-number"><a href="#L651">651</a></td>
+                  <td class="code-line"><code>            artifacts.screenshot_path.as_deref(),</code></td>
+                </tr><tr id="L652">
+                  <td class="line-number"><a href="#L652">652</a></td>
+                  <td class="code-line"><code>            &quot;image/png&quot;,</code></td>
+                </tr><tr id="L653">
+                  <td class="line-number"><a href="#L653">653</a></td>
+                  <td class="code-line"><code>        )</code></td>
+                </tr><tr id="L654">
+                  <td class="line-number"><a href="#L654">654</a></td>
+                  <td class="code-line"><code>        .await?,</code></td>
+                </tr><tr id="L655">
+                  <td class="line-number"><a href="#L655">655</a></td>
+                  <td class="code-line"><code>        trace_artifact: materialize_artifact(</code></td>
+                </tr><tr id="L656">
+                  <td class="line-number"><a href="#L656">656</a></td>
+                  <td class="code-line"><code>            tx_hash,</code></td>
+                </tr><tr id="L657">
+                  <td class="line-number"><a href="#L657">657</a></td>
+                  <td class="code-line"><code>            artifacts.trace_path.as_deref(),</code></td>
+                </tr><tr id="L658">
+                  <td class="line-number"><a href="#L658">658</a></td>
+                  <td class="code-line"><code>            &quot;application/zip&quot;,</code></td>
+                </tr><tr id="L659">
+                  <td class="line-number"><a href="#L659">659</a></td>
+                  <td class="code-line"><code>        )</code></td>
+                </tr><tr id="L660">
+                  <td class="line-number"><a href="#L660">660</a></td>
+                  <td class="code-line"><code>        .await?,</code></td>
+                </tr><tr id="L661">
+                  <td class="line-number"><a href="#L661">661</a></td>
+                  <td class="code-line"><code>        video_artifact: materialize_artifact(</code></td>
+                </tr><tr id="L662">
+                  <td class="line-number"><a href="#L662">662</a></td>
+                  <td class="code-line"><code>            tx_hash,</code></td>
+                </tr><tr id="L663">
+                  <td class="line-number"><a href="#L663">663</a></td>
+                  <td class="code-line"><code>            artifacts.video_path.as_deref(),</code></td>
+                </tr><tr id="L664">
+                  <td class="line-number"><a href="#L664">664</a></td>
+                  <td class="code-line"><code>            &quot;video/webm&quot;,</code></td>
+                </tr><tr id="L665">
+                  <td class="line-number"><a href="#L665">665</a></td>
+                  <td class="code-line"><code>        )</code></td>
+                </tr><tr id="L666">
+                  <td class="line-number"><a href="#L666">666</a></td>
+                  <td class="code-line"><code>        .await?,</code></td>
+                </tr><tr id="L667">
+                  <td class="line-number"><a href="#L667">667</a></td>
+                  <td class="code-line"><code>        error: output.error,</code></td>
+                </tr><tr id="L668">
+                  <td class="line-number"><a href="#L668">668</a></td>
+                  <td class="code-line"><code>    })</code></td>
+                </tr><tr id="L669">
+                  <td class="line-number"><a href="#L669">669</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L670">
+                  <td class="line-number"><a href="#L670">670</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L671">
+                  <td class="line-number"><a href="#L671">671</a></td>
+                  <td class="code-line"><code>async fn resolve_browser_secrets(</code></td>
+                </tr><tr id="L672">
+                  <td class="line-number"><a href="#L672">672</a></td>
+                  <td class="code-line"><code>    spec: &amp;BrowserCheckSpec,</code></td>
+                </tr><tr id="L673">
+                  <td class="line-number"><a href="#L673">673</a></td>
+                  <td class="code-line"><code>    secret_store_path: Option&lt;&amp;Path&gt;,</code></td>
+                </tr><tr id="L674">
+                  <td class="line-number"><a href="#L674">674</a></td>
+                  <td class="code-line"><code>) -&gt; Result&lt;BTreeMap&lt;String, String&gt;&gt; {</code></td>
+                </tr><tr id="L675">
+                  <td class="line-number"><a href="#L675">675</a></td>
+                  <td class="code-line"><code>    let required = collect_secret_refs(&amp;spec.package);</code></td>
+                </tr><tr id="L676">
+                  <td class="line-number"><a href="#L676">676</a></td>
+                  <td class="code-line"><code>    if required.is_empty() {</code></td>
+                </tr><tr id="L677">
+                  <td class="line-number"><a href="#L677">677</a></td>
+                  <td class="code-line"><code>        return Ok(BTreeMap::new());</code></td>
+                </tr><tr id="L678">
+                  <td class="line-number"><a href="#L678">678</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L679">
+                  <td class="line-number"><a href="#L679">679</a></td>
+                  <td class="code-line"><code>    let Some(path) = secret_store_path else {</code></td>
+                </tr><tr id="L680">
+                  <td class="line-number"><a href="#L680">680</a></td>
+                  <td class="code-line"><code>        bail!(&quot;browser check requires secret refs but no secret store is configured&quot;);</code></td>
+                </tr><tr id="L681">
+                  <td class="line-number"><a href="#L681">681</a></td>
+                  <td class="code-line"><code>    };</code></td>
+                </tr><tr id="L682">
+                  <td class="line-number"><a href="#L682">682</a></td>
+                  <td class="code-line"><code>    let payload = fs::read(path)</code></td>
+                </tr><tr id="L683">
+                  <td class="line-number"><a href="#L683">683</a></td>
+                  <td class="code-line"><code>        .await</code></td>
+                </tr><tr id="L684">
+                  <td class="line-number"><a href="#L684">684</a></td>
+                  <td class="code-line"><code>        .with_context(|| format!(&quot;failed to read browser secret store {}&quot;, path.display()))?;</code></td>
+                </tr><tr id="L685">
+                  <td class="line-number"><a href="#L685">685</a></td>
+                  <td class="code-line"><code>    let store: BrowserSecretStore = serde_json::from_slice(&amp;payload)?;</code></td>
+                </tr><tr id="L686">
+                  <td class="line-number"><a href="#L686">686</a></td>
+                  <td class="code-line"><code>    if store.secrets.len() &gt; MAX_BROWSER_SECRETS {</code></td>
+                </tr><tr id="L687">
+                  <td class="line-number"><a href="#L687">687</a></td>
+                  <td class="code-line"><code>        bail!(&quot;browser secret store has too many entries&quot;);</code></td>
+                </tr><tr id="L688">
+                  <td class="line-number"><a href="#L688">688</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L689">
+                  <td class="line-number"><a href="#L689">689</a></td>
+                  <td class="code-line"><code>    let mut resolved = BTreeMap::new();</code></td>
+                </tr><tr id="L690">
+                  <td class="line-number"><a href="#L690">690</a></td>
+                  <td class="code-line"><code>    for key in required {</code></td>
+                </tr><tr id="L691">
+                  <td class="line-number"><a href="#L691">691</a></td>
+                  <td class="code-line"><code>        let value = store</code></td>
+                </tr><tr id="L692">
+                  <td class="line-number"><a href="#L692">692</a></td>
+                  <td class="code-line"><code>            .secrets</code></td>
+                </tr><tr id="L693">
+                  <td class="line-number"><a href="#L693">693</a></td>
+                  <td class="code-line"><code>            .get(&amp;key)</code></td>
+                </tr><tr id="L694">
+                  <td class="line-number"><a href="#L694">694</a></td>
+                  <td class="code-line"><code>            .cloned()</code></td>
+                </tr><tr id="L695">
+                  <td class="line-number"><a href="#L695">695</a></td>
+                  <td class="code-line"><code>            .ok_or_else(|| anyhow!(&quot;missing browser secret ref {key}&quot;))?;</code></td>
+                </tr><tr id="L696">
+                  <td class="line-number"><a href="#L696">696</a></td>
+                  <td class="code-line"><code>        if value.len() &gt; MAX_BROWSER_SECRET_VALUE_BYTES {</code></td>
+                </tr><tr id="L697">
+                  <td class="line-number"><a href="#L697">697</a></td>
+                  <td class="code-line"><code>            bail!(&quot;browser secret value is too large&quot;);</code></td>
+                </tr><tr id="L698">
+                  <td class="line-number"><a href="#L698">698</a></td>
+                  <td class="code-line"><code>        }</code></td>
+                </tr><tr id="L699">
+                  <td class="line-number"><a href="#L699">699</a></td>
+                  <td class="code-line"><code>        resolved.insert(key, value);</code></td>
+                </tr><tr id="L700">
+                  <td class="line-number"><a href="#L700">700</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L701">
+                  <td class="line-number"><a href="#L701">701</a></td>
+                  <td class="code-line"><code>    Ok(resolved)</code></td>
+                </tr><tr id="L702">
+                  <td class="line-number"><a href="#L702">702</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L703">
+                  <td class="line-number"><a href="#L703">703</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L704">
+                  <td class="line-number"><a href="#L704">704</a></td>
+                  <td class="code-line"><code>fn collect_secret_refs(package: &amp;BrowserJourneyPackage) -&gt; BTreeSet&lt;String&gt; {</code></td>
+                </tr><tr id="L705">
+                  <td class="line-number"><a href="#L705">705</a></td>
+                  <td class="code-line"><code>    let mut refs = BTreeSet::new();</code></td>
+                </tr><tr id="L706">
+                  <td class="line-number"><a href="#L706">706</a></td>
+                  <td class="code-line"><code>    for step in &amp;package.journey.steps {</code></td>
+                </tr><tr id="L707">
+                  <td class="line-number"><a href="#L707">707</a></td>
+                  <td class="code-line"><code>        if let BrowserStep::Fill {</code></td>
+                </tr><tr id="L708">
+                  <td class="line-number"><a href="#L708">708</a></td>
+                  <td class="code-line"><code>            value: BrowserInputValue::SecretRef { key },</code></td>
+                </tr><tr id="L709">
+                  <td class="line-number"><a href="#L709">709</a></td>
+                  <td class="code-line"><code>            ..</code></td>
+                </tr><tr id="L710">
+                  <td class="line-number"><a href="#L710">710</a></td>
+                  <td class="code-line"><code>        } = step</code></td>
+                </tr><tr id="L711">
+                  <td class="line-number"><a href="#L711">711</a></td>
+                  <td class="code-line"><code>        {</code></td>
+                </tr><tr id="L712">
+                  <td class="line-number"><a href="#L712">712</a></td>
+                  <td class="code-line"><code>            refs.insert(key.clone());</code></td>
+                </tr><tr id="L713">
+                  <td class="line-number"><a href="#L713">713</a></td>
+                  <td class="code-line"><code>        }</code></td>
+                </tr><tr id="L714">
+                  <td class="line-number"><a href="#L714">714</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L715">
+                  <td class="line-number"><a href="#L715">715</a></td>
+                  <td class="code-line"><code>    refs</code></td>
+                </tr><tr id="L716">
+                  <td class="line-number"><a href="#L716">716</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L717">
+                  <td class="line-number"><a href="#L717">717</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L718">
+                  <td class="line-number"><a href="#L718">718</a></td>
+                  <td class="code-line"><code>async fn resolve_session_state_path(</code></td>
+                </tr><tr id="L719">
+                  <td class="line-number"><a href="#L719">719</a></td>
+                  <td class="code-line"><code>    spec: &amp;BrowserCheckSpec,</code></td>
+                </tr><tr id="L720">
+                  <td class="line-number"><a href="#L720">720</a></td>
+                  <td class="code-line"><code>    package_hash: &amp;str,</code></td>
+                </tr><tr id="L721">
+                  <td class="line-number"><a href="#L721">721</a></td>
+                  <td class="code-line"><code>    cache_dir: &amp;Path,</code></td>
+                </tr><tr id="L722">
+                  <td class="line-number"><a href="#L722">722</a></td>
+                  <td class="code-line"><code>    secrets: &amp;BTreeMap&lt;String, String&gt;,</code></td>
+                </tr><tr id="L723">
+                  <td class="line-number"><a href="#L723">723</a></td>
+                  <td class="code-line"><code>) -&gt; Result&lt;Option&lt;PathBuf&gt;&gt; {</code></td>
+                </tr><tr id="L724">
+                  <td class="line-number"><a href="#L724">724</a></td>
+                  <td class="code-line"><code>    let policy = &amp;spec.package.session_cache;</code></td>
+                </tr><tr id="L725">
+                  <td class="line-number"><a href="#L725">725</a></td>
+                  <td class="code-line"><code>    if !policy.enabled || spec.package.runtime.cache_mode != BrowserCacheMode::SessionState {</code></td>
+                </tr><tr id="L726">
+                  <td class="line-number"><a href="#L726">726</a></td>
+                  <td class="code-line"><code>        return Ok(None);</code></td>
+                </tr><tr id="L727">
+                  <td class="line-number"><a href="#L727">727</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L728">
+                  <td class="line-number"><a href="#L728">728</a></td>
+                  <td class="code-line"><code>    let namespace = policy</code></td>
+                </tr><tr id="L729">
+                  <td class="line-number"><a href="#L729">729</a></td>
+                  <td class="code-line"><code>        .namespace</code></td>
+                </tr><tr id="L730">
+                  <td class="line-number"><a href="#L730">730</a></td>
+                  <td class="code-line"><code>        .clone()</code></td>
+                </tr><tr id="L731">
+                  <td class="line-number"><a href="#L731">731</a></td>
+                  <td class="code-line"><code>        .unwrap_or_else(|| spec.package.package_id.clone());</code></td>
+                </tr><tr id="L732">
+                  <td class="line-number"><a href="#L732">732</a></td>
+                  <td class="code-line"><code>    let secret_fingerprint = if secrets.is_empty() {</code></td>
+                </tr><tr id="L733">
+                  <td class="line-number"><a href="#L733">733</a></td>
+                  <td class="code-line"><code>        &quot;public&quot;.to_string()</code></td>
+                </tr><tr id="L734">
+                  <td class="line-number"><a href="#L734">734</a></td>
+                  <td class="code-line"><code>    } else {</code></td>
+                </tr><tr id="L735">
+                  <td class="line-number"><a href="#L735">735</a></td>
+                  <td class="code-line"><code>        let secret_lengths = secrets</code></td>
+                </tr><tr id="L736">
+                  <td class="line-number"><a href="#L736">736</a></td>
+                  <td class="code-line"><code>            .iter()</code></td>
+                </tr><tr id="L737">
+                  <td class="line-number"><a href="#L737">737</a></td>
+                  <td class="code-line"><code>            .map(|(key, value)| (key.clone(), value.len()))</code></td>
+                </tr><tr id="L738">
+                  <td class="line-number"><a href="#L738">738</a></td>
+                  <td class="code-line"><code>            .collect::&lt;Vec&lt;_&gt;&gt;();</code></td>
+                </tr><tr id="L739">
+                  <td class="line-number"><a href="#L739">739</a></td>
+                  <td class="code-line"><code>        compute_hash(&amp;(package_hash.to_string(), namespace.clone(), secret_lengths))?</code></td>
+                </tr><tr id="L740">
+                  <td class="line-number"><a href="#L740">740</a></td>
+                  <td class="code-line"><code>    };</code></td>
+                </tr><tr id="L741">
+                  <td class="line-number"><a href="#L741">741</a></td>
+                  <td class="code-line"><code>    let path = cache_dir</code></td>
+                </tr><tr id="L742">
+                  <td class="line-number"><a href="#L742">742</a></td>
+                  <td class="code-line"><code>        .join(&quot;session_state&quot;)</code></td>
+                </tr><tr id="L743">
+                  <td class="line-number"><a href="#L743">743</a></td>
+                  <td class="code-line"><code>        .join(package_hash)</code></td>
+                </tr><tr id="L744">
+                  <td class="line-number"><a href="#L744">744</a></td>
+                  <td class="code-line"><code>        .join(format!(&quot;{namespace}-{secret_fingerprint}.json&quot;));</code></td>
+                </tr><tr id="L745">
+                  <td class="line-number"><a href="#L745">745</a></td>
+                  <td class="code-line"><code>    if let Some(parent) = path.parent() {</code></td>
+                </tr><tr id="L746">
+                  <td class="line-number"><a href="#L746">746</a></td>
+                  <td class="code-line"><code>        fs::create_dir_all(parent).await?;</code></td>
+                </tr><tr id="L747">
+                  <td class="line-number"><a href="#L747">747</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L748">
+                  <td class="line-number"><a href="#L748">748</a></td>
+                  <td class="code-line"><code>    if policy.max_age_secs &gt; 0</code></td>
+                </tr><tr id="L749">
+                  <td class="line-number"><a href="#L749">749</a></td>
+                  <td class="code-line"><code>        &amp;&amp; let Ok(metadata) = fs::metadata(&amp;path).await</code></td>
+                </tr><tr id="L750">
+                  <td class="line-number"><a href="#L750">750</a></td>
+                  <td class="code-line"><code>        &amp;&amp; let Ok(modified) = metadata.modified()</code></td>
+                </tr><tr id="L751">
+                  <td class="line-number"><a href="#L751">751</a></td>
+                  <td class="code-line"><code>    {</code></td>
+                </tr><tr id="L752">
+                  <td class="line-number"><a href="#L752">752</a></td>
+                  <td class="code-line"><code>        let age = modified.elapsed().unwrap_or_default().as_secs();</code></td>
+                </tr><tr id="L753">
+                  <td class="line-number"><a href="#L753">753</a></td>
+                  <td class="code-line"><code>        if age &gt; policy.max_age_secs {</code></td>
+                </tr><tr id="L754">
+                  <td class="line-number"><a href="#L754">754</a></td>
+                  <td class="code-line"><code>            let _ = fs::remove_file(&amp;path).await;</code></td>
+                </tr><tr id="L755">
+                  <td class="line-number"><a href="#L755">755</a></td>
+                  <td class="code-line"><code>        }</code></td>
+                </tr><tr id="L756">
+                  <td class="line-number"><a href="#L756">756</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L757">
+                  <td class="line-number"><a href="#L757">757</a></td>
+                  <td class="code-line"><code>    Ok(Some(path))</code></td>
+                </tr><tr id="L758">
+                  <td class="line-number"><a href="#L758">758</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L759">
+                  <td class="line-number"><a href="#L759">759</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L760">
+                  <td class="line-number"><a href="#L760">760</a></td>
+                  <td class="code-line"><code>async fn run_browser_runner(</code></td>
+                </tr><tr id="L761">
+                  <td class="line-number"><a href="#L761">761</a></td>
+                  <td class="code-line"><code>    input: &amp;RunnerInput,</code></td>
+                </tr><tr id="L762">
+                  <td class="line-number"><a href="#L762">762</a></td>
+                  <td class="code-line"><code>    config: &amp;BrowserRunnerConfig,</code></td>
+                </tr><tr id="L763">
+                  <td class="line-number"><a href="#L763">763</a></td>
+                  <td class="code-line"><code>) -&gt; Result&lt;RunnerOutput&gt; {</code></td>
+                </tr><tr id="L764">
+                  <td class="line-number"><a href="#L764">764</a></td>
+                  <td class="code-line"><code>    let run_id = compute_hash(&amp;(input.package_hash.clone(), Utc::now().timestamp_nanos_opt()))?;</code></td>
+                </tr><tr id="L765">
+                  <td class="line-number"><a href="#L765">765</a></td>
+                  <td class="code-line"><code>    let temp_dir = std::env::temp_dir().join(format!(&quot;gossip-protocol-browser-{run_id}&quot;));</code></td>
+                </tr><tr id="L766">
+                  <td class="line-number"><a href="#L766">766</a></td>
+                  <td class="code-line"><code>    fs::create_dir_all(&amp;temp_dir).await?;</code></td>
+                </tr><tr id="L767">
+                  <td class="line-number"><a href="#L767">767</a></td>
+                  <td class="code-line"><code>    let input_path = temp_dir.join(&quot;input.json&quot;);</code></td>
+                </tr><tr id="L768">
+                  <td class="line-number"><a href="#L768">768</a></td>
+                  <td class="code-line"><code>    let output_path = temp_dir.join(&quot;output.json&quot;);</code></td>
+                </tr><tr id="L769">
+                  <td class="line-number"><a href="#L769">769</a></td>
+                  <td class="code-line"><code>    fs::write(&amp;input_path, serde_json::to_vec_pretty(input)?).await?;</code></td>
+                </tr><tr id="L770">
+                  <td class="line-number"><a href="#L770">770</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L771">
+                  <td class="line-number"><a href="#L771">771</a></td>
+                  <td class="code-line"><code>    let mut command = if let Some(program) = &amp;config.program {</code></td>
+                </tr><tr id="L772">
+                  <td class="line-number"><a href="#L772">772</a></td>
+                  <td class="code-line"><code>        Command::new(program)</code></td>
+                </tr><tr id="L773">
+                  <td class="line-number"><a href="#L773">773</a></td>
+                  <td class="code-line"><code>    } else {</code></td>
+                </tr><tr id="L774">
+                  <td class="line-number"><a href="#L774">774</a></td>
+                  <td class="code-line"><code>        let mut command = Command::new(&quot;node&quot;);</code></td>
+                </tr><tr id="L775">
+                  <td class="line-number"><a href="#L775">775</a></td>
+                  <td class="code-line"><code>        command.arg(</code></td>
+                </tr><tr id="L776">
+                  <td class="line-number"><a href="#L776">776</a></td>
+                  <td class="code-line"><code>            Path::new(env!(&quot;CARGO_MANIFEST_DIR&quot;))</code></td>
+                </tr><tr id="L777">
+                  <td class="line-number"><a href="#L777">777</a></td>
+                  <td class="code-line"><code>                .join(&quot;browser_runner&quot;)</code></td>
+                </tr><tr id="L778">
+                  <td class="line-number"><a href="#L778">778</a></td>
+                  <td class="code-line"><code>                .join(&quot;runner.mjs&quot;),</code></td>
+                </tr><tr id="L779">
+                  <td class="line-number"><a href="#L779">779</a></td>
+                  <td class="code-line"><code>        );</code></td>
+                </tr><tr id="L780">
+                  <td class="line-number"><a href="#L780">780</a></td>
+                  <td class="code-line"><code>        command.current_dir(Path::new(env!(&quot;CARGO_MANIFEST_DIR&quot;)).join(&quot;browser_runner&quot;));</code></td>
+                </tr><tr id="L781">
+                  <td class="line-number"><a href="#L781">781</a></td>
+                  <td class="code-line"><code>        command</code></td>
+                </tr><tr id="L782">
+                  <td class="line-number"><a href="#L782">782</a></td>
+                  <td class="code-line"><code>    };</code></td>
+                </tr><tr id="L783">
+                  <td class="line-number"><a href="#L783">783</a></td>
+                  <td class="code-line"><code>    command</code></td>
+                </tr><tr id="L784">
+                  <td class="line-number"><a href="#L784">784</a></td>
+                  <td class="code-line"><code>        .args(&amp;config.args)</code></td>
+                </tr><tr id="L785">
+                  <td class="line-number"><a href="#L785">785</a></td>
+                  <td class="code-line"><code>        .arg(&quot;--input&quot;)</code></td>
+                </tr><tr id="L786">
+                  <td class="line-number"><a href="#L786">786</a></td>
+                  <td class="code-line"><code>        .arg(&amp;input_path)</code></td>
+                </tr><tr id="L787">
+                  <td class="line-number"><a href="#L787">787</a></td>
+                  <td class="code-line"><code>        .arg(&quot;--output&quot;)</code></td>
+                </tr><tr id="L788">
+                  <td class="line-number"><a href="#L788">788</a></td>
+                  <td class="code-line"><code>        .arg(&amp;output_path)</code></td>
+                </tr><tr id="L789">
+                  <td class="line-number"><a href="#L789">789</a></td>
+                  <td class="code-line"><code>        .stdin(Stdio::null())</code></td>
+                </tr><tr id="L790">
+                  <td class="line-number"><a href="#L790">790</a></td>
+                  <td class="code-line"><code>        .stdout(Stdio::piped())</code></td>
+                </tr><tr id="L791">
+                  <td class="line-number"><a href="#L791">791</a></td>
+                  <td class="code-line"><code>        .stderr(Stdio::piped());</code></td>
+                </tr><tr id="L792">
+                  <td class="line-number"><a href="#L792">792</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L793">
+                  <td class="line-number"><a href="#L793">793</a></td>
+                  <td class="code-line"><code>    let output = command.output().await?;</code></td>
+                </tr><tr id="L794">
+                  <td class="line-number"><a href="#L794">794</a></td>
+                  <td class="code-line"><code>    if !output.status.success() {</code></td>
+                </tr><tr id="L795">
+                  <td class="line-number"><a href="#L795">795</a></td>
+                  <td class="code-line"><code>        let stderr = String::from_utf8_lossy(&amp;output.stderr);</code></td>
+                </tr><tr id="L796">
+                  <td class="line-number"><a href="#L796">796</a></td>
+                  <td class="code-line"><code>        bail!(&quot;browser runner failed: {}&quot;, stderr.trim());</code></td>
+                </tr><tr id="L797">
+                  <td class="line-number"><a href="#L797">797</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L798">
+                  <td class="line-number"><a href="#L798">798</a></td>
+                  <td class="code-line"><code>    let payload = fs::read(&amp;output_path).await?;</code></td>
+                </tr><tr id="L799">
+                  <td class="line-number"><a href="#L799">799</a></td>
+                  <td class="code-line"><code>    let parsed: RunnerOutput = serde_json::from_slice(&amp;payload)?;</code></td>
+                </tr><tr id="L800">
+                  <td class="line-number"><a href="#L800">800</a></td>
+                  <td class="code-line"><code>    let _ = fs::remove_dir_all(&amp;temp_dir).await;</code></td>
+                </tr><tr id="L801">
+                  <td class="line-number"><a href="#L801">801</a></td>
+                  <td class="code-line"><code>    Ok(parsed)</code></td>
+                </tr><tr id="L802">
+                  <td class="line-number"><a href="#L802">802</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L803">
+                  <td class="line-number"><a href="#L803">803</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L804">
+                  <td class="line-number"><a href="#L804">804</a></td>
+                  <td class="code-line"><code>async fn materialize_artifact(</code></td>
+                </tr><tr id="L805">
+                  <td class="line-number"><a href="#L805">805</a></td>
+                  <td class="code-line"><code>    tx_hash: &amp;str,</code></td>
+                </tr><tr id="L806">
+                  <td class="line-number"><a href="#L806">806</a></td>
+                  <td class="code-line"><code>    path: Option&lt;&amp;str&gt;,</code></td>
+                </tr><tr id="L807">
+                  <td class="line-number"><a href="#L807">807</a></td>
+                  <td class="code-line"><code>    media_type: &amp;str,</code></td>
+                </tr><tr id="L808">
+                  <td class="line-number"><a href="#L808">808</a></td>
+                  <td class="code-line"><code>) -&gt; Result&lt;Option&lt;BrowserArtifactRef&gt;&gt; {</code></td>
+                </tr><tr id="L809">
+                  <td class="line-number"><a href="#L809">809</a></td>
+                  <td class="code-line"><code>    let Some(path) = path else {</code></td>
+                </tr><tr id="L810">
+                  <td class="line-number"><a href="#L810">810</a></td>
+                  <td class="code-line"><code>        return Ok(None);</code></td>
+                </tr><tr id="L811">
+                  <td class="line-number"><a href="#L811">811</a></td>
+                  <td class="code-line"><code>    };</code></td>
+                </tr><tr id="L812">
+                  <td class="line-number"><a href="#L812">812</a></td>
+                  <td class="code-line"><code>    if path.trim().is_empty() || path.len() &gt; MAX_BROWSER_ARTIFACT_URI_BYTES {</code></td>
+                </tr><tr id="L813">
+                  <td class="line-number"><a href="#L813">813</a></td>
+                  <td class="code-line"><code>        bail!(&quot;browser artifact path is invalid&quot;);</code></td>
+                </tr><tr id="L814">
+                  <td class="line-number"><a href="#L814">814</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L815">
+                  <td class="line-number"><a href="#L815">815</a></td>
+                  <td class="code-line"><code>    let bytes = fs::read(path).await?;</code></td>
+                </tr><tr id="L816">
+                  <td class="line-number"><a href="#L816">816</a></td>
+                  <td class="code-line"><code>    let sha256 = hex::encode(Sha256::digest(&amp;bytes));</code></td>
+                </tr><tr id="L817">
+                  <td class="line-number"><a href="#L817">817</a></td>
+                  <td class="code-line"><code>    let file_name = Path::new(path)</code></td>
+                </tr><tr id="L818">
+                  <td class="line-number"><a href="#L818">818</a></td>
+                  <td class="code-line"><code>        .file_name()</code></td>
+                </tr><tr id="L819">
+                  <td class="line-number"><a href="#L819">819</a></td>
+                  <td class="code-line"><code>        .and_then(|name| name.to_str())</code></td>
+                </tr><tr id="L820">
+                  <td class="line-number"><a href="#L820">820</a></td>
+                  <td class="code-line"><code>        .ok_or_else(|| anyhow!(&quot;browser artifact filename is invalid&quot;))?;</code></td>
+                </tr><tr id="L821">
+                  <td class="line-number"><a href="#L821">821</a></td>
+                  <td class="code-line"><code>    Ok(Some(BrowserArtifactRef {</code></td>
+                </tr><tr id="L822">
+                  <td class="line-number"><a href="#L822">822</a></td>
+                  <td class="code-line"><code>        uri: format!(&quot;artifact://browser-checks/{tx_hash}/{file_name}&quot;),</code></td>
+                </tr><tr id="L823">
+                  <td class="line-number"><a href="#L823">823</a></td>
+                  <td class="code-line"><code>        sha256,</code></td>
+                </tr><tr id="L824">
+                  <td class="line-number"><a href="#L824">824</a></td>
+                  <td class="code-line"><code>        media_type: media_type.to_string(),</code></td>
+                </tr><tr id="L825">
+                  <td class="line-number"><a href="#L825">825</a></td>
+                  <td class="code-line"><code>        bytes: bytes.len() as u64,</code></td>
+                </tr><tr id="L826">
+                  <td class="line-number"><a href="#L826">826</a></td>
+                  <td class="code-line"><code>    }))</code></td>
+                </tr><tr id="L827">
+                  <td class="line-number"><a href="#L827">827</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L828">
+                  <td class="line-number"><a href="#L828">828</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L829">
+                  <td class="line-number"><a href="#L829">829</a></td>
+                  <td class="code-line"><code>#[cfg(test)]</code></td>
+                </tr><tr id="L830">
+                  <td class="line-number"><a href="#L830">830</a></td>
+                  <td class="code-line"><code>mod tests {</code></td>
+                </tr><tr id="L831">
+                  <td class="line-number"><a href="#L831">831</a></td>
+                  <td class="code-line"><code>    use super::*;</code></td>
+                </tr><tr id="L832">
+                  <td class="line-number"><a href="#L832">832</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L833">
+                  <td class="line-number"><a href="#L833">833</a></td>
+                  <td class="code-line"><code>    fn sample_package() -&gt; BrowserJourneyPackage {</code></td>
+                </tr><tr id="L834">
+                  <td class="line-number"><a href="#L834">834</a></td>
+                  <td class="code-line"><code>        BrowserJourneyPackage {</code></td>
+                </tr><tr id="L835">
+                  <td class="line-number"><a href="#L835">835</a></td>
+                  <td class="code-line"><code>            package_id: &quot;wiki-cat&quot;.into(),</code></td>
+                </tr><tr id="L836">
+                  <td class="line-number"><a href="#L836">836</a></td>
+                  <td class="code-line"><code>            owner: &quot;owner&quot;.into(),</code></td>
+                </tr><tr id="L837">
+                  <td class="line-number"><a href="#L837">837</a></td>
+                  <td class="code-line"><code>            manifest_version: 1,</code></td>
+                </tr><tr id="L838">
+                  <td class="line-number"><a href="#L838">838</a></td>
+                  <td class="code-line"><code>            runtime: BrowserRuntimeProfile {</code></td>
+                </tr><tr id="L839">
+                  <td class="line-number"><a href="#L839">839</a></td>
+                  <td class="code-line"><code>                engine: BrowserEngine::Chromium,</code></td>
+                </tr><tr id="L840">
+                  <td class="line-number"><a href="#L840">840</a></td>
+                  <td class="code-line"><code>                engine_version: &quot;1.54&quot;.into(),</code></td>
+                </tr><tr id="L841">
+                  <td class="line-number"><a href="#L841">841</a></td>
+                  <td class="code-line"><code>                locale: &quot;en-US&quot;.into(),</code></td>
+                </tr><tr id="L842">
+                  <td class="line-number"><a href="#L842">842</a></td>
+                  <td class="code-line"><code>                timezone: &quot;UTC&quot;.into(),</code></td>
+                </tr><tr id="L843">
+                  <td class="line-number"><a href="#L843">843</a></td>
+                  <td class="code-line"><code>                viewport_width: 1280,</code></td>
+                </tr><tr id="L844">
+                  <td class="line-number"><a href="#L844">844</a></td>
+                  <td class="code-line"><code>                viewport_height: 720,</code></td>
+                </tr><tr id="L845">
+                  <td class="line-number"><a href="#L845">845</a></td>
+                  <td class="code-line"><code>                color_scheme: &quot;light&quot;.into(),</code></td>
+                </tr><tr id="L846">
+                  <td class="line-number"><a href="#L846">846</a></td>
+                  <td class="code-line"><code>                block_service_workers: true,</code></td>
+                </tr><tr id="L847">
+                  <td class="line-number"><a href="#L847">847</a></td>
+                  <td class="code-line"><code>                cache_mode: BrowserCacheMode::SessionState,</code></td>
+                </tr><tr id="L848">
+                  <td class="line-number"><a href="#L848">848</a></td>
+                  <td class="code-line"><code>            },</code></td>
+                </tr><tr id="L849">
+                  <td class="line-number"><a href="#L849">849</a></td>
+                  <td class="code-line"><code>            journey: BrowserJourneySpec {</code></td>
+                </tr><tr id="L850">
+                  <td class="line-number"><a href="#L850">850</a></td>
+                  <td class="code-line"><code>                journey_id: &quot;wiki-cat&quot;.into(),</code></td>
+                </tr><tr id="L851">
+                  <td class="line-number"><a href="#L851">851</a></td>
+                  <td class="code-line"><code>                entry_url: &quot;https://www.wikipedia.org&quot;.into(),</code></td>
+                </tr><tr id="L852">
+                  <td class="line-number"><a href="#L852">852</a></td>
+                  <td class="code-line"><code>                steps: vec![</code></td>
+                </tr><tr id="L853">
+                  <td class="line-number"><a href="#L853">853</a></td>
+                  <td class="code-line"><code>                    BrowserStep::Navigate {</code></td>
+                </tr><tr id="L854">
+                  <td class="line-number"><a href="#L854">854</a></td>
+                  <td class="code-line"><code>                        url: &quot;https://www.wikipedia.org&quot;.into(),</code></td>
+                </tr><tr id="L855">
+                  <td class="line-number"><a href="#L855">855</a></td>
+                  <td class="code-line"><code>                    },</code></td>
+                </tr><tr id="L856">
+                  <td class="line-number"><a href="#L856">856</a></td>
+                  <td class="code-line"><code>                    BrowserStep::Fill {</code></td>
+                </tr><tr id="L857">
+                  <td class="line-number"><a href="#L857">857</a></td>
+                  <td class="code-line"><code>                        target: BrowserSelector::Css {</code></td>
+                </tr><tr id="L858">
+                  <td class="line-number"><a href="#L858">858</a></td>
+                  <td class="code-line"><code>                            value: &quot;#searchInput&quot;.into(),</code></td>
+                </tr><tr id="L859">
+                  <td class="line-number"><a href="#L859">859</a></td>
+                  <td class="code-line"><code>                        },</code></td>
+                </tr><tr id="L860">
+                  <td class="line-number"><a href="#L860">860</a></td>
+                  <td class="code-line"><code>                        value: BrowserInputValue::Literal {</code></td>
+                </tr><tr id="L861">
+                  <td class="line-number"><a href="#L861">861</a></td>
+                  <td class="code-line"><code>                            value: &quot;cat&quot;.into(),</code></td>
+                </tr><tr id="L862">
+                  <td class="line-number"><a href="#L862">862</a></td>
+                  <td class="code-line"><code>                        },</code></td>
+                </tr><tr id="L863">
+                  <td class="line-number"><a href="#L863">863</a></td>
+                  <td class="code-line"><code>                    },</code></td>
+                </tr><tr id="L864">
+                  <td class="line-number"><a href="#L864">864</a></td>
+                  <td class="code-line"><code>                    BrowserStep::Press {</code></td>
+                </tr><tr id="L865">
+                  <td class="line-number"><a href="#L865">865</a></td>
+                  <td class="code-line"><code>                        key: &quot;Enter&quot;.into(),</code></td>
+                </tr><tr id="L866">
+                  <td class="line-number"><a href="#L866">866</a></td>
+                  <td class="code-line"><code>                    },</code></td>
+                </tr><tr id="L867">
+                  <td class="line-number"><a href="#L867">867</a></td>
+                  <td class="code-line"><code>                    BrowserStep::AssertText { text: &quot;Cat&quot;.into() },</code></td>
+                </tr><tr id="L868">
+                  <td class="line-number"><a href="#L868">868</a></td>
+                  <td class="code-line"><code>                ],</code></td>
+                </tr><tr id="L869">
+                  <td class="line-number"><a href="#L869">869</a></td>
+                  <td class="code-line"><code>                max_runtime_secs: 90,</code></td>
+                </tr><tr id="L870">
+                  <td class="line-number"><a href="#L870">870</a></td>
+                  <td class="code-line"><code>                per_step_timeout_ms: 5_000,</code></td>
+                </tr><tr id="L871">
+                  <td class="line-number"><a href="#L871">871</a></td>
+                  <td class="code-line"><code>            },</code></td>
+                </tr><tr id="L872">
+                  <td class="line-number"><a href="#L872">872</a></td>
+                  <td class="code-line"><code>            artifact_policy: BrowserArtifactPolicy {</code></td>
+                </tr><tr id="L873">
+                  <td class="line-number"><a href="#L873">873</a></td>
+                  <td class="code-line"><code>                capture_video: true,</code></td>
+                </tr><tr id="L874">
+                  <td class="line-number"><a href="#L874">874</a></td>
+                  <td class="code-line"><code>                capture_trace: true,</code></td>
+                </tr><tr id="L875">
+                  <td class="line-number"><a href="#L875">875</a></td>
+                  <td class="code-line"><code>                capture_screenshot_on_failure: true,</code></td>
+                </tr><tr id="L876">
+                  <td class="line-number"><a href="#L876">876</a></td>
+                  <td class="code-line"><code>            },</code></td>
+                </tr><tr id="L877">
+                  <td class="line-number"><a href="#L877">877</a></td>
+                  <td class="code-line"><code>            session_cache: SessionCachePolicy {</code></td>
+                </tr><tr id="L878">
+                  <td class="line-number"><a href="#L878">878</a></td>
+                  <td class="code-line"><code>                enabled: true,</code></td>
+                </tr><tr id="L879">
+                  <td class="line-number"><a href="#L879">879</a></td>
+                  <td class="code-line"><code>                namespace: Some(&quot;wiki&quot;.into()),</code></td>
+                </tr><tr id="L880">
+                  <td class="line-number"><a href="#L880">880</a></td>
+                  <td class="code-line"><code>                max_age_secs: 3_600,</code></td>
+                </tr><tr id="L881">
+                  <td class="line-number"><a href="#L881">881</a></td>
+                  <td class="code-line"><code>            },</code></td>
+                </tr><tr id="L882">
+                  <td class="line-number"><a href="#L882">882</a></td>
+                  <td class="code-line"><code>            approved_at: Utc::now(),</code></td>
+                </tr><tr id="L883">
+                  <td class="line-number"><a href="#L883">883</a></td>
+                  <td class="code-line"><code>            approved_by: &quot;approver&quot;.into(),</code></td>
+                </tr><tr id="L884">
+                  <td class="line-number"><a href="#L884">884</a></td>
+                  <td class="code-line"><code>            tags: BTreeMap::new(),</code></td>
+                </tr><tr id="L885">
+                  <td class="line-number"><a href="#L885">885</a></td>
+                  <td class="code-line"><code>        }</code></td>
+                </tr><tr id="L886">
+                  <td class="line-number"><a href="#L886">886</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L887">
+                  <td class="line-number"><a href="#L887">887</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L888">
+                  <td class="line-number"><a href="#L888">888</a></td>
+                  <td class="code-line"><code>    #[test]</code></td>
+                </tr><tr id="L889">
+                  <td class="line-number"><a href="#L889">889</a></td>
+                  <td class="code-line"><code>    fn browser_package_validation_accepts_canonical_package() {</code></td>
+                </tr><tr id="L890">
+                  <td class="line-number"><a href="#L890">890</a></td>
+                  <td class="code-line"><code>        validate_browser_journey_package(&amp;sample_package()).unwrap();</code></td>
+                </tr><tr id="L891">
+                  <td class="line-number"><a href="#L891">891</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L892">
+                  <td class="line-number"><a href="#L892">892</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L893">
+                  <td class="line-number"><a href="#L893">893</a></td>
+                  <td class="code-line"><code>    #[test]</code></td>
+                </tr><tr id="L894">
+                  <td class="line-number"><a href="#L894">894</a></td>
+                  <td class="code-line"><code>    fn browser_package_validation_rejects_empty_steps() {</code></td>
+                </tr><tr id="L895">
+                  <td class="line-number"><a href="#L895">895</a></td>
+                  <td class="code-line"><code>        let mut package = sample_package();</code></td>
+                </tr><tr id="L896">
+                  <td class="line-number"><a href="#L896">896</a></td>
+                  <td class="code-line"><code>        package.journey.steps.clear();</code></td>
+                </tr><tr id="L897">
+                  <td class="line-number"><a href="#L897">897</a></td>
+                  <td class="code-line"><code>        assert!(validate_browser_journey_package(&amp;package).is_err());</code></td>
+                </tr><tr id="L898">
+                  <td class="line-number"><a href="#L898">898</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L899">
+                  <td class="line-number"><a href="#L899">899</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L900">
+                  <td class="line-number"><a href="#L900">900</a></td>
+                  <td class="code-line"><code>    #[test]</code></td>
+                </tr><tr id="L901">
+                  <td class="line-number"><a href="#L901">901</a></td>
+                  <td class="code-line"><code>    fn browser_check_cost_scales_with_runtime_and_artifacts() {</code></td>
+                </tr><tr id="L902">
+                  <td class="line-number"><a href="#L902">902</a></td>
+                  <td class="code-line"><code>        let simple = BrowserCheckSpec {</code></td>
+                </tr><tr id="L903">
+                  <td class="line-number"><a href="#L903">903</a></td>
+                  <td class="code-line"><code>            request_id: &quot;simple&quot;.into(),</code></td>
+                </tr><tr id="L904">
+                  <td class="line-number"><a href="#L904">904</a></td>
+                  <td class="code-line"><code>            package: sample_package(),</code></td>
+                </tr><tr id="L905">
+                  <td class="line-number"><a href="#L905">905</a></td>
+                  <td class="code-line"><code>        };</code></td>
+                </tr><tr id="L906">
+                  <td class="line-number"><a href="#L906">906</a></td>
+                  <td class="code-line"><code>        let mut expensive = simple.clone();</code></td>
+                </tr><tr id="L907">
+                  <td class="line-number"><a href="#L907">907</a></td>
+                  <td class="code-line"><code>        expensive.package.journey.max_runtime_secs = 180;</code></td>
+                </tr><tr id="L908">
+                  <td class="line-number"><a href="#L908">908</a></td>
+                  <td class="code-line"><code>        expensive.package.journey.steps.extend(vec![</code></td>
+                </tr><tr id="L909">
+                  <td class="line-number"><a href="#L909">909</a></td>
+                  <td class="code-line"><code>            BrowserStep::AssertUrlContains {</code></td>
+                </tr><tr id="L910">
+                  <td class="line-number"><a href="#L910">910</a></td>
+                  <td class="code-line"><code>                text: &quot;wiki&quot;.into(),</code></td>
+                </tr><tr id="L911">
+                  <td class="line-number"><a href="#L911">911</a></td>
+                  <td class="code-line"><code>            };</code></td>
+                </tr><tr id="L912">
+                  <td class="line-number"><a href="#L912">912</a></td>
+                  <td class="code-line"><code>            8</code></td>
+                </tr><tr id="L913">
+                  <td class="line-number"><a href="#L913">913</a></td>
+                  <td class="code-line"><code>        ]);</code></td>
+                </tr><tr id="L914">
+                  <td class="line-number"><a href="#L914">914</a></td>
+                  <td class="code-line"><code>        assert!(browser_check_cost(&amp;expensive).unwrap() &gt; browser_check_cost(&amp;simple).unwrap());</code></td>
+                </tr><tr id="L915">
+                  <td class="line-number"><a href="#L915">915</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L916">
+                  <td class="line-number"><a href="#L916">916</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>Gossip Protocol</span>
+    <span>Peer-witnessed monitoring, compute, storage, DNS, swaps, and publishing.</span>
+  </footer>
+
+  <script src="/assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cargo.toml - Gossip Protocol Source Mirror</title>
+  <meta name="description" content="Static source viewer for Cargo.toml.">
+  <meta property="og:title" content="Cargo.toml - Gossip Protocol Source Mirror">
+  <meta property="og:description" content="Static source viewer for Cargo.toml.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://gossip-protocol.com/repo/tree/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/styles.css?v=responsive-3" as="style">
+  <link rel="stylesheet" href="/assets/styles.css?v=responsive-3">
+</head>
+<body>
+  <canvas id="network-canvas" aria-hidden="true"></canvas>
+
+  <main class="docs-page repo-browser">
+    <nav class="docs-nav" aria-label="Repository mirror navigation">
+      <a href="/">Home</a>
+      <a href="/docs/">Docs</a>
+      <a href="/repo/">Repo</a>
+      <a href="/repo/tree/">Source tree</a>
+      <a href="https://github.com/vibevibellc/gossip_protocol">GitHub</a>
+    </nav>
+
+    <section class="docs-hero repo-file-hero">
+      <p class="eyebrow">source file</p>
+      <h1>Cargo.toml</h1>
+      <p class="hero-text">1.2 KB mirrored from the public source tree.</p>
+      <div class="hero-actions hero-actions-left" aria-label="Source file actions">
+        <a class="cta-button cta-button-primary" href="/repo/tree/raw/Cargo.toml">Open raw</a>
+        <a class="cta-button cta-button-secondary" href="/repo/tree/">Parent directory</a>
+        
+      </div>
+    </section>
+
+    <section class="docs-section repo-file-section">
+      <h2>Source</h2>
+      <div class="repo-breadcrumbs"><a href="/repo/tree/">gossip_protocol</a></div>
+      <div class="repo-code-wrap">
+        <table class="repo-code">
+          <tbody>
+            <tr id="L1">
+                  <td class="line-number"><a href="#L1">1</a></td>
+                  <td class="code-line"><code>[package]</code></td>
+                </tr><tr id="L2">
+                  <td class="line-number"><a href="#L2">2</a></td>
+                  <td class="code-line"><code>name = &quot;gossip_protocol&quot;</code></td>
+                </tr><tr id="L3">
+                  <td class="line-number"><a href="#L3">3</a></td>
+                  <td class="code-line"><code>version = &quot;0.1.0&quot;</code></td>
+                </tr><tr id="L4">
+                  <td class="line-number"><a href="#L4">4</a></td>
+                  <td class="code-line"><code>edition = &quot;2024&quot;</code></td>
+                </tr><tr id="L5">
+                  <td class="line-number"><a href="#L5">5</a></td>
+                  <td class="code-line"><code>description = &quot;Federated multi-token gossip protocol in Rust&quot;</code></td>
+                </tr><tr id="L6">
+                  <td class="line-number"><a href="#L6">6</a></td>
+                  <td class="code-line"><code>license = &quot;Apache-2.0&quot;</code></td>
+                </tr><tr id="L7">
+                  <td class="line-number"><a href="#L7">7</a></td>
+                  <td class="code-line"><code>readme = &quot;README.md&quot;</code></td>
+                </tr><tr id="L8">
+                  <td class="line-number"><a href="#L8">8</a></td>
+                  <td class="code-line"><code>rust-version = &quot;1.93&quot;</code></td>
+                </tr><tr id="L9">
+                  <td class="line-number"><a href="#L9">9</a></td>
+                  <td class="code-line"><code>keywords = [&quot;crypto&quot;, &quot;gossip&quot;, &quot;network&quot;, &quot;token&quot;, &quot;validator&quot;]</code></td>
+                </tr><tr id="L10">
+                  <td class="line-number"><a href="#L10">10</a></td>
+                  <td class="code-line"><code>categories = [&quot;cryptography::cryptocurrencies&quot;, &quot;network-programming&quot;]</code></td>
+                </tr><tr id="L11">
+                  <td class="line-number"><a href="#L11">11</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L12">
+                  <td class="line-number"><a href="#L12">12</a></td>
+                  <td class="code-line"><code>[dependencies]</code></td>
+                </tr><tr id="L13">
+                  <td class="line-number"><a href="#L13">13</a></td>
+                  <td class="code-line"><code>anyhow = &quot;1.0&quot;</code></td>
+                </tr><tr id="L14">
+                  <td class="line-number"><a href="#L14">14</a></td>
+                  <td class="code-line"><code>argon2 = &quot;0.5&quot;</code></td>
+                </tr><tr id="L15">
+                  <td class="line-number"><a href="#L15">15</a></td>
+                  <td class="code-line"><code>async-trait = &quot;0.1&quot;</code></td>
+                </tr><tr id="L16">
+                  <td class="line-number"><a href="#L16">16</a></td>
+                  <td class="code-line"><code>axum = &quot;0.7&quot;</code></td>
+                </tr><tr id="L17">
+                  <td class="line-number"><a href="#L17">17</a></td>
+                  <td class="code-line"><code>bs58 = &quot;0.5&quot;</code></td>
+                </tr><tr id="L18">
+                  <td class="line-number"><a href="#L18">18</a></td>
+                  <td class="code-line"><code>chacha20poly1305 = &quot;0.10&quot;</code></td>
+                </tr><tr id="L19">
+                  <td class="line-number"><a href="#L19">19</a></td>
+                  <td class="code-line"><code>chrono = { version = &quot;0.4&quot;, features = [&quot;serde&quot;] }</code></td>
+                </tr><tr id="L20">
+                  <td class="line-number"><a href="#L20">20</a></td>
+                  <td class="code-line"><code>clap = { version = &quot;4.5&quot;, features = [&quot;derive&quot;] }</code></td>
+                </tr><tr id="L21">
+                  <td class="line-number"><a href="#L21">21</a></td>
+                  <td class="code-line"><code>cron = &quot;0.13&quot;</code></td>
+                </tr><tr id="L22">
+                  <td class="line-number"><a href="#L22">22</a></td>
+                  <td class="code-line"><code>ed25519-dalek = { version = &quot;2.1&quot;, features = [&quot;rand_core&quot;] }</code></td>
+                </tr><tr id="L23">
+                  <td class="line-number"><a href="#L23">23</a></td>
+                  <td class="code-line"><code>futures = &quot;0.3&quot;</code></td>
+                </tr><tr id="L24">
+                  <td class="line-number"><a href="#L24">24</a></td>
+                  <td class="code-line"><code>hex = &quot;0.4&quot;</code></td>
+                </tr><tr id="L25">
+                  <td class="line-number"><a href="#L25">25</a></td>
+                  <td class="code-line"><code>rand = &quot;0.8&quot;</code></td>
+                </tr><tr id="L26">
+                  <td class="line-number"><a href="#L26">26</a></td>
+                  <td class="code-line"><code>reqwest = { version = &quot;0.12&quot;, default-features = false, features = [&quot;json&quot;, &quot;rustls-tls&quot;] }</code></td>
+                </tr><tr id="L27">
+                  <td class="line-number"><a href="#L27">27</a></td>
+                  <td class="code-line"><code>serde = { version = &quot;1.0&quot;, features = [&quot;derive&quot;] }</code></td>
+                </tr><tr id="L28">
+                  <td class="line-number"><a href="#L28">28</a></td>
+                  <td class="code-line"><code>serde_json = &quot;1.0&quot;</code></td>
+                </tr><tr id="L29">
+                  <td class="line-number"><a href="#L29">29</a></td>
+                  <td class="code-line"><code>sha2 = &quot;0.10&quot;</code></td>
+                </tr><tr id="L30">
+                  <td class="line-number"><a href="#L30">30</a></td>
+                  <td class="code-line"><code>tokio = { version = &quot;1.48&quot;, features = [&quot;full&quot;] }</code></td>
+                </tr><tr id="L31">
+                  <td class="line-number"><a href="#L31">31</a></td>
+                  <td class="code-line"><code>tracing = &quot;0.1&quot;</code></td>
+                </tr><tr id="L32">
+                  <td class="line-number"><a href="#L32">32</a></td>
+                  <td class="code-line"><code>tracing-subscriber = { version = &quot;0.3&quot;, features = [&quot;env-filter&quot;, &quot;fmt&quot;] }</code></td>
+                </tr><tr id="L33">
+                  <td class="line-number"><a href="#L33">33</a></td>
+                  <td class="code-line"><code>url = { version = &quot;2.5&quot;, features = [&quot;serde&quot;] }</code></td>
+                </tr><tr id="L34">
+                  <td class="line-number"><a href="#L34">34</a></td>
+                  <td class="code-line"><code>uuid = { version = &quot;1.18&quot;, features = [&quot;serde&quot;, &quot;v4&quot;] }</code></td>
+                </tr><tr id="L35">
+                  <td class="line-number"><a href="#L35">35</a></td>
+                  <td class="code-line"><code>wasmtime = &quot;44.0.1&quot;</code></td>
+                </tr><tr id="L36">
+                  <td class="line-number"><a href="#L36">36</a></td>
+                  <td class="code-line"><code>wasmtime-wasi = { version = &quot;44.0.1&quot;, default-features = false, features = [&quot;p1&quot;] }</code></td>
+                </tr><tr id="L37">
+                  <td class="line-number"><a href="#L37">37</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L38">
+                  <td class="line-number"><a href="#L38">38</a></td>
+                  <td class="code-line"><code>[dev-dependencies]</code></td>
+                </tr><tr id="L39">
+                  <td class="line-number"><a href="#L39">39</a></td>
+                  <td class="code-line"><code>tempfile = &quot;3.12&quot;</code></td>
+                </tr><tr id="L40">
+                  <td class="line-number"><a href="#L40">40</a></td>
+                  <td class="code-line"><code>wat = &quot;1.248&quot;</code></td>
+                </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>Gossip Protocol</span>
+    <span>Peer-witnessed monitoring, compute, storage, DNS, swaps, and publishing.</span>
+  </footer>
+
+  <script src="/assets/app.js" defer></script>
+</body>
+</html>

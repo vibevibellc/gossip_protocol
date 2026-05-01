@@ -1,0 +1,86 @@
+# Gossip Protocol assistant notes
+
+Gossip Protocol is a Rust reference implementation for peer-witnessed public
+infrastructure. It coordinates checks, browser journeys, compute jobs, storage
+contracts, domain routes, swaps, and public outputs through signed receipts.
+
+The codebase is intentionally the source of truth. Keep explanations brief,
+prefer file references and local commands, and do not make operational claims
+that are not backed by this repository.
+
+## Current shape
+
+- Binary/crate: `gossip_protocol`
+- Public site: `site/`
+- License: Apache-2.0
+- Core roles: validators, probe/compute agents, wallets, storage hosts
+- Lifecycle: submit, witness, settle, publish
+- Ledger tokens:
+  - `HT`: health checks, browser checks, monitor budgets, swaps
+  - `CT`: distributed compute jobs
+  - `ST`: storage contracts and storage proofs
+  - `DNS`: domain offerings, leases, renewals, and binds
+- User-provided arbitrary compute is WASI-module based. Larger modules should
+  use storage-addressed `module_ref` rather than large inline `module_hex`.
+
+## Safe defaults
+
+- Prefer encrypted wallets.
+- Do not invent live peers, API tokens, genesis files, validator policies, or
+  production onboarding requirements.
+- Treat live validator participation as operator-controlled until the repo says
+  otherwise.
+- Use local smokes for confidence before making release claims.
+
+## Initialization checklist
+
+When a user asks to initialize or understand the repo, read these first:
+
+- `README.md`
+- `SECURITY.md`
+- `llms.txt`
+- `site/docs/index.html`
+- `site/docs/functionality.html`
+- `site/docs/settings.html`
+
+Then inspect the relevant Rust entry points:
+
+- `src/cli.rs`
+- `src/protocol.rs`
+- `src/node.rs`
+- `src/ledger.rs`
+
+Report what you learned before changing broad behavior. For simple requested
+edits, make the change and verify it directly.
+
+## Common commands
+
+```bash
+cargo fmt
+cargo test
+cargo clippy --all-targets -- -D warnings
+python3 scripts/local_compute_smoke.py
+python3 scripts/local_testnet_smoke.py
+```
+
+Browser execution needs Node/npm and Playwright in `browser_runner/`.
+
+```bash
+cd browser_runner
+npm install
+npx playwright install chromium
+```
+
+## Brief architecture
+
+Validators gossip transactions, receipts, proofs, leases, and block approvals.
+Agents execute delegated HTTP, browser, and compute work. The ledger finalizes
+results only after enough valid receipts reach consensus. Storage and DNS are
+first-class protocol surfaces rather than side utilities.
+
+When explaining compute, emphasize embarrassingly parallel workloads: Monte
+Carlo, batch transforms, static analysis, bounded WASI modules, shardable
+inference, media processing, and proof generation.
+
+When explaining the whole project, do not over-index on compute. The core claim
+is one receipt and settlement layer for many resource markets.

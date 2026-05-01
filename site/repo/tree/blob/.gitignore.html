@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>.gitignore - Gossip Protocol Source Mirror</title>
+  <meta name="description" content="Static source viewer for .gitignore.">
+  <meta property="og:title" content=".gitignore - Gossip Protocol Source Mirror">
+  <meta property="og:description" content="Static source viewer for .gitignore.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://gossip-protocol.com/repo/tree/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/styles.css?v=responsive-3" as="style">
+  <link rel="stylesheet" href="/assets/styles.css?v=responsive-3">
+</head>
+<body>
+  <canvas id="network-canvas" aria-hidden="true"></canvas>
+
+  <main class="docs-page repo-browser">
+    <nav class="docs-nav" aria-label="Repository mirror navigation">
+      <a href="/">Home</a>
+      <a href="/docs/">Docs</a>
+      <a href="/repo/">Repo</a>
+      <a href="/repo/tree/">Source tree</a>
+      <a href="https://github.com/vibevibellc/gossip_protocol">GitHub</a>
+    </nav>
+
+    <section class="docs-hero repo-file-hero">
+      <p class="eyebrow">source file</p>
+      <h1>.gitignore</h1>
+      <p class="hero-text">478 B mirrored from the public source tree.</p>
+      <div class="hero-actions hero-actions-left" aria-label="Source file actions">
+        <a class="cta-button cta-button-primary" href="/repo/tree/raw/.gitignore">Open raw</a>
+        <a class="cta-button cta-button-secondary" href="/repo/tree/">Parent directory</a>
+        
+      </div>
+    </section>
+
+    <section class="docs-section repo-file-section">
+      <h2>Source</h2>
+      <div class="repo-breadcrumbs"><a href="/repo/tree/">gossip_protocol</a></div>
+      <div class="repo-code-wrap">
+        <table class="repo-code">
+          <tbody>
+            <tr id="L1">
+                  <td class="line-number"><a href="#L1">1</a></td>
+                  <td class="code-line"><code># Rust build outputs</code></td>
+                </tr><tr id="L2">
+                  <td class="line-number"><a href="#L2">2</a></td>
+                  <td class="code-line"><code>/target</code></td>
+                </tr><tr id="L3">
+                  <td class="line-number"><a href="#L3">3</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L4">
+                  <td class="line-number"><a href="#L4">4</a></td>
+                  <td class="code-line"><code># Local protocol runtime data</code></td>
+                </tr><tr id="L5">
+                  <td class="line-number"><a href="#L5">5</a></td>
+                  <td class="code-line"><code>/wallets</code></td>
+                </tr><tr id="L6">
+                  <td class="line-number"><a href="#L6">6</a></td>
+                  <td class="code-line"><code>/state</code></td>
+                </tr><tr id="L7">
+                  <td class="line-number"><a href="#L7">7</a></td>
+                  <td class="code-line"><code>/tmp</code></td>
+                </tr><tr id="L8">
+                  <td class="line-number"><a href="#L8">8</a></td>
+                  <td class="code-line"><code>/artifacts</code></td>
+                </tr><tr id="L9">
+                  <td class="line-number"><a href="#L9">9</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L10">
+                  <td class="line-number"><a href="#L10">10</a></td>
+                  <td class="code-line"><code># Secrets, keys, local config, and certificates</code></td>
+                </tr><tr id="L11">
+                  <td class="line-number"><a href="#L11">11</a></td>
+                  <td class="code-line"><code>.env</code></td>
+                </tr><tr id="L12">
+                  <td class="line-number"><a href="#L12">12</a></td>
+                  <td class="code-line"><code>.env.*</code></td>
+                </tr><tr id="L13">
+                  <td class="line-number"><a href="#L13">13</a></td>
+                  <td class="code-line"><code>!.env.example</code></td>
+                </tr><tr id="L14">
+                  <td class="line-number"><a href="#L14">14</a></td>
+                  <td class="code-line"><code>*.pem</code></td>
+                </tr><tr id="L15">
+                  <td class="line-number"><a href="#L15">15</a></td>
+                  <td class="code-line"><code>*.key</code></td>
+                </tr><tr id="L16">
+                  <td class="line-number"><a href="#L16">16</a></td>
+                  <td class="code-line"><code>*.crt</code></td>
+                </tr><tr id="L17">
+                  <td class="line-number"><a href="#L17">17</a></td>
+                  <td class="code-line"><code>*.csr</code></td>
+                </tr><tr id="L18">
+                  <td class="line-number"><a href="#L18">18</a></td>
+                  <td class="code-line"><code>*.p12</code></td>
+                </tr><tr id="L19">
+                  <td class="line-number"><a href="#L19">19</a></td>
+                  <td class="code-line"><code>*.pfx</code></td>
+                </tr><tr id="L20">
+                  <td class="line-number"><a href="#L20">20</a></td>
+                  <td class="code-line"><code>*.der</code></td>
+                </tr><tr id="L21">
+                  <td class="line-number"><a href="#L21">21</a></td>
+                  <td class="code-line"><code>*.jks</code></td>
+                </tr><tr id="L22">
+                  <td class="line-number"><a href="#L22">22</a></td>
+                  <td class="code-line"><code>*.keystore</code></td>
+                </tr><tr id="L23">
+                  <td class="line-number"><a href="#L23">23</a></td>
+                  <td class="code-line"><code>*.age</code></td>
+                </tr><tr id="L24">
+                  <td class="line-number"><a href="#L24">24</a></td>
+                  <td class="code-line"><code>*.asc</code></td>
+                </tr><tr id="L25">
+                  <td class="line-number"><a href="#L25">25</a></td>
+                  <td class="code-line"><code>*.gpg</code></td>
+                </tr><tr id="L26">
+                  <td class="line-number"><a href="#L26">26</a></td>
+                  <td class="code-line"><code>*secret*</code></td>
+                </tr><tr id="L27">
+                  <td class="line-number"><a href="#L27">27</a></td>
+                  <td class="code-line"><code>*secrets*</code></td>
+                </tr><tr id="L28">
+                  <td class="line-number"><a href="#L28">28</a></td>
+                  <td class="code-line"><code>*credential*</code></td>
+                </tr><tr id="L29">
+                  <td class="line-number"><a href="#L29">29</a></td>
+                  <td class="code-line"><code>*credentials*</code></td>
+                </tr><tr id="L30">
+                  <td class="line-number"><a href="#L30">30</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L31">
+                  <td class="line-number"><a href="#L31">31</a></td>
+                  <td class="code-line"><code># Local databases and logs</code></td>
+                </tr><tr id="L32">
+                  <td class="line-number"><a href="#L32">32</a></td>
+                  <td class="code-line"><code>*.db</code></td>
+                </tr><tr id="L33">
+                  <td class="line-number"><a href="#L33">33</a></td>
+                  <td class="code-line"><code>*.db-*</code></td>
+                </tr><tr id="L34">
+                  <td class="line-number"><a href="#L34">34</a></td>
+                  <td class="code-line"><code>*.sqlite</code></td>
+                </tr><tr id="L35">
+                  <td class="line-number"><a href="#L35">35</a></td>
+                  <td class="code-line"><code>*.sqlite3</code></td>
+                </tr><tr id="L36">
+                  <td class="line-number"><a href="#L36">36</a></td>
+                  <td class="code-line"><code>*.log</code></td>
+                </tr><tr id="L37">
+                  <td class="line-number"><a href="#L37">37</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L38">
+                  <td class="line-number"><a href="#L38">38</a></td>
+                  <td class="code-line"><code># JavaScript dependency/install outputs</code></td>
+                </tr><tr id="L39">
+                  <td class="line-number"><a href="#L39">39</a></td>
+                  <td class="code-line"><code>node_modules/</code></td>
+                </tr><tr id="L40">
+                  <td class="line-number"><a href="#L40">40</a></td>
+                  <td class="code-line"><code>npm-debug.log*</code></td>
+                </tr><tr id="L41">
+                  <td class="line-number"><a href="#L41">41</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L42">
+                  <td class="line-number"><a href="#L42">42</a></td>
+                  <td class="code-line"><code># Python and OS/editor noise</code></td>
+                </tr><tr id="L43">
+                  <td class="line-number"><a href="#L43">43</a></td>
+                  <td class="code-line"><code>__pycache__/</code></td>
+                </tr><tr id="L44">
+                  <td class="line-number"><a href="#L44">44</a></td>
+                  <td class="code-line"><code>.DS_Store</code></td>
+                </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>Gossip Protocol</span>
+    <span>Peer-witnessed monitoring, compute, storage, DNS, swaps, and publishing.</span>
+  </footer>
+
+  <script src="/assets/app.js" defer></script>
+</body>
+</html>

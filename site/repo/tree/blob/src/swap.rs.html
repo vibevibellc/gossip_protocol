@@ -1,0 +1,1089 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>src/swap.rs - Gossip Protocol Source Mirror</title>
+  <meta name="description" content="Static source viewer for src/swap.rs.">
+  <meta property="og:title" content="src/swap.rs - Gossip Protocol Source Mirror">
+  <meta property="og:description" content="Static source viewer for src/swap.rs.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://gossip-protocol.com/repo/tree/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/styles.css?v=responsive-3" as="style">
+  <link rel="stylesheet" href="/assets/styles.css?v=responsive-3">
+</head>
+<body>
+  <canvas id="network-canvas" aria-hidden="true"></canvas>
+
+  <main class="docs-page repo-browser">
+    <nav class="docs-nav" aria-label="Repository mirror navigation">
+      <a href="/">Home</a>
+      <a href="/docs/">Docs</a>
+      <a href="/repo/">Repo</a>
+      <a href="/repo/tree/">Source tree</a>
+      <a href="https://github.com/vibevibellc/gossip_protocol">GitHub</a>
+    </nav>
+
+    <section class="docs-hero repo-file-hero">
+      <p class="eyebrow">source file</p>
+      <h1>src/swap.rs</h1>
+      <p class="hero-text">11.2 KB mirrored from the public source tree.</p>
+      <div class="hero-actions hero-actions-left" aria-label="Source file actions">
+        <a class="cta-button cta-button-primary" href="/repo/tree/raw/src/swap.rs">Open raw</a>
+        <a class="cta-button cta-button-secondary" href="/repo/tree/src/">Parent directory</a>
+        
+      </div>
+    </section>
+
+    <section class="docs-section repo-file-section">
+      <h2>Source</h2>
+      <div class="repo-breadcrumbs"><a href="/repo/tree/">gossip_protocol</a><span>/</span><a href="/repo/tree/src/">src</a></div>
+      <div class="repo-code-wrap">
+        <table class="repo-code">
+          <tbody>
+            <tr id="L1">
+                  <td class="line-number"><a href="#L1">1</a></td>
+                  <td class="code-line"><code>use std::{fs, path::Path};</code></td>
+                </tr><tr id="L2">
+                  <td class="line-number"><a href="#L2">2</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L3">
+                  <td class="line-number"><a href="#L3">3</a></td>
+                  <td class="code-line"><code>use anyhow::{Context, Result};</code></td>
+                </tr><tr id="L4">
+                  <td class="line-number"><a href="#L4">4</a></td>
+                  <td class="code-line"><code>use async_trait::async_trait;</code></td>
+                </tr><tr id="L5">
+                  <td class="line-number"><a href="#L5">5</a></td>
+                  <td class="code-line"><code>use chrono::{Duration, Utc};</code></td>
+                </tr><tr id="L6">
+                  <td class="line-number"><a href="#L6">6</a></td>
+                  <td class="code-line"><code>use reqwest::header::{HeaderMap, HeaderName, HeaderValue};</code></td>
+                </tr><tr id="L7">
+                  <td class="line-number"><a href="#L7">7</a></td>
+                  <td class="code-line"><code>use serde::{Deserialize, Serialize};</code></td>
+                </tr><tr id="L8">
+                  <td class="line-number"><a href="#L8">8</a></td>
+                  <td class="code-line"><code>use serde_json::Value;</code></td>
+                </tr><tr id="L9">
+                  <td class="line-number"><a href="#L9">9</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L10">
+                  <td class="line-number"><a href="#L10">10</a></td>
+                  <td class="code-line"><code>use crate::protocol::{</code></td>
+                </tr><tr id="L11">
+                  <td class="line-number"><a href="#L11">11</a></td>
+                  <td class="code-line"><code>    MICRO_HT, SettlementAsset, SignedSwapQuote, SwapExecutionPlan, SwapQuote, SwapQuoteRequest,</code></td>
+                </tr><tr id="L12">
+                  <td class="line-number"><a href="#L12">12</a></td>
+                  <td class="code-line"><code>    SwapSide, new_request_id, validate_swap_quote_request,</code></td>
+                </tr><tr id="L13">
+                  <td class="line-number"><a href="#L13">13</a></td>
+                  <td class="code-line"><code>};</code></td>
+                </tr><tr id="L14">
+                  <td class="line-number"><a href="#L14">14</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L15">
+                  <td class="line-number"><a href="#L15">15</a></td>
+                  <td class="code-line"><code>#[derive(Debug, Clone, Serialize, Deserialize)]</code></td>
+                </tr><tr id="L16">
+                  <td class="line-number"><a href="#L16">16</a></td>
+                  <td class="code-line"><code>#[serde(tag = &quot;type&quot;, rename_all = &quot;snake_case&quot;)]</code></td>
+                </tr><tr id="L17">
+                  <td class="line-number"><a href="#L17">17</a></td>
+                  <td class="code-line"><code>pub enum SwapAdapterConfig {</code></td>
+                </tr><tr id="L18">
+                  <td class="line-number"><a href="#L18">18</a></td>
+                  <td class="code-line"><code>    FixedRate {</code></td>
+                </tr><tr id="L19">
+                  <td class="line-number"><a href="#L19">19</a></td>
+                  <td class="code-line"><code>        id: String,</code></td>
+                </tr><tr id="L20">
+                  <td class="line-number"><a href="#L20">20</a></td>
+                  <td class="code-line"><code>        settlement_asset: SettlementAsset,</code></td>
+                </tr><tr id="L21">
+                  <td class="line-number"><a href="#L21">21</a></td>
+                  <td class="code-line"><code>        micro_asset_per_token: u64,</code></td>
+                </tr><tr id="L22">
+                  <td class="line-number"><a href="#L22">22</a></td>
+                  <td class="code-line"><code>        settlement_decimals: u8,</code></td>
+                </tr><tr id="L23">
+                  <td class="line-number"><a href="#L23">23</a></td>
+                  <td class="code-line"><code>        instructions: Vec&lt;String&gt;,</code></td>
+                </tr><tr id="L24">
+                  <td class="line-number"><a href="#L24">24</a></td>
+                  <td class="code-line"><code>    },</code></td>
+                </tr><tr id="L25">
+                  <td class="line-number"><a href="#L25">25</a></td>
+                  <td class="code-line"><code>    HttpBridge {</code></td>
+                </tr><tr id="L26">
+                  <td class="line-number"><a href="#L26">26</a></td>
+                  <td class="code-line"><code>        id: String,</code></td>
+                </tr><tr id="L27">
+                  <td class="line-number"><a href="#L27">27</a></td>
+                  <td class="code-line"><code>        settlement_asset: SettlementAsset,</code></td>
+                </tr><tr id="L28">
+                  <td class="line-number"><a href="#L28">28</a></td>
+                  <td class="code-line"><code>        quote_url: String,</code></td>
+                </tr><tr id="L29">
+                  <td class="line-number"><a href="#L29">29</a></td>
+                  <td class="code-line"><code>        execution_url: String,</code></td>
+                </tr><tr id="L30">
+                  <td class="line-number"><a href="#L30">30</a></td>
+                  <td class="code-line"><code>        auth_header_name: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L31">
+                  <td class="line-number"><a href="#L31">31</a></td>
+                  <td class="code-line"><code>        auth_header_value: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L32">
+                  <td class="line-number"><a href="#L32">32</a></td>
+                  <td class="code-line"><code>    },</code></td>
+                </tr><tr id="L33">
+                  <td class="line-number"><a href="#L33">33</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L34">
+                  <td class="line-number"><a href="#L34">34</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L35">
+                  <td class="line-number"><a href="#L35">35</a></td>
+                  <td class="code-line"><code>#[derive(Debug, Clone, Serialize, Deserialize, Default)]</code></td>
+                </tr><tr id="L36">
+                  <td class="line-number"><a href="#L36">36</a></td>
+                  <td class="code-line"><code>pub struct SwapConfigFile {</code></td>
+                </tr><tr id="L37">
+                  <td class="line-number"><a href="#L37">37</a></td>
+                  <td class="code-line"><code>    #[serde(default)]</code></td>
+                </tr><tr id="L38">
+                  <td class="line-number"><a href="#L38">38</a></td>
+                  <td class="code-line"><code>    pub adapters: Vec&lt;SwapAdapterConfig&gt;,</code></td>
+                </tr><tr id="L39">
+                  <td class="line-number"><a href="#L39">39</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L40">
+                  <td class="line-number"><a href="#L40">40</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L41">
+                  <td class="line-number"><a href="#L41">41</a></td>
+                  <td class="code-line"><code>#[async_trait]</code></td>
+                </tr><tr id="L42">
+                  <td class="line-number"><a href="#L42">42</a></td>
+                  <td class="code-line"><code>pub trait SwapAdapter: Send + Sync {</code></td>
+                </tr><tr id="L43">
+                  <td class="line-number"><a href="#L43">43</a></td>
+                  <td class="code-line"><code>    fn id(&amp;self) -&gt; &amp;str;</code></td>
+                </tr><tr id="L44">
+                  <td class="line-number"><a href="#L44">44</a></td>
+                  <td class="code-line"><code>    fn settlement_asset(&amp;self) -&gt; &amp;SettlementAsset;</code></td>
+                </tr><tr id="L45">
+                  <td class="line-number"><a href="#L45">45</a></td>
+                  <td class="code-line"><code>    async fn quote(&amp;self, request: &amp;SwapQuoteRequest) -&gt; Result&lt;SwapQuote&gt;;</code></td>
+                </tr><tr id="L46">
+                  <td class="line-number"><a href="#L46">46</a></td>
+                  <td class="code-line"><code>    async fn execution_plan(&amp;self, quote: &amp;SignedSwapQuote) -&gt; Result&lt;SwapExecutionPlan&gt;;</code></td>
+                </tr><tr id="L47">
+                  <td class="line-number"><a href="#L47">47</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L48">
+                  <td class="line-number"><a href="#L48">48</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L49">
+                  <td class="line-number"><a href="#L49">49</a></td>
+                  <td class="code-line"><code>pub struct SwapRegistry {</code></td>
+                </tr><tr id="L50">
+                  <td class="line-number"><a href="#L50">50</a></td>
+                  <td class="code-line"><code>    adapters: Vec&lt;Box&lt;dyn SwapAdapter&gt;&gt;,</code></td>
+                </tr><tr id="L51">
+                  <td class="line-number"><a href="#L51">51</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L52">
+                  <td class="line-number"><a href="#L52">52</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L53">
+                  <td class="line-number"><a href="#L53">53</a></td>
+                  <td class="code-line"><code>impl SwapRegistry {</code></td>
+                </tr><tr id="L54">
+                  <td class="line-number"><a href="#L54">54</a></td>
+                  <td class="code-line"><code>    pub fn from_optional_file(path: Option&lt;&amp;Path&gt;) -&gt; Result&lt;Self&gt; {</code></td>
+                </tr><tr id="L55">
+                  <td class="line-number"><a href="#L55">55</a></td>
+                  <td class="code-line"><code>        let mut adapters: Vec&lt;Box&lt;dyn SwapAdapter&gt;&gt; = Vec::new();</code></td>
+                </tr><tr id="L56">
+                  <td class="line-number"><a href="#L56">56</a></td>
+                  <td class="code-line"><code>        adapters.push(Box::new(FixedRateSwapAdapter {</code></td>
+                </tr><tr id="L57">
+                  <td class="line-number"><a href="#L57">57</a></td>
+                  <td class="code-line"><code>            id: &quot;fixed-usdc-demo&quot;.into(),</code></td>
+                </tr><tr id="L58">
+                  <td class="line-number"><a href="#L58">58</a></td>
+                  <td class="code-line"><code>            settlement_asset: SettlementAsset::Usdc,</code></td>
+                </tr><tr id="L59">
+                  <td class="line-number"><a href="#L59">59</a></td>
+                  <td class="code-line"><code>            micro_asset_per_token: 1_000_000,</code></td>
+                </tr><tr id="L60">
+                  <td class="line-number"><a href="#L60">60</a></td>
+                  <td class="code-line"><code>            settlement_decimals: 6,</code></td>
+                </tr><tr id="L61">
+                  <td class="line-number"><a href="#L61">61</a></td>
+                  <td class="code-line"><code>            instructions: vec![</code></td>
+                </tr><tr id="L62">
+                  <td class="line-number"><a href="#L62">62</a></td>
+                  <td class="code-line"><code>                &quot;Send USDC to your configured treasury or OTC desk.&quot;.into(),</code></td>
+                </tr><tr id="L63">
+                  <td class="line-number"><a href="#L63">63</a></td>
+                  <td class="code-line"><code>                &quot;After settlement clears, transfer HT from the treasury wallet to the buyer address.&quot;.into(),</code></td>
+                </tr><tr id="L64">
+                  <td class="line-number"><a href="#L64">64</a></td>
+                  <td class="code-line"><code>            ],</code></td>
+                </tr><tr id="L65">
+                  <td class="line-number"><a href="#L65">65</a></td>
+                  <td class="code-line"><code>        }));</code></td>
+                </tr><tr id="L66">
+                  <td class="line-number"><a href="#L66">66</a></td>
+                  <td class="code-line"><code>        adapters.push(Box::new(FixedRateSwapAdapter {</code></td>
+                </tr><tr id="L67">
+                  <td class="line-number"><a href="#L67">67</a></td>
+                  <td class="code-line"><code>            id: &quot;fixed-usdt-demo&quot;.into(),</code></td>
+                </tr><tr id="L68">
+                  <td class="line-number"><a href="#L68">68</a></td>
+                  <td class="code-line"><code>            settlement_asset: SettlementAsset::Usdt,</code></td>
+                </tr><tr id="L69">
+                  <td class="line-number"><a href="#L69">69</a></td>
+                  <td class="code-line"><code>            micro_asset_per_token: 1_000_000,</code></td>
+                </tr><tr id="L70">
+                  <td class="line-number"><a href="#L70">70</a></td>
+                  <td class="code-line"><code>            settlement_decimals: 6,</code></td>
+                </tr><tr id="L71">
+                  <td class="line-number"><a href="#L71">71</a></td>
+                  <td class="code-line"><code>            instructions: vec![</code></td>
+                </tr><tr id="L72">
+                  <td class="line-number"><a href="#L72">72</a></td>
+                  <td class="code-line"><code>                &quot;Send USDT to your configured treasury or OTC desk.&quot;.into(),</code></td>
+                </tr><tr id="L73">
+                  <td class="line-number"><a href="#L73">73</a></td>
+                  <td class="code-line"><code>                &quot;After settlement clears, transfer HT from the treasury wallet to the buyer address.&quot;.into(),</code></td>
+                </tr><tr id="L74">
+                  <td class="line-number"><a href="#L74">74</a></td>
+                  <td class="code-line"><code>            ],</code></td>
+                </tr><tr id="L75">
+                  <td class="line-number"><a href="#L75">75</a></td>
+                  <td class="code-line"><code>        }));</code></td>
+                </tr><tr id="L76">
+                  <td class="line-number"><a href="#L76">76</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L77">
+                  <td class="line-number"><a href="#L77">77</a></td>
+                  <td class="code-line"><code>        if let Some(path) = path {</code></td>
+                </tr><tr id="L78">
+                  <td class="line-number"><a href="#L78">78</a></td>
+                  <td class="code-line"><code>            let contents = fs::read_to_string(path)</code></td>
+                </tr><tr id="L79">
+                  <td class="line-number"><a href="#L79">79</a></td>
+                  <td class="code-line"><code>                .with_context(|| format!(&quot;failed to read swap config {}&quot;, path.display()))?;</code></td>
+                </tr><tr id="L80">
+                  <td class="line-number"><a href="#L80">80</a></td>
+                  <td class="code-line"><code>            let config: SwapConfigFile = serde_json::from_str(&amp;contents)?;</code></td>
+                </tr><tr id="L81">
+                  <td class="line-number"><a href="#L81">81</a></td>
+                  <td class="code-line"><code>            for adapter in config.adapters {</code></td>
+                </tr><tr id="L82">
+                  <td class="line-number"><a href="#L82">82</a></td>
+                  <td class="code-line"><code>                adapters.push(adapter.into_adapter()?);</code></td>
+                </tr><tr id="L83">
+                  <td class="line-number"><a href="#L83">83</a></td>
+                  <td class="code-line"><code>            }</code></td>
+                </tr><tr id="L84">
+                  <td class="line-number"><a href="#L84">84</a></td>
+                  <td class="code-line"><code>        }</code></td>
+                </tr><tr id="L85">
+                  <td class="line-number"><a href="#L85">85</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L86">
+                  <td class="line-number"><a href="#L86">86</a></td>
+                  <td class="code-line"><code>        Ok(Self { adapters })</code></td>
+                </tr><tr id="L87">
+                  <td class="line-number"><a href="#L87">87</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L88">
+                  <td class="line-number"><a href="#L88">88</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L89">
+                  <td class="line-number"><a href="#L89">89</a></td>
+                  <td class="code-line"><code>    pub fn adapter_ids(&amp;self) -&gt; Vec&lt;String&gt; {</code></td>
+                </tr><tr id="L90">
+                  <td class="line-number"><a href="#L90">90</a></td>
+                  <td class="code-line"><code>        self.adapters</code></td>
+                </tr><tr id="L91">
+                  <td class="line-number"><a href="#L91">91</a></td>
+                  <td class="code-line"><code>            .iter()</code></td>
+                </tr><tr id="L92">
+                  <td class="line-number"><a href="#L92">92</a></td>
+                  <td class="code-line"><code>            .map(|adapter| adapter.id().to_string())</code></td>
+                </tr><tr id="L93">
+                  <td class="line-number"><a href="#L93">93</a></td>
+                  <td class="code-line"><code>            .collect()</code></td>
+                </tr><tr id="L94">
+                  <td class="line-number"><a href="#L94">94</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L95">
+                  <td class="line-number"><a href="#L95">95</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L96">
+                  <td class="line-number"><a href="#L96">96</a></td>
+                  <td class="code-line"><code>    pub async fn quote(&amp;self, request: &amp;SwapQuoteRequest) -&gt; Result&lt;SwapQuote&gt; {</code></td>
+                </tr><tr id="L97">
+                  <td class="line-number"><a href="#L97">97</a></td>
+                  <td class="code-line"><code>        validate_swap_quote_request(request)?;</code></td>
+                </tr><tr id="L98">
+                  <td class="line-number"><a href="#L98">98</a></td>
+                  <td class="code-line"><code>        let adapter = if let Some(adapter_id) = &amp;request.adapter {</code></td>
+                </tr><tr id="L99">
+                  <td class="line-number"><a href="#L99">99</a></td>
+                  <td class="code-line"><code>            self.adapters</code></td>
+                </tr><tr id="L100">
+                  <td class="line-number"><a href="#L100">100</a></td>
+                  <td class="code-line"><code>                .iter()</code></td>
+                </tr><tr id="L101">
+                  <td class="line-number"><a href="#L101">101</a></td>
+                  <td class="code-line"><code>                .find(|adapter| adapter.id() == adapter_id)</code></td>
+                </tr><tr id="L102">
+                  <td class="line-number"><a href="#L102">102</a></td>
+                  <td class="code-line"><code>                .ok_or_else(|| anyhow::anyhow!(&quot;unknown adapter {adapter_id}&quot;))?</code></td>
+                </tr><tr id="L103">
+                  <td class="line-number"><a href="#L103">103</a></td>
+                  <td class="code-line"><code>        } else {</code></td>
+                </tr><tr id="L104">
+                  <td class="line-number"><a href="#L104">104</a></td>
+                  <td class="code-line"><code>            self.adapters</code></td>
+                </tr><tr id="L105">
+                  <td class="line-number"><a href="#L105">105</a></td>
+                  <td class="code-line"><code>                .iter()</code></td>
+                </tr><tr id="L106">
+                  <td class="line-number"><a href="#L106">106</a></td>
+                  <td class="code-line"><code>                .find(|adapter| adapter.settlement_asset() == &amp;request.settlement_asset)</code></td>
+                </tr><tr id="L107">
+                  <td class="line-number"><a href="#L107">107</a></td>
+                  <td class="code-line"><code>                .ok_or_else(|| {</code></td>
+                </tr><tr id="L108">
+                  <td class="line-number"><a href="#L108">108</a></td>
+                  <td class="code-line"><code>                    anyhow::anyhow!(&quot;no adapter available for {:?}&quot;, request.settlement_asset)</code></td>
+                </tr><tr id="L109">
+                  <td class="line-number"><a href="#L109">109</a></td>
+                  <td class="code-line"><code>                })?</code></td>
+                </tr><tr id="L110">
+                  <td class="line-number"><a href="#L110">110</a></td>
+                  <td class="code-line"><code>        };</code></td>
+                </tr><tr id="L111">
+                  <td class="line-number"><a href="#L111">111</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L112">
+                  <td class="line-number"><a href="#L112">112</a></td>
+                  <td class="code-line"><code>        adapter.quote(request).await</code></td>
+                </tr><tr id="L113">
+                  <td class="line-number"><a href="#L113">113</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L114">
+                  <td class="line-number"><a href="#L114">114</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L115">
+                  <td class="line-number"><a href="#L115">115</a></td>
+                  <td class="code-line"><code>    pub async fn execution_plan(&amp;self, quote: &amp;SignedSwapQuote) -&gt; Result&lt;SwapExecutionPlan&gt; {</code></td>
+                </tr><tr id="L116">
+                  <td class="line-number"><a href="#L116">116</a></td>
+                  <td class="code-line"><code>        let adapter = self</code></td>
+                </tr><tr id="L117">
+                  <td class="line-number"><a href="#L117">117</a></td>
+                  <td class="code-line"><code>            .adapters</code></td>
+                </tr><tr id="L118">
+                  <td class="line-number"><a href="#L118">118</a></td>
+                  <td class="code-line"><code>            .iter()</code></td>
+                </tr><tr id="L119">
+                  <td class="line-number"><a href="#L119">119</a></td>
+                  <td class="code-line"><code>            .find(|adapter| adapter.id() == quote.quote.adapter)</code></td>
+                </tr><tr id="L120">
+                  <td class="line-number"><a href="#L120">120</a></td>
+                  <td class="code-line"><code>            .ok_or_else(|| anyhow::anyhow!(&quot;unknown adapter {}&quot;, quote.quote.adapter))?;</code></td>
+                </tr><tr id="L121">
+                  <td class="line-number"><a href="#L121">121</a></td>
+                  <td class="code-line"><code>        adapter.execution_plan(quote).await</code></td>
+                </tr><tr id="L122">
+                  <td class="line-number"><a href="#L122">122</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L123">
+                  <td class="line-number"><a href="#L123">123</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L124">
+                  <td class="line-number"><a href="#L124">124</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L125">
+                  <td class="line-number"><a href="#L125">125</a></td>
+                  <td class="code-line"><code>impl SwapAdapterConfig {</code></td>
+                </tr><tr id="L126">
+                  <td class="line-number"><a href="#L126">126</a></td>
+                  <td class="code-line"><code>    fn into_adapter(self) -&gt; Result&lt;Box&lt;dyn SwapAdapter&gt;&gt; {</code></td>
+                </tr><tr id="L127">
+                  <td class="line-number"><a href="#L127">127</a></td>
+                  <td class="code-line"><code>        match self {</code></td>
+                </tr><tr id="L128">
+                  <td class="line-number"><a href="#L128">128</a></td>
+                  <td class="code-line"><code>            SwapAdapterConfig::FixedRate {</code></td>
+                </tr><tr id="L129">
+                  <td class="line-number"><a href="#L129">129</a></td>
+                  <td class="code-line"><code>                id,</code></td>
+                </tr><tr id="L130">
+                  <td class="line-number"><a href="#L130">130</a></td>
+                  <td class="code-line"><code>                settlement_asset,</code></td>
+                </tr><tr id="L131">
+                  <td class="line-number"><a href="#L131">131</a></td>
+                  <td class="code-line"><code>                micro_asset_per_token,</code></td>
+                </tr><tr id="L132">
+                  <td class="line-number"><a href="#L132">132</a></td>
+                  <td class="code-line"><code>                settlement_decimals,</code></td>
+                </tr><tr id="L133">
+                  <td class="line-number"><a href="#L133">133</a></td>
+                  <td class="code-line"><code>                instructions,</code></td>
+                </tr><tr id="L134">
+                  <td class="line-number"><a href="#L134">134</a></td>
+                  <td class="code-line"><code>            } =&gt; Ok(Box::new(FixedRateSwapAdapter {</code></td>
+                </tr><tr id="L135">
+                  <td class="line-number"><a href="#L135">135</a></td>
+                  <td class="code-line"><code>                id,</code></td>
+                </tr><tr id="L136">
+                  <td class="line-number"><a href="#L136">136</a></td>
+                  <td class="code-line"><code>                settlement_asset,</code></td>
+                </tr><tr id="L137">
+                  <td class="line-number"><a href="#L137">137</a></td>
+                  <td class="code-line"><code>                micro_asset_per_token,</code></td>
+                </tr><tr id="L138">
+                  <td class="line-number"><a href="#L138">138</a></td>
+                  <td class="code-line"><code>                settlement_decimals,</code></td>
+                </tr><tr id="L139">
+                  <td class="line-number"><a href="#L139">139</a></td>
+                  <td class="code-line"><code>                instructions,</code></td>
+                </tr><tr id="L140">
+                  <td class="line-number"><a href="#L140">140</a></td>
+                  <td class="code-line"><code>            })),</code></td>
+                </tr><tr id="L141">
+                  <td class="line-number"><a href="#L141">141</a></td>
+                  <td class="code-line"><code>            SwapAdapterConfig::HttpBridge {</code></td>
+                </tr><tr id="L142">
+                  <td class="line-number"><a href="#L142">142</a></td>
+                  <td class="code-line"><code>                id,</code></td>
+                </tr><tr id="L143">
+                  <td class="line-number"><a href="#L143">143</a></td>
+                  <td class="code-line"><code>                settlement_asset,</code></td>
+                </tr><tr id="L144">
+                  <td class="line-number"><a href="#L144">144</a></td>
+                  <td class="code-line"><code>                quote_url,</code></td>
+                </tr><tr id="L145">
+                  <td class="line-number"><a href="#L145">145</a></td>
+                  <td class="code-line"><code>                execution_url,</code></td>
+                </tr><tr id="L146">
+                  <td class="line-number"><a href="#L146">146</a></td>
+                  <td class="code-line"><code>                auth_header_name,</code></td>
+                </tr><tr id="L147">
+                  <td class="line-number"><a href="#L147">147</a></td>
+                  <td class="code-line"><code>                auth_header_value,</code></td>
+                </tr><tr id="L148">
+                  <td class="line-number"><a href="#L148">148</a></td>
+                  <td class="code-line"><code>            } =&gt; Ok(Box::new(HttpBridgeSwapAdapter {</code></td>
+                </tr><tr id="L149">
+                  <td class="line-number"><a href="#L149">149</a></td>
+                  <td class="code-line"><code>                id,</code></td>
+                </tr><tr id="L150">
+                  <td class="line-number"><a href="#L150">150</a></td>
+                  <td class="code-line"><code>                settlement_asset,</code></td>
+                </tr><tr id="L151">
+                  <td class="line-number"><a href="#L151">151</a></td>
+                  <td class="code-line"><code>                quote_url,</code></td>
+                </tr><tr id="L152">
+                  <td class="line-number"><a href="#L152">152</a></td>
+                  <td class="code-line"><code>                execution_url,</code></td>
+                </tr><tr id="L153">
+                  <td class="line-number"><a href="#L153">153</a></td>
+                  <td class="code-line"><code>                auth_header_name,</code></td>
+                </tr><tr id="L154">
+                  <td class="line-number"><a href="#L154">154</a></td>
+                  <td class="code-line"><code>                auth_header_value,</code></td>
+                </tr><tr id="L155">
+                  <td class="line-number"><a href="#L155">155</a></td>
+                  <td class="code-line"><code>                client: reqwest::Client::new(),</code></td>
+                </tr><tr id="L156">
+                  <td class="line-number"><a href="#L156">156</a></td>
+                  <td class="code-line"><code>            })),</code></td>
+                </tr><tr id="L157">
+                  <td class="line-number"><a href="#L157">157</a></td>
+                  <td class="code-line"><code>        }</code></td>
+                </tr><tr id="L158">
+                  <td class="line-number"><a href="#L158">158</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L159">
+                  <td class="line-number"><a href="#L159">159</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L160">
+                  <td class="line-number"><a href="#L160">160</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L161">
+                  <td class="line-number"><a href="#L161">161</a></td>
+                  <td class="code-line"><code>struct FixedRateSwapAdapter {</code></td>
+                </tr><tr id="L162">
+                  <td class="line-number"><a href="#L162">162</a></td>
+                  <td class="code-line"><code>    id: String,</code></td>
+                </tr><tr id="L163">
+                  <td class="line-number"><a href="#L163">163</a></td>
+                  <td class="code-line"><code>    settlement_asset: SettlementAsset,</code></td>
+                </tr><tr id="L164">
+                  <td class="line-number"><a href="#L164">164</a></td>
+                  <td class="code-line"><code>    micro_asset_per_token: u64,</code></td>
+                </tr><tr id="L165">
+                  <td class="line-number"><a href="#L165">165</a></td>
+                  <td class="code-line"><code>    settlement_decimals: u8,</code></td>
+                </tr><tr id="L166">
+                  <td class="line-number"><a href="#L166">166</a></td>
+                  <td class="code-line"><code>    instructions: Vec&lt;String&gt;,</code></td>
+                </tr><tr id="L167">
+                  <td class="line-number"><a href="#L167">167</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L168">
+                  <td class="line-number"><a href="#L168">168</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L169">
+                  <td class="line-number"><a href="#L169">169</a></td>
+                  <td class="code-line"><code>#[async_trait]</code></td>
+                </tr><tr id="L170">
+                  <td class="line-number"><a href="#L170">170</a></td>
+                  <td class="code-line"><code>impl SwapAdapter for FixedRateSwapAdapter {</code></td>
+                </tr><tr id="L171">
+                  <td class="line-number"><a href="#L171">171</a></td>
+                  <td class="code-line"><code>    fn id(&amp;self) -&gt; &amp;str {</code></td>
+                </tr><tr id="L172">
+                  <td class="line-number"><a href="#L172">172</a></td>
+                  <td class="code-line"><code>        &amp;self.id</code></td>
+                </tr><tr id="L173">
+                  <td class="line-number"><a href="#L173">173</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L174">
+                  <td class="line-number"><a href="#L174">174</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L175">
+                  <td class="line-number"><a href="#L175">175</a></td>
+                  <td class="code-line"><code>    fn settlement_asset(&amp;self) -&gt; &amp;SettlementAsset {</code></td>
+                </tr><tr id="L176">
+                  <td class="line-number"><a href="#L176">176</a></td>
+                  <td class="code-line"><code>        &amp;self.settlement_asset</code></td>
+                </tr><tr id="L177">
+                  <td class="line-number"><a href="#L177">177</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L178">
+                  <td class="line-number"><a href="#L178">178</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L179">
+                  <td class="line-number"><a href="#L179">179</a></td>
+                  <td class="code-line"><code>    async fn quote(&amp;self, request: &amp;SwapQuoteRequest) -&gt; Result&lt;SwapQuote&gt; {</code></td>
+                </tr><tr id="L180">
+                  <td class="line-number"><a href="#L180">180</a></td>
+                  <td class="code-line"><code>        let settlement_amount = request</code></td>
+                </tr><tr id="L181">
+                  <td class="line-number"><a href="#L181">181</a></td>
+                  <td class="code-line"><code>            .token_amount</code></td>
+                </tr><tr id="L182">
+                  <td class="line-number"><a href="#L182">182</a></td>
+                  <td class="code-line"><code>            .checked_mul(self.micro_asset_per_token)</code></td>
+                </tr><tr id="L183">
+                  <td class="line-number"><a href="#L183">183</a></td>
+                  <td class="code-line"><code>            .and_then(|value| value.checked_div(MICRO_HT))</code></td>
+                </tr><tr id="L184">
+                  <td class="line-number"><a href="#L184">184</a></td>
+                  <td class="code-line"><code>            .ok_or_else(|| anyhow::anyhow!(&quot;swap amount overflow&quot;))?;</code></td>
+                </tr><tr id="L185">
+                  <td class="line-number"><a href="#L185">185</a></td>
+                  <td class="code-line"><code>        Ok(SwapQuote {</code></td>
+                </tr><tr id="L186">
+                  <td class="line-number"><a href="#L186">186</a></td>
+                  <td class="code-line"><code>            chain_id: String::new(),</code></td>
+                </tr><tr id="L187">
+                  <td class="line-number"><a href="#L187">187</a></td>
+                  <td class="code-line"><code>            quote_id: new_request_id(),</code></td>
+                </tr><tr id="L188">
+                  <td class="line-number"><a href="#L188">188</a></td>
+                  <td class="code-line"><code>            wallet: request.wallet.clone(),</code></td>
+                </tr><tr id="L189">
+                  <td class="line-number"><a href="#L189">189</a></td>
+                  <td class="code-line"><code>            adapter: self.id.clone(),</code></td>
+                </tr><tr id="L190">
+                  <td class="line-number"><a href="#L190">190</a></td>
+                  <td class="code-line"><code>            side: request.side.clone(),</code></td>
+                </tr><tr id="L191">
+                  <td class="line-number"><a href="#L191">191</a></td>
+                  <td class="code-line"><code>            settlement_asset: request.settlement_asset.clone(),</code></td>
+                </tr><tr id="L192">
+                  <td class="line-number"><a href="#L192">192</a></td>
+                  <td class="code-line"><code>            token_amount: request.token_amount,</code></td>
+                </tr><tr id="L193">
+                  <td class="line-number"><a href="#L193">193</a></td>
+                  <td class="code-line"><code>            settlement_amount,</code></td>
+                </tr><tr id="L194">
+                  <td class="line-number"><a href="#L194">194</a></td>
+                  <td class="code-line"><code>            settlement_decimals: self.settlement_decimals,</code></td>
+                </tr><tr id="L195">
+                  <td class="line-number"><a href="#L195">195</a></td>
+                  <td class="code-line"><code>            expires_at: Utc::now() + Duration::seconds(request.ttl_secs as i64),</code></td>
+                </tr><tr id="L196">
+                  <td class="line-number"><a href="#L196">196</a></td>
+                  <td class="code-line"><code>            notes: vec![</code></td>
+                </tr><tr id="L197">
+                  <td class="line-number"><a href="#L197">197</a></td>
+                  <td class="code-line"><code>                &quot;This adapter does not touch USDC/USDT rails directly.&quot;.into(),</code></td>
+                </tr><tr id="L198">
+                  <td class="line-number"><a href="#L198">198</a></td>
+                  <td class="code-line"><code>                &quot;Use the execution plan as a settlement hand-off to your own desk, bridge, or exchange flow.&quot;.into(),</code></td>
+                </tr><tr id="L199">
+                  <td class="line-number"><a href="#L199">199</a></td>
+                  <td class="code-line"><code>            ],</code></td>
+                </tr><tr id="L200">
+                  <td class="line-number"><a href="#L200">200</a></td>
+                  <td class="code-line"><code>        })</code></td>
+                </tr><tr id="L201">
+                  <td class="line-number"><a href="#L201">201</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L202">
+                  <td class="line-number"><a href="#L202">202</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L203">
+                  <td class="line-number"><a href="#L203">203</a></td>
+                  <td class="code-line"><code>    async fn execution_plan(&amp;self, quote: &amp;SignedSwapQuote) -&gt; Result&lt;SwapExecutionPlan&gt; {</code></td>
+                </tr><tr id="L204">
+                  <td class="line-number"><a href="#L204">204</a></td>
+                  <td class="code-line"><code>        let direction = match quote.quote.side {</code></td>
+                </tr><tr id="L205">
+                  <td class="line-number"><a href="#L205">205</a></td>
+                  <td class="code-line"><code>            SwapSide::Buy =&gt; &quot;buy HT with the settlement asset&quot;,</code></td>
+                </tr><tr id="L206">
+                  <td class="line-number"><a href="#L206">206</a></td>
+                  <td class="code-line"><code>            SwapSide::Sell =&gt; &quot;sell HT for the settlement asset&quot;,</code></td>
+                </tr><tr id="L207">
+                  <td class="line-number"><a href="#L207">207</a></td>
+                  <td class="code-line"><code>        };</code></td>
+                </tr><tr id="L208">
+                  <td class="line-number"><a href="#L208">208</a></td>
+                  <td class="code-line"><code>        let mut steps = vec![format!(</code></td>
+                </tr><tr id="L209">
+                  <td class="line-number"><a href="#L209">209</a></td>
+                  <td class="code-line"><code>            &quot;Use adapter {} to {direction} without embedding any external stablecoin protocol client.&quot;,</code></td>
+                </tr><tr id="L210">
+                  <td class="line-number"><a href="#L210">210</a></td>
+                  <td class="code-line"><code>            self.id</code></td>
+                </tr><tr id="L211">
+                  <td class="line-number"><a href="#L211">211</a></td>
+                  <td class="code-line"><code>        )];</code></td>
+                </tr><tr id="L212">
+                  <td class="line-number"><a href="#L212">212</a></td>
+                  <td class="code-line"><code>        if quote.quote.side == SwapSide::Sell {</code></td>
+                </tr><tr id="L213">
+                  <td class="line-number"><a href="#L213">213</a></td>
+                  <td class="code-line"><code>            steps.push(</code></td>
+                </tr><tr id="L214">
+                  <td class="line-number"><a href="#L214">214</a></td>
+                  <td class="code-line"><code>                &quot;Lock HT on-chain against the signed quote before releasing the off-chain settlement leg.&quot;</code></td>
+                </tr><tr id="L215">
+                  <td class="line-number"><a href="#L215">215</a></td>
+                  <td class="code-line"><code>                    .into(),</code></td>
+                </tr><tr id="L216">
+                  <td class="line-number"><a href="#L216">216</a></td>
+                  <td class="code-line"><code>            );</code></td>
+                </tr><tr id="L217">
+                  <td class="line-number"><a href="#L217">217</a></td>
+                  <td class="code-line"><code>        }</code></td>
+                </tr><tr id="L218">
+                  <td class="line-number"><a href="#L218">218</a></td>
+                  <td class="code-line"><code>        steps.extend(self.instructions.clone());</code></td>
+                </tr><tr id="L219">
+                  <td class="line-number"><a href="#L219">219</a></td>
+                  <td class="code-line"><code>        Ok(SwapExecutionPlan {</code></td>
+                </tr><tr id="L220">
+                  <td class="line-number"><a href="#L220">220</a></td>
+                  <td class="code-line"><code>            quote: quote.clone(),</code></td>
+                </tr><tr id="L221">
+                  <td class="line-number"><a href="#L221">221</a></td>
+                  <td class="code-line"><code>            steps,</code></td>
+                </tr><tr id="L222">
+                  <td class="line-number"><a href="#L222">222</a></td>
+                  <td class="code-line"><code>            follow_up_transfer_hint: Some(if quote.quote.side == SwapSide::Sell {</code></td>
+                </tr><tr id="L223">
+                  <td class="line-number"><a href="#L223">223</a></td>
+                  <td class="code-line"><code>                &quot;After the settlement leg clears, have the treasury wallet settle the locked HT or let the seller cancel after expiry.&quot;</code></td>
+                </tr><tr id="L224">
+                  <td class="line-number"><a href="#L224">224</a></td>
+                  <td class="code-line"><code>                        .into()</code></td>
+                </tr><tr id="L225">
+                  <td class="line-number"><a href="#L225">225</a></td>
+                  <td class="code-line"><code>            } else {</code></td>
+                </tr><tr id="L226">
+                  <td class="line-number"><a href="#L226">226</a></td>
+                  <td class="code-line"><code>                &quot;After off-chain settlement, submit a normal HT transfer through the node control API.&quot;</code></td>
+                </tr><tr id="L227">
+                  <td class="line-number"><a href="#L227">227</a></td>
+                  <td class="code-line"><code>                        .into()</code></td>
+                </tr><tr id="L228">
+                  <td class="line-number"><a href="#L228">228</a></td>
+                  <td class="code-line"><code>            }),</code></td>
+                </tr><tr id="L229">
+                  <td class="line-number"><a href="#L229">229</a></td>
+                  <td class="code-line"><code>        })</code></td>
+                </tr><tr id="L230">
+                  <td class="line-number"><a href="#L230">230</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L231">
+                  <td class="line-number"><a href="#L231">231</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L232">
+                  <td class="line-number"><a href="#L232">232</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L233">
+                  <td class="line-number"><a href="#L233">233</a></td>
+                  <td class="code-line"><code>struct HttpBridgeSwapAdapter {</code></td>
+                </tr><tr id="L234">
+                  <td class="line-number"><a href="#L234">234</a></td>
+                  <td class="code-line"><code>    id: String,</code></td>
+                </tr><tr id="L235">
+                  <td class="line-number"><a href="#L235">235</a></td>
+                  <td class="code-line"><code>    settlement_asset: SettlementAsset,</code></td>
+                </tr><tr id="L236">
+                  <td class="line-number"><a href="#L236">236</a></td>
+                  <td class="code-line"><code>    quote_url: String,</code></td>
+                </tr><tr id="L237">
+                  <td class="line-number"><a href="#L237">237</a></td>
+                  <td class="code-line"><code>    execution_url: String,</code></td>
+                </tr><tr id="L238">
+                  <td class="line-number"><a href="#L238">238</a></td>
+                  <td class="code-line"><code>    auth_header_name: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L239">
+                  <td class="line-number"><a href="#L239">239</a></td>
+                  <td class="code-line"><code>    auth_header_value: Option&lt;String&gt;,</code></td>
+                </tr><tr id="L240">
+                  <td class="line-number"><a href="#L240">240</a></td>
+                  <td class="code-line"><code>    client: reqwest::Client,</code></td>
+                </tr><tr id="L241">
+                  <td class="line-number"><a href="#L241">241</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L242">
+                  <td class="line-number"><a href="#L242">242</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L243">
+                  <td class="line-number"><a href="#L243">243</a></td>
+                  <td class="code-line"><code>#[async_trait]</code></td>
+                </tr><tr id="L244">
+                  <td class="line-number"><a href="#L244">244</a></td>
+                  <td class="code-line"><code>impl SwapAdapter for HttpBridgeSwapAdapter {</code></td>
+                </tr><tr id="L245">
+                  <td class="line-number"><a href="#L245">245</a></td>
+                  <td class="code-line"><code>    fn id(&amp;self) -&gt; &amp;str {</code></td>
+                </tr><tr id="L246">
+                  <td class="line-number"><a href="#L246">246</a></td>
+                  <td class="code-line"><code>        &amp;self.id</code></td>
+                </tr><tr id="L247">
+                  <td class="line-number"><a href="#L247">247</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L248">
+                  <td class="line-number"><a href="#L248">248</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L249">
+                  <td class="line-number"><a href="#L249">249</a></td>
+                  <td class="code-line"><code>    fn settlement_asset(&amp;self) -&gt; &amp;SettlementAsset {</code></td>
+                </tr><tr id="L250">
+                  <td class="line-number"><a href="#L250">250</a></td>
+                  <td class="code-line"><code>        &amp;self.settlement_asset</code></td>
+                </tr><tr id="L251">
+                  <td class="line-number"><a href="#L251">251</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L252">
+                  <td class="line-number"><a href="#L252">252</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L253">
+                  <td class="line-number"><a href="#L253">253</a></td>
+                  <td class="code-line"><code>    async fn quote(&amp;self, request: &amp;SwapQuoteRequest) -&gt; Result&lt;SwapQuote&gt; {</code></td>
+                </tr><tr id="L254">
+                  <td class="line-number"><a href="#L254">254</a></td>
+                  <td class="code-line"><code>        let response = self</code></td>
+                </tr><tr id="L255">
+                  <td class="line-number"><a href="#L255">255</a></td>
+                  <td class="code-line"><code>            .client</code></td>
+                </tr><tr id="L256">
+                  <td class="line-number"><a href="#L256">256</a></td>
+                  <td class="code-line"><code>            .post(&amp;self.quote_url)</code></td>
+                </tr><tr id="L257">
+                  <td class="line-number"><a href="#L257">257</a></td>
+                  <td class="code-line"><code>            .headers(self.headers()?)</code></td>
+                </tr><tr id="L258">
+                  <td class="line-number"><a href="#L258">258</a></td>
+                  <td class="code-line"><code>            .json(request)</code></td>
+                </tr><tr id="L259">
+                  <td class="line-number"><a href="#L259">259</a></td>
+                  <td class="code-line"><code>            .send()</code></td>
+                </tr><tr id="L260">
+                  <td class="line-number"><a href="#L260">260</a></td>
+                  <td class="code-line"><code>            .await?</code></td>
+                </tr><tr id="L261">
+                  <td class="line-number"><a href="#L261">261</a></td>
+                  <td class="code-line"><code>            .error_for_status()?;</code></td>
+                </tr><tr id="L262">
+                  <td class="line-number"><a href="#L262">262</a></td>
+                  <td class="code-line"><code>        Ok(response.json().await?)</code></td>
+                </tr><tr id="L263">
+                  <td class="line-number"><a href="#L263">263</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L264">
+                  <td class="line-number"><a href="#L264">264</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L265">
+                  <td class="line-number"><a href="#L265">265</a></td>
+                  <td class="code-line"><code>    async fn execution_plan(&amp;self, quote: &amp;SignedSwapQuote) -&gt; Result&lt;SwapExecutionPlan&gt; {</code></td>
+                </tr><tr id="L266">
+                  <td class="line-number"><a href="#L266">266</a></td>
+                  <td class="code-line"><code>        let response = self</code></td>
+                </tr><tr id="L267">
+                  <td class="line-number"><a href="#L267">267</a></td>
+                  <td class="code-line"><code>            .client</code></td>
+                </tr><tr id="L268">
+                  <td class="line-number"><a href="#L268">268</a></td>
+                  <td class="code-line"><code>            .post(&amp;self.execution_url)</code></td>
+                </tr><tr id="L269">
+                  <td class="line-number"><a href="#L269">269</a></td>
+                  <td class="code-line"><code>            .headers(self.headers()?)</code></td>
+                </tr><tr id="L270">
+                  <td class="line-number"><a href="#L270">270</a></td>
+                  <td class="code-line"><code>            .json(quote)</code></td>
+                </tr><tr id="L271">
+                  <td class="line-number"><a href="#L271">271</a></td>
+                  <td class="code-line"><code>            .send()</code></td>
+                </tr><tr id="L272">
+                  <td class="line-number"><a href="#L272">272</a></td>
+                  <td class="code-line"><code>            .await?</code></td>
+                </tr><tr id="L273">
+                  <td class="line-number"><a href="#L273">273</a></td>
+                  <td class="code-line"><code>            .error_for_status()?;</code></td>
+                </tr><tr id="L274">
+                  <td class="line-number"><a href="#L274">274</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L275">
+                  <td class="line-number"><a href="#L275">275</a></td>
+                  <td class="code-line"><code>        let payload: Value = response.json().await?;</code></td>
+                </tr><tr id="L276">
+                  <td class="line-number"><a href="#L276">276</a></td>
+                  <td class="code-line"><code>        let steps = payload</code></td>
+                </tr><tr id="L277">
+                  <td class="line-number"><a href="#L277">277</a></td>
+                  <td class="code-line"><code>            .get(&quot;steps&quot;)</code></td>
+                </tr><tr id="L278">
+                  <td class="line-number"><a href="#L278">278</a></td>
+                  <td class="code-line"><code>            .and_then(Value::as_array)</code></td>
+                </tr><tr id="L279">
+                  <td class="line-number"><a href="#L279">279</a></td>
+                  <td class="code-line"><code>            .map(|items| {</code></td>
+                </tr><tr id="L280">
+                  <td class="line-number"><a href="#L280">280</a></td>
+                  <td class="code-line"><code>                items</code></td>
+                </tr><tr id="L281">
+                  <td class="line-number"><a href="#L281">281</a></td>
+                  <td class="code-line"><code>                    .iter()</code></td>
+                </tr><tr id="L282">
+                  <td class="line-number"><a href="#L282">282</a></td>
+                  <td class="code-line"><code>                    .filter_map(Value::as_str)</code></td>
+                </tr><tr id="L283">
+                  <td class="line-number"><a href="#L283">283</a></td>
+                  <td class="code-line"><code>                    .map(ToString::to_string)</code></td>
+                </tr><tr id="L284">
+                  <td class="line-number"><a href="#L284">284</a></td>
+                  <td class="code-line"><code>                    .collect::&lt;Vec&lt;_&gt;&gt;()</code></td>
+                </tr><tr id="L285">
+                  <td class="line-number"><a href="#L285">285</a></td>
+                  <td class="code-line"><code>            })</code></td>
+                </tr><tr id="L286">
+                  <td class="line-number"><a href="#L286">286</a></td>
+                  <td class="code-line"><code>            .unwrap_or_else(|| {</code></td>
+                </tr><tr id="L287">
+                  <td class="line-number"><a href="#L287">287</a></td>
+                  <td class="code-line"><code>                vec![</code></td>
+                </tr><tr id="L288">
+                  <td class="line-number"><a href="#L288">288</a></td>
+                  <td class="code-line"><code>                    &quot;External settlement bridge returned no explicit steps.&quot;.into(),</code></td>
+                </tr><tr id="L289">
+                  <td class="line-number"><a href="#L289">289</a></td>
+                  <td class="code-line"><code>                    &quot;Inspect the attached payload and perform the HT transfer once settlement clears.&quot;</code></td>
+                </tr><tr id="L290">
+                  <td class="line-number"><a href="#L290">290</a></td>
+                  <td class="code-line"><code>                        .into(),</code></td>
+                </tr><tr id="L291">
+                  <td class="line-number"><a href="#L291">291</a></td>
+                  <td class="code-line"><code>                ]</code></td>
+                </tr><tr id="L292">
+                  <td class="line-number"><a href="#L292">292</a></td>
+                  <td class="code-line"><code>            });</code></td>
+                </tr><tr id="L293">
+                  <td class="line-number"><a href="#L293">293</a></td>
+                  <td class="code-line"><code>        let follow_up_transfer_hint = payload</code></td>
+                </tr><tr id="L294">
+                  <td class="line-number"><a href="#L294">294</a></td>
+                  <td class="code-line"><code>            .get(&quot;follow_up_transfer_hint&quot;)</code></td>
+                </tr><tr id="L295">
+                  <td class="line-number"><a href="#L295">295</a></td>
+                  <td class="code-line"><code>            .and_then(Value::as_str)</code></td>
+                </tr><tr id="L296">
+                  <td class="line-number"><a href="#L296">296</a></td>
+                  <td class="code-line"><code>            .map(ToString::to_string);</code></td>
+                </tr><tr id="L297">
+                  <td class="line-number"><a href="#L297">297</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L298">
+                  <td class="line-number"><a href="#L298">298</a></td>
+                  <td class="code-line"><code>        Ok(SwapExecutionPlan {</code></td>
+                </tr><tr id="L299">
+                  <td class="line-number"><a href="#L299">299</a></td>
+                  <td class="code-line"><code>            quote: quote.clone(),</code></td>
+                </tr><tr id="L300">
+                  <td class="line-number"><a href="#L300">300</a></td>
+                  <td class="code-line"><code>            steps,</code></td>
+                </tr><tr id="L301">
+                  <td class="line-number"><a href="#L301">301</a></td>
+                  <td class="code-line"><code>            follow_up_transfer_hint,</code></td>
+                </tr><tr id="L302">
+                  <td class="line-number"><a href="#L302">302</a></td>
+                  <td class="code-line"><code>        })</code></td>
+                </tr><tr id="L303">
+                  <td class="line-number"><a href="#L303">303</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L304">
+                  <td class="line-number"><a href="#L304">304</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L305">
+                  <td class="line-number"><a href="#L305">305</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L306">
+                  <td class="line-number"><a href="#L306">306</a></td>
+                  <td class="code-line"><code>impl HttpBridgeSwapAdapter {</code></td>
+                </tr><tr id="L307">
+                  <td class="line-number"><a href="#L307">307</a></td>
+                  <td class="code-line"><code>    fn headers(&amp;self) -&gt; Result&lt;HeaderMap&gt; {</code></td>
+                </tr><tr id="L308">
+                  <td class="line-number"><a href="#L308">308</a></td>
+                  <td class="code-line"><code>        let mut headers = HeaderMap::new();</code></td>
+                </tr><tr id="L309">
+                  <td class="line-number"><a href="#L309">309</a></td>
+                  <td class="code-line"><code>        if let (Some(name), Some(value)) = (&amp;self.auth_header_name, &amp;self.auth_header_value) {</code></td>
+                </tr><tr id="L310">
+                  <td class="line-number"><a href="#L310">310</a></td>
+                  <td class="code-line"><code>            headers.insert(</code></td>
+                </tr><tr id="L311">
+                  <td class="line-number"><a href="#L311">311</a></td>
+                  <td class="code-line"><code>                HeaderName::from_bytes(name.as_bytes())?,</code></td>
+                </tr><tr id="L312">
+                  <td class="line-number"><a href="#L312">312</a></td>
+                  <td class="code-line"><code>                HeaderValue::from_str(value)?,</code></td>
+                </tr><tr id="L313">
+                  <td class="line-number"><a href="#L313">313</a></td>
+                  <td class="code-line"><code>            );</code></td>
+                </tr><tr id="L314">
+                  <td class="line-number"><a href="#L314">314</a></td>
+                  <td class="code-line"><code>        }</code></td>
+                </tr><tr id="L315">
+                  <td class="line-number"><a href="#L315">315</a></td>
+                  <td class="code-line"><code>        Ok(headers)</code></td>
+                </tr><tr id="L316">
+                  <td class="line-number"><a href="#L316">316</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L317">
+                  <td class="line-number"><a href="#L317">317</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L318">
+                  <td class="line-number"><a href="#L318">318</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L319">
+                  <td class="line-number"><a href="#L319">319</a></td>
+                  <td class="code-line"><code>#[cfg(test)]</code></td>
+                </tr><tr id="L320">
+                  <td class="line-number"><a href="#L320">320</a></td>
+                  <td class="code-line"><code>mod tests {</code></td>
+                </tr><tr id="L321">
+                  <td class="line-number"><a href="#L321">321</a></td>
+                  <td class="code-line"><code>    use super::*;</code></td>
+                </tr><tr id="L322">
+                  <td class="line-number"><a href="#L322">322</a></td>
+                  <td class="code-line"><code>    use crate::protocol::{SettlementAsset, SwapQuoteRequest, SwapSide};</code></td>
+                </tr><tr id="L323">
+                  <td class="line-number"><a href="#L323">323</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L324">
+                  <td class="line-number"><a href="#L324">324</a></td>
+                  <td class="code-line"><code>    #[tokio::test]</code></td>
+                </tr><tr id="L325">
+                  <td class="line-number"><a href="#L325">325</a></td>
+                  <td class="code-line"><code>    async fn registry_produces_fixed_rate_quotes() {</code></td>
+                </tr><tr id="L326">
+                  <td class="line-number"><a href="#L326">326</a></td>
+                  <td class="code-line"><code>        let registry = SwapRegistry::from_optional_file(None).unwrap();</code></td>
+                </tr><tr id="L327">
+                  <td class="line-number"><a href="#L327">327</a></td>
+                  <td class="code-line"><code>        let quote = registry</code></td>
+                </tr><tr id="L328">
+                  <td class="line-number"><a href="#L328">328</a></td>
+                  <td class="code-line"><code>            .quote(&amp;SwapQuoteRequest {</code></td>
+                </tr><tr id="L329">
+                  <td class="line-number"><a href="#L329">329</a></td>
+                  <td class="code-line"><code>                wallet: &quot;wallet&quot;.into(),</code></td>
+                </tr><tr id="L330">
+                  <td class="line-number"><a href="#L330">330</a></td>
+                  <td class="code-line"><code>                token_amount: 5 * MICRO_HT,</code></td>
+                </tr><tr id="L331">
+                  <td class="line-number"><a href="#L331">331</a></td>
+                  <td class="code-line"><code>                side: SwapSide::Buy,</code></td>
+                </tr><tr id="L332">
+                  <td class="line-number"><a href="#L332">332</a></td>
+                  <td class="code-line"><code>                settlement_asset: SettlementAsset::Usdc,</code></td>
+                </tr><tr id="L333">
+                  <td class="line-number"><a href="#L333">333</a></td>
+                  <td class="code-line"><code>                adapter: Some(&quot;fixed-usdc-demo&quot;.into()),</code></td>
+                </tr><tr id="L334">
+                  <td class="line-number"><a href="#L334">334</a></td>
+                  <td class="code-line"><code>                ttl_secs: 300,</code></td>
+                </tr><tr id="L335">
+                  <td class="line-number"><a href="#L335">335</a></td>
+                  <td class="code-line"><code>            })</code></td>
+                </tr><tr id="L336">
+                  <td class="line-number"><a href="#L336">336</a></td>
+                  <td class="code-line"><code>            .await</code></td>
+                </tr><tr id="L337">
+                  <td class="line-number"><a href="#L337">337</a></td>
+                  <td class="code-line"><code>            .unwrap();</code></td>
+                </tr><tr id="L338">
+                  <td class="line-number"><a href="#L338">338</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L339">
+                  <td class="line-number"><a href="#L339">339</a></td>
+                  <td class="code-line"><code>        assert_eq!(quote.settlement_amount, 5_000_000);</code></td>
+                </tr><tr id="L340">
+                  <td class="line-number"><a href="#L340">340</a></td>
+                  <td class="code-line"><code>        assert_eq!(quote.adapter, &quot;fixed-usdc-demo&quot;);</code></td>
+                </tr><tr id="L341">
+                  <td class="line-number"><a href="#L341">341</a></td>
+                  <td class="code-line"><code>        assert_eq!(quote.wallet, &quot;wallet&quot;);</code></td>
+                </tr><tr id="L342">
+                  <td class="line-number"><a href="#L342">342</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L343">
+                  <td class="line-number"><a href="#L343">343</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>Gossip Protocol</span>
+    <span>Peer-witnessed monitoring, compute, storage, DNS, swaps, and publishing.</span>
+  </footer>
+
+  <script src="/assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,681 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>README.md - Gossip Protocol Source Mirror</title>
+  <meta name="description" content="Static source viewer for README.md.">
+  <meta property="og:title" content="README.md - Gossip Protocol Source Mirror">
+  <meta property="og:description" content="Static source viewer for README.md.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://gossip-protocol.com/repo/tree/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/styles.css?v=responsive-3" as="style">
+  <link rel="stylesheet" href="/assets/styles.css?v=responsive-3">
+</head>
+<body>
+  <canvas id="network-canvas" aria-hidden="true"></canvas>
+
+  <main class="docs-page repo-browser">
+    <nav class="docs-nav" aria-label="Repository mirror navigation">
+      <a href="/">Home</a>
+      <a href="/docs/">Docs</a>
+      <a href="/repo/">Repo</a>
+      <a href="/repo/tree/">Source tree</a>
+      <a href="https://github.com/vibevibellc/gossip_protocol">GitHub</a>
+    </nav>
+
+    <section class="docs-hero repo-file-hero">
+      <p class="eyebrow">source file</p>
+      <h1>README.md</h1>
+      <p class="hero-text">6.4 KB mirrored from the public source tree.</p>
+      <div class="hero-actions hero-actions-left" aria-label="Source file actions">
+        <a class="cta-button cta-button-primary" href="/repo/tree/raw/README.md">Open raw</a>
+        <a class="cta-button cta-button-secondary" href="/repo/tree/">Parent directory</a>
+        <a class="cta-button cta-button-secondary" href="#rendered-markdown">Rendered Markdown</a>
+      </div>
+    </section>
+
+    <section class="docs-section repo-markdown-section" id="rendered-markdown">
+      <h2>Rendered Markdown</h2>
+      <article class="repo-markdown-body">
+        <h1>Gossip Protocol</h1>
+<p>Gossip Protocol is a multi-resource coordination protocol for checks, browser journeys, compute jobs, storage contracts, domain routes, swaps, and public outputs. Validators and delegated agents execute work, exchange signed receipts, and finalize state only after enough independent witnesses agree.</p>
+<p>The protocol is not just a compute queue or a hosting layer. It is a common way to price, verify, settle, and publish work across resources that normally live in separate systems.</p>
+<ul><li>Website: <a href="https://gossip-protocol.com/">https://gossip-protocol.com/</a></li><li>Docs: <a href="https://gossip-protocol.com/docs/">https://gossip-protocol.com/docs/</a></li><li>Source map: <a href="https://gossip-protocol.com/repo/">https://gossip-protocol.com/repo/</a></li><li>License: Apache-2.0</li></ul>
+<p>The code is public. Live validator participation, network policy, treasury policy, token issuance, and production operations remain operator-controlled unless this repository says otherwise.</p>
+<h2>What It Coordinates</h2>
+<p>Gossip Protocol uses one witness layer for many kinds of infrastructure:</p>
+<ul><li>health checks and heartbeat monitors</li><li>deterministic browser journeys with signed artifacts</li><li>sharded WASI compute jobs</li><li>storage contracts, chunks, proofs, and public raw bundles</li><li>DNS offerings, leases, renewals, and storage-backed route binds</li><li>swaps and settlement adapter records</li><li>validator blocks, approvals, receipts, and finalized ledger state</li></ul>
+<h2>Resource Markets</h2>
+<div class="repo-markdown-table-wrap">
+        <table>
+          <thead><tr><th>Token</th><th>Role</th></tr></thead>
+          <tbody><tr><td><code>HT</code></td><td>Base credit for health checks, browser journeys, monitor budgets, and swap workflows.</td></tr><tr><td><code>CT</code></td><td>Pays for sharded compute, WASI execution, replicated receipts, and returned artifacts.</td></tr><tr><td><code>ST</code></td><td>Pays hosts to keep encrypted or public raw content available and prove it over time.</td></tr><tr><td><code>DNS</code></td><td>Leases names and binds public routes to active storage-backed content.</td></tr></tbody>
+        </table>
+      </div>
+<h2>Lifecycle</h2>
+<ol><li>Submit: users sign checks, browser journeys, compute jobs, storage contracts, swaps, or DNS leases.</li><li>Witness: validators and delegated agents execute work, observe heartbeats, prove storage, and sign receipts.</li><li>Settle: blocks apply balances across <code>HT</code>, <code>CT</code>, <code>ST</code>, and <code>DNS</code> while rejecting conflicting evidence.</li><li>Publish: artifacts, monitor state, storage routes, and lease bindings remain as verifiable public records.</li></ol>
+<h2>Repository Map</h2>
+<div class="repo-markdown-table-wrap">
+        <table>
+          <thead><tr><th>Path</th><th>Purpose</th></tr></thead>
+          <tbody><tr><td><code>src/protocol.rs</code></td><td>Protocol types, transaction variants, token constants, fees, limits, and validation rules.</td></tr><tr><td><code>src/node.rs</code></td><td>Validator runtime, mempool, peer sync, gossip endpoints, block proposal, approval flow, persistence, and control API.</td></tr><tr><td><code>src/cli.rs</code></td><td>Command-line interface for wallets, genesis, nodes, transactions, swaps, monitors, browser checks, storage, and agents.</td></tr><tr><td><code>src/ledger.rs</code></td><td>Chain state, balances, finalized records, monitor state, storage contracts, domain leases, and swaps.</td></tr><tr><td><code>src/compute.rs</code></td><td>Compute job schemas, reducers, WASI settings, sandbox policy, cost model, output validation, and shard receipts.</td></tr><tr><td><code>src/compute_sandbox.rs</code></td><td>Isolated compute execution, artifact capture, WASI runtime integration, and resource enforcement.</td></tr><tr><td><code>src/browser.rs</code></td><td>Browser journey package schema, runtime profile validation, artifact policy, package hashing, and runner IO.</td></tr><tr><td><code>src/storage.rs</code></td><td>Storage bundle builder, chunk server, Merkle proofs, encrypted bundles, public raw bundles, and domain gateway serving.</td></tr><tr><td><code>src/agent.rs</code></td><td>Delegated probe, browser, and compute agent runtime with lease verification and signed delegated receipts.</td></tr><tr><td><code>src/wallet.rs</code></td><td>Wallet files, Ed25519 signing, verification helpers, and typed signature methods.</td></tr><tr><td><code>browser_runner/</code></td><td>Node/Playwright browser runner used by browser journey execution.</td></tr><tr><td><code>scripts/</code></td><td>Local smoke tests and first-validator bootstrap tooling.</td></tr><tr><td><code>site/</code></td><td>Static source for <code>gossip-protocol.com</code>.</td></tr><tr><td><code>llms.txt</code></td><td>Short operating notes for Codex, coding agents, and other LLM tools.</td></tr></tbody>
+        </table>
+      </div>
+<h2>Initialize With Codex Or Another Coding Agent</h2>
+<p>This repo is designed to be understandable by local coding agents. After cloning, ask the agent to read the repo guidance before changing code.</p>
+<pre class="repo-markdown-code" data-language="bash"><code>git clone https://github.com/vibevibellc/gossip_protocol.git
+cd gossip_protocol</code></pre>
+<p>Suggested first prompt:</p>
+<pre class="repo-markdown-code" data-language="text"><code>Initialize this repository. Read README.md, SECURITY.md, llms.txt, and the docs
+under site/docs/. Summarize the architecture, identify the main commands, then
+run the standard verification commands. Do not invent live peers, API tokens,
+genesis files, validator policies, or production onboarding requirements.</code></pre>
+<p><code>llms.txt</code> is intentionally short. It gives assistants the current project shape, safe defaults, common commands, and architecture summary. If your tool does not automatically read it, paste or reference it explicitly in the first prompt.</p>
+<h2>Local Setup</h2>
+<p>Required:</p>
+<ul><li>Rust <code>1.93</code> or newer</li><li>Python <code>3</code></li></ul>
+<p>Optional for browser journey execution:</p>
+<ul><li>Node.js <code>18</code> or newer</li><li>npm</li><li>Playwright Chromium</li></ul>
+<p>Install browser-runner dependencies only if you plan to run browser checks:</p>
+<pre class="repo-markdown-code" data-language="bash"><code>cd browser_runner
+npm install
+npx playwright install chromium
+cd ..</code></pre>
+<h2>Verify The Repo</h2>
+<p>Run the baseline checks before making release claims:</p>
+<pre class="repo-markdown-code" data-language="bash"><code>cargo fmt --check
+cargo test
+cargo clippy --all-targets -- -D warnings</code></pre>
+<p>Run local smoke tests when changing protocol behavior:</p>
+<pre class="repo-markdown-code" data-language="bash"><code>python3 scripts/local_compute_smoke.py
+python3 scripts/local_testnet_smoke.py
+python3 scripts/local_testnet_stress.py</code></pre>
+<p>For the browser runner:</p>
+<pre class="repo-markdown-code" data-language="bash"><code>cd browser_runner
+npm audit --omit=dev
+cd ..</code></pre>
+<h2>Build</h2>
+<pre class="repo-markdown-code" data-language="bash"><code>cargo build --release</code></pre>
+<p>The resulting binary is:</p>
+<pre class="repo-markdown-code" data-language="text"><code>target/release/gossip_protocol</code></pre>
+<p>Use the CLI help to inspect the current command surface:</p>
+<pre class="repo-markdown-code" data-language="bash"><code>cargo run -- --help</code></pre>
+<h2>Documentation</h2>
+<p>The static docs mirror the current implementation:</p>
+<ul><li><code>site/docs/index.html</code>: documentation entry point</li><li><code>site/docs/functionality.html</code>: validator, agent, storage, browser, compute, swap, and DNS behavior</li><li><code>site/docs/settings.html</code>: flags, JSON specs, limits, fees, and endpoint defaults</li><li><code>site/repo/index.html</code>: source map for the public website</li></ul>
+<h2>Security</h2>
+<p>Read <code>SECURITY.md</code> before exposing validators, storage hosts, or delegated agents outside a local machine. Public deployments should use TLS, bearer tokens, reverse-proxy rate limits, peer allowlists for internal gossip endpoints, and external secret management for wallet passphrases and browser secrets.</p>
+<p>If a bearer token is not configured for an API surface, the implementation treats that surface as unauthenticated. Do not expose public nodes, storage hosts, or agents without reviewing the security policy.</p>
+      </article>
+    </section>
+
+    <section class="docs-section repo-file-section">
+      <h2>Source</h2>
+      <div class="repo-breadcrumbs"><a href="/repo/tree/">gossip_protocol</a></div>
+      <div class="repo-code-wrap">
+        <table class="repo-code">
+          <tbody>
+            <tr id="L1">
+                  <td class="line-number"><a href="#L1">1</a></td>
+                  <td class="code-line"><code># Gossip Protocol</code></td>
+                </tr><tr id="L2">
+                  <td class="line-number"><a href="#L2">2</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L3">
+                  <td class="line-number"><a href="#L3">3</a></td>
+                  <td class="code-line"><code>Gossip Protocol is a multi-resource coordination protocol for checks, browser</code></td>
+                </tr><tr id="L4">
+                  <td class="line-number"><a href="#L4">4</a></td>
+                  <td class="code-line"><code>journeys, compute jobs, storage contracts, domain routes, swaps, and public</code></td>
+                </tr><tr id="L5">
+                  <td class="line-number"><a href="#L5">5</a></td>
+                  <td class="code-line"><code>outputs. Validators and delegated agents execute work, exchange signed receipts,</code></td>
+                </tr><tr id="L6">
+                  <td class="line-number"><a href="#L6">6</a></td>
+                  <td class="code-line"><code>and finalize state only after enough independent witnesses agree.</code></td>
+                </tr><tr id="L7">
+                  <td class="line-number"><a href="#L7">7</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L8">
+                  <td class="line-number"><a href="#L8">8</a></td>
+                  <td class="code-line"><code>The protocol is not just a compute queue or a hosting layer. It is a common way</code></td>
+                </tr><tr id="L9">
+                  <td class="line-number"><a href="#L9">9</a></td>
+                  <td class="code-line"><code>to price, verify, settle, and publish work across resources that normally live in</code></td>
+                </tr><tr id="L10">
+                  <td class="line-number"><a href="#L10">10</a></td>
+                  <td class="code-line"><code>separate systems.</code></td>
+                </tr><tr id="L11">
+                  <td class="line-number"><a href="#L11">11</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L12">
+                  <td class="line-number"><a href="#L12">12</a></td>
+                  <td class="code-line"><code>- Website: https://gossip-protocol.com/</code></td>
+                </tr><tr id="L13">
+                  <td class="line-number"><a href="#L13">13</a></td>
+                  <td class="code-line"><code>- Docs: https://gossip-protocol.com/docs/</code></td>
+                </tr><tr id="L14">
+                  <td class="line-number"><a href="#L14">14</a></td>
+                  <td class="code-line"><code>- Source map: https://gossip-protocol.com/repo/</code></td>
+                </tr><tr id="L15">
+                  <td class="line-number"><a href="#L15">15</a></td>
+                  <td class="code-line"><code>- License: Apache-2.0</code></td>
+                </tr><tr id="L16">
+                  <td class="line-number"><a href="#L16">16</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L17">
+                  <td class="line-number"><a href="#L17">17</a></td>
+                  <td class="code-line"><code>The code is public. Live validator participation, network policy, treasury</code></td>
+                </tr><tr id="L18">
+                  <td class="line-number"><a href="#L18">18</a></td>
+                  <td class="code-line"><code>policy, token issuance, and production operations remain operator-controlled</code></td>
+                </tr><tr id="L19">
+                  <td class="line-number"><a href="#L19">19</a></td>
+                  <td class="code-line"><code>unless this repository says otherwise.</code></td>
+                </tr><tr id="L20">
+                  <td class="line-number"><a href="#L20">20</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L21">
+                  <td class="line-number"><a href="#L21">21</a></td>
+                  <td class="code-line"><code>## What It Coordinates</code></td>
+                </tr><tr id="L22">
+                  <td class="line-number"><a href="#L22">22</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L23">
+                  <td class="line-number"><a href="#L23">23</a></td>
+                  <td class="code-line"><code>Gossip Protocol uses one witness layer for many kinds of infrastructure:</code></td>
+                </tr><tr id="L24">
+                  <td class="line-number"><a href="#L24">24</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L25">
+                  <td class="line-number"><a href="#L25">25</a></td>
+                  <td class="code-line"><code>- health checks and heartbeat monitors</code></td>
+                </tr><tr id="L26">
+                  <td class="line-number"><a href="#L26">26</a></td>
+                  <td class="code-line"><code>- deterministic browser journeys with signed artifacts</code></td>
+                </tr><tr id="L27">
+                  <td class="line-number"><a href="#L27">27</a></td>
+                  <td class="code-line"><code>- sharded WASI compute jobs</code></td>
+                </tr><tr id="L28">
+                  <td class="line-number"><a href="#L28">28</a></td>
+                  <td class="code-line"><code>- storage contracts, chunks, proofs, and public raw bundles</code></td>
+                </tr><tr id="L29">
+                  <td class="line-number"><a href="#L29">29</a></td>
+                  <td class="code-line"><code>- DNS offerings, leases, renewals, and storage-backed route binds</code></td>
+                </tr><tr id="L30">
+                  <td class="line-number"><a href="#L30">30</a></td>
+                  <td class="code-line"><code>- swaps and settlement adapter records</code></td>
+                </tr><tr id="L31">
+                  <td class="line-number"><a href="#L31">31</a></td>
+                  <td class="code-line"><code>- validator blocks, approvals, receipts, and finalized ledger state</code></td>
+                </tr><tr id="L32">
+                  <td class="line-number"><a href="#L32">32</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L33">
+                  <td class="line-number"><a href="#L33">33</a></td>
+                  <td class="code-line"><code>## Resource Markets</code></td>
+                </tr><tr id="L34">
+                  <td class="line-number"><a href="#L34">34</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L35">
+                  <td class="line-number"><a href="#L35">35</a></td>
+                  <td class="code-line"><code>| Token | Role |</code></td>
+                </tr><tr id="L36">
+                  <td class="line-number"><a href="#L36">36</a></td>
+                  <td class="code-line"><code>| --- | --- |</code></td>
+                </tr><tr id="L37">
+                  <td class="line-number"><a href="#L37">37</a></td>
+                  <td class="code-line"><code>| `HT` | Base credit for health checks, browser journeys, monitor budgets, and swap workflows. |</code></td>
+                </tr><tr id="L38">
+                  <td class="line-number"><a href="#L38">38</a></td>
+                  <td class="code-line"><code>| `CT` | Pays for sharded compute, WASI execution, replicated receipts, and returned artifacts. |</code></td>
+                </tr><tr id="L39">
+                  <td class="line-number"><a href="#L39">39</a></td>
+                  <td class="code-line"><code>| `ST` | Pays hosts to keep encrypted or public raw content available and prove it over time. |</code></td>
+                </tr><tr id="L40">
+                  <td class="line-number"><a href="#L40">40</a></td>
+                  <td class="code-line"><code>| `DNS` | Leases names and binds public routes to active storage-backed content. |</code></td>
+                </tr><tr id="L41">
+                  <td class="line-number"><a href="#L41">41</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L42">
+                  <td class="line-number"><a href="#L42">42</a></td>
+                  <td class="code-line"><code>## Lifecycle</code></td>
+                </tr><tr id="L43">
+                  <td class="line-number"><a href="#L43">43</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L44">
+                  <td class="line-number"><a href="#L44">44</a></td>
+                  <td class="code-line"><code>1. Submit: users sign checks, browser journeys, compute jobs, storage contracts,</code></td>
+                </tr><tr id="L45">
+                  <td class="line-number"><a href="#L45">45</a></td>
+                  <td class="code-line"><code>   swaps, or DNS leases.</code></td>
+                </tr><tr id="L46">
+                  <td class="line-number"><a href="#L46">46</a></td>
+                  <td class="code-line"><code>2. Witness: validators and delegated agents execute work, observe heartbeats,</code></td>
+                </tr><tr id="L47">
+                  <td class="line-number"><a href="#L47">47</a></td>
+                  <td class="code-line"><code>   prove storage, and sign receipts.</code></td>
+                </tr><tr id="L48">
+                  <td class="line-number"><a href="#L48">48</a></td>
+                  <td class="code-line"><code>3. Settle: blocks apply balances across `HT`, `CT`, `ST`, and `DNS` while</code></td>
+                </tr><tr id="L49">
+                  <td class="line-number"><a href="#L49">49</a></td>
+                  <td class="code-line"><code>   rejecting conflicting evidence.</code></td>
+                </tr><tr id="L50">
+                  <td class="line-number"><a href="#L50">50</a></td>
+                  <td class="code-line"><code>4. Publish: artifacts, monitor state, storage routes, and lease bindings remain</code></td>
+                </tr><tr id="L51">
+                  <td class="line-number"><a href="#L51">51</a></td>
+                  <td class="code-line"><code>   as verifiable public records.</code></td>
+                </tr><tr id="L52">
+                  <td class="line-number"><a href="#L52">52</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L53">
+                  <td class="line-number"><a href="#L53">53</a></td>
+                  <td class="code-line"><code>## Repository Map</code></td>
+                </tr><tr id="L54">
+                  <td class="line-number"><a href="#L54">54</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L55">
+                  <td class="line-number"><a href="#L55">55</a></td>
+                  <td class="code-line"><code>| Path | Purpose |</code></td>
+                </tr><tr id="L56">
+                  <td class="line-number"><a href="#L56">56</a></td>
+                  <td class="code-line"><code>| --- | --- |</code></td>
+                </tr><tr id="L57">
+                  <td class="line-number"><a href="#L57">57</a></td>
+                  <td class="code-line"><code>| `src/protocol.rs` | Protocol types, transaction variants, token constants, fees, limits, and validation rules. |</code></td>
+                </tr><tr id="L58">
+                  <td class="line-number"><a href="#L58">58</a></td>
+                  <td class="code-line"><code>| `src/node.rs` | Validator runtime, mempool, peer sync, gossip endpoints, block proposal, approval flow, persistence, and control API. |</code></td>
+                </tr><tr id="L59">
+                  <td class="line-number"><a href="#L59">59</a></td>
+                  <td class="code-line"><code>| `src/cli.rs` | Command-line interface for wallets, genesis, nodes, transactions, swaps, monitors, browser checks, storage, and agents. |</code></td>
+                </tr><tr id="L60">
+                  <td class="line-number"><a href="#L60">60</a></td>
+                  <td class="code-line"><code>| `src/ledger.rs` | Chain state, balances, finalized records, monitor state, storage contracts, domain leases, and swaps. |</code></td>
+                </tr><tr id="L61">
+                  <td class="line-number"><a href="#L61">61</a></td>
+                  <td class="code-line"><code>| `src/compute.rs` | Compute job schemas, reducers, WASI settings, sandbox policy, cost model, output validation, and shard receipts. |</code></td>
+                </tr><tr id="L62">
+                  <td class="line-number"><a href="#L62">62</a></td>
+                  <td class="code-line"><code>| `src/compute_sandbox.rs` | Isolated compute execution, artifact capture, WASI runtime integration, and resource enforcement. |</code></td>
+                </tr><tr id="L63">
+                  <td class="line-number"><a href="#L63">63</a></td>
+                  <td class="code-line"><code>| `src/browser.rs` | Browser journey package schema, runtime profile validation, artifact policy, package hashing, and runner IO. |</code></td>
+                </tr><tr id="L64">
+                  <td class="line-number"><a href="#L64">64</a></td>
+                  <td class="code-line"><code>| `src/storage.rs` | Storage bundle builder, chunk server, Merkle proofs, encrypted bundles, public raw bundles, and domain gateway serving. |</code></td>
+                </tr><tr id="L65">
+                  <td class="line-number"><a href="#L65">65</a></td>
+                  <td class="code-line"><code>| `src/agent.rs` | Delegated probe, browser, and compute agent runtime with lease verification and signed delegated receipts. |</code></td>
+                </tr><tr id="L66">
+                  <td class="line-number"><a href="#L66">66</a></td>
+                  <td class="code-line"><code>| `src/wallet.rs` | Wallet files, Ed25519 signing, verification helpers, and typed signature methods. |</code></td>
+                </tr><tr id="L67">
+                  <td class="line-number"><a href="#L67">67</a></td>
+                  <td class="code-line"><code>| `browser_runner/` | Node/Playwright browser runner used by browser journey execution. |</code></td>
+                </tr><tr id="L68">
+                  <td class="line-number"><a href="#L68">68</a></td>
+                  <td class="code-line"><code>| `scripts/` | Local smoke tests and first-validator bootstrap tooling. |</code></td>
+                </tr><tr id="L69">
+                  <td class="line-number"><a href="#L69">69</a></td>
+                  <td class="code-line"><code>| `site/` | Static source for `gossip-protocol.com`. |</code></td>
+                </tr><tr id="L70">
+                  <td class="line-number"><a href="#L70">70</a></td>
+                  <td class="code-line"><code>| `llms.txt` | Short operating notes for Codex, coding agents, and other LLM tools. |</code></td>
+                </tr><tr id="L71">
+                  <td class="line-number"><a href="#L71">71</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L72">
+                  <td class="line-number"><a href="#L72">72</a></td>
+                  <td class="code-line"><code>## Initialize With Codex Or Another Coding Agent</code></td>
+                </tr><tr id="L73">
+                  <td class="line-number"><a href="#L73">73</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L74">
+                  <td class="line-number"><a href="#L74">74</a></td>
+                  <td class="code-line"><code>This repo is designed to be understandable by local coding agents. After cloning,</code></td>
+                </tr><tr id="L75">
+                  <td class="line-number"><a href="#L75">75</a></td>
+                  <td class="code-line"><code>ask the agent to read the repo guidance before changing code.</code></td>
+                </tr><tr id="L76">
+                  <td class="line-number"><a href="#L76">76</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L77">
+                  <td class="line-number"><a href="#L77">77</a></td>
+                  <td class="code-line"><code>```bash</code></td>
+                </tr><tr id="L78">
+                  <td class="line-number"><a href="#L78">78</a></td>
+                  <td class="code-line"><code>git clone https://github.com/vibevibellc/gossip_protocol.git</code></td>
+                </tr><tr id="L79">
+                  <td class="line-number"><a href="#L79">79</a></td>
+                  <td class="code-line"><code>cd gossip_protocol</code></td>
+                </tr><tr id="L80">
+                  <td class="line-number"><a href="#L80">80</a></td>
+                  <td class="code-line"><code>```</code></td>
+                </tr><tr id="L81">
+                  <td class="line-number"><a href="#L81">81</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L82">
+                  <td class="line-number"><a href="#L82">82</a></td>
+                  <td class="code-line"><code>Suggested first prompt:</code></td>
+                </tr><tr id="L83">
+                  <td class="line-number"><a href="#L83">83</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L84">
+                  <td class="line-number"><a href="#L84">84</a></td>
+                  <td class="code-line"><code>```text</code></td>
+                </tr><tr id="L85">
+                  <td class="line-number"><a href="#L85">85</a></td>
+                  <td class="code-line"><code>Initialize this repository. Read README.md, SECURITY.md, llms.txt, and the docs</code></td>
+                </tr><tr id="L86">
+                  <td class="line-number"><a href="#L86">86</a></td>
+                  <td class="code-line"><code>under site/docs/. Summarize the architecture, identify the main commands, then</code></td>
+                </tr><tr id="L87">
+                  <td class="line-number"><a href="#L87">87</a></td>
+                  <td class="code-line"><code>run the standard verification commands. Do not invent live peers, API tokens,</code></td>
+                </tr><tr id="L88">
+                  <td class="line-number"><a href="#L88">88</a></td>
+                  <td class="code-line"><code>genesis files, validator policies, or production onboarding requirements.</code></td>
+                </tr><tr id="L89">
+                  <td class="line-number"><a href="#L89">89</a></td>
+                  <td class="code-line"><code>```</code></td>
+                </tr><tr id="L90">
+                  <td class="line-number"><a href="#L90">90</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L91">
+                  <td class="line-number"><a href="#L91">91</a></td>
+                  <td class="code-line"><code>`llms.txt` is intentionally short. It gives assistants the current project</code></td>
+                </tr><tr id="L92">
+                  <td class="line-number"><a href="#L92">92</a></td>
+                  <td class="code-line"><code>shape, safe defaults, common commands, and architecture summary. If your tool</code></td>
+                </tr><tr id="L93">
+                  <td class="line-number"><a href="#L93">93</a></td>
+                  <td class="code-line"><code>does not automatically read it, paste or reference it explicitly in the first</code></td>
+                </tr><tr id="L94">
+                  <td class="line-number"><a href="#L94">94</a></td>
+                  <td class="code-line"><code>prompt.</code></td>
+                </tr><tr id="L95">
+                  <td class="line-number"><a href="#L95">95</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L96">
+                  <td class="line-number"><a href="#L96">96</a></td>
+                  <td class="code-line"><code>## Local Setup</code></td>
+                </tr><tr id="L97">
+                  <td class="line-number"><a href="#L97">97</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L98">
+                  <td class="line-number"><a href="#L98">98</a></td>
+                  <td class="code-line"><code>Required:</code></td>
+                </tr><tr id="L99">
+                  <td class="line-number"><a href="#L99">99</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L100">
+                  <td class="line-number"><a href="#L100">100</a></td>
+                  <td class="code-line"><code>- Rust `1.93` or newer</code></td>
+                </tr><tr id="L101">
+                  <td class="line-number"><a href="#L101">101</a></td>
+                  <td class="code-line"><code>- Python `3`</code></td>
+                </tr><tr id="L102">
+                  <td class="line-number"><a href="#L102">102</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L103">
+                  <td class="line-number"><a href="#L103">103</a></td>
+                  <td class="code-line"><code>Optional for browser journey execution:</code></td>
+                </tr><tr id="L104">
+                  <td class="line-number"><a href="#L104">104</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L105">
+                  <td class="line-number"><a href="#L105">105</a></td>
+                  <td class="code-line"><code>- Node.js `18` or newer</code></td>
+                </tr><tr id="L106">
+                  <td class="line-number"><a href="#L106">106</a></td>
+                  <td class="code-line"><code>- npm</code></td>
+                </tr><tr id="L107">
+                  <td class="line-number"><a href="#L107">107</a></td>
+                  <td class="code-line"><code>- Playwright Chromium</code></td>
+                </tr><tr id="L108">
+                  <td class="line-number"><a href="#L108">108</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L109">
+                  <td class="line-number"><a href="#L109">109</a></td>
+                  <td class="code-line"><code>Install browser-runner dependencies only if you plan to run browser checks:</code></td>
+                </tr><tr id="L110">
+                  <td class="line-number"><a href="#L110">110</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L111">
+                  <td class="line-number"><a href="#L111">111</a></td>
+                  <td class="code-line"><code>```bash</code></td>
+                </tr><tr id="L112">
+                  <td class="line-number"><a href="#L112">112</a></td>
+                  <td class="code-line"><code>cd browser_runner</code></td>
+                </tr><tr id="L113">
+                  <td class="line-number"><a href="#L113">113</a></td>
+                  <td class="code-line"><code>npm install</code></td>
+                </tr><tr id="L114">
+                  <td class="line-number"><a href="#L114">114</a></td>
+                  <td class="code-line"><code>npx playwright install chromium</code></td>
+                </tr><tr id="L115">
+                  <td class="line-number"><a href="#L115">115</a></td>
+                  <td class="code-line"><code>cd ..</code></td>
+                </tr><tr id="L116">
+                  <td class="line-number"><a href="#L116">116</a></td>
+                  <td class="code-line"><code>```</code></td>
+                </tr><tr id="L117">
+                  <td class="line-number"><a href="#L117">117</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L118">
+                  <td class="line-number"><a href="#L118">118</a></td>
+                  <td class="code-line"><code>## Verify The Repo</code></td>
+                </tr><tr id="L119">
+                  <td class="line-number"><a href="#L119">119</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L120">
+                  <td class="line-number"><a href="#L120">120</a></td>
+                  <td class="code-line"><code>Run the baseline checks before making release claims:</code></td>
+                </tr><tr id="L121">
+                  <td class="line-number"><a href="#L121">121</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L122">
+                  <td class="line-number"><a href="#L122">122</a></td>
+                  <td class="code-line"><code>```bash</code></td>
+                </tr><tr id="L123">
+                  <td class="line-number"><a href="#L123">123</a></td>
+                  <td class="code-line"><code>cargo fmt --check</code></td>
+                </tr><tr id="L124">
+                  <td class="line-number"><a href="#L124">124</a></td>
+                  <td class="code-line"><code>cargo test</code></td>
+                </tr><tr id="L125">
+                  <td class="line-number"><a href="#L125">125</a></td>
+                  <td class="code-line"><code>cargo clippy --all-targets -- -D warnings</code></td>
+                </tr><tr id="L126">
+                  <td class="line-number"><a href="#L126">126</a></td>
+                  <td class="code-line"><code>```</code></td>
+                </tr><tr id="L127">
+                  <td class="line-number"><a href="#L127">127</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L128">
+                  <td class="line-number"><a href="#L128">128</a></td>
+                  <td class="code-line"><code>Run local smoke tests when changing protocol behavior:</code></td>
+                </tr><tr id="L129">
+                  <td class="line-number"><a href="#L129">129</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L130">
+                  <td class="line-number"><a href="#L130">130</a></td>
+                  <td class="code-line"><code>```bash</code></td>
+                </tr><tr id="L131">
+                  <td class="line-number"><a href="#L131">131</a></td>
+                  <td class="code-line"><code>python3 scripts/local_compute_smoke.py</code></td>
+                </tr><tr id="L132">
+                  <td class="line-number"><a href="#L132">132</a></td>
+                  <td class="code-line"><code>python3 scripts/local_testnet_smoke.py</code></td>
+                </tr><tr id="L133">
+                  <td class="line-number"><a href="#L133">133</a></td>
+                  <td class="code-line"><code>python3 scripts/local_testnet_stress.py</code></td>
+                </tr><tr id="L134">
+                  <td class="line-number"><a href="#L134">134</a></td>
+                  <td class="code-line"><code>```</code></td>
+                </tr><tr id="L135">
+                  <td class="line-number"><a href="#L135">135</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L136">
+                  <td class="line-number"><a href="#L136">136</a></td>
+                  <td class="code-line"><code>For the browser runner:</code></td>
+                </tr><tr id="L137">
+                  <td class="line-number"><a href="#L137">137</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L138">
+                  <td class="line-number"><a href="#L138">138</a></td>
+                  <td class="code-line"><code>```bash</code></td>
+                </tr><tr id="L139">
+                  <td class="line-number"><a href="#L139">139</a></td>
+                  <td class="code-line"><code>cd browser_runner</code></td>
+                </tr><tr id="L140">
+                  <td class="line-number"><a href="#L140">140</a></td>
+                  <td class="code-line"><code>npm audit --omit=dev</code></td>
+                </tr><tr id="L141">
+                  <td class="line-number"><a href="#L141">141</a></td>
+                  <td class="code-line"><code>cd ..</code></td>
+                </tr><tr id="L142">
+                  <td class="line-number"><a href="#L142">142</a></td>
+                  <td class="code-line"><code>```</code></td>
+                </tr><tr id="L143">
+                  <td class="line-number"><a href="#L143">143</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L144">
+                  <td class="line-number"><a href="#L144">144</a></td>
+                  <td class="code-line"><code>## Build</code></td>
+                </tr><tr id="L145">
+                  <td class="line-number"><a href="#L145">145</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L146">
+                  <td class="line-number"><a href="#L146">146</a></td>
+                  <td class="code-line"><code>```bash</code></td>
+                </tr><tr id="L147">
+                  <td class="line-number"><a href="#L147">147</a></td>
+                  <td class="code-line"><code>cargo build --release</code></td>
+                </tr><tr id="L148">
+                  <td class="line-number"><a href="#L148">148</a></td>
+                  <td class="code-line"><code>```</code></td>
+                </tr><tr id="L149">
+                  <td class="line-number"><a href="#L149">149</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L150">
+                  <td class="line-number"><a href="#L150">150</a></td>
+                  <td class="code-line"><code>The resulting binary is:</code></td>
+                </tr><tr id="L151">
+                  <td class="line-number"><a href="#L151">151</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L152">
+                  <td class="line-number"><a href="#L152">152</a></td>
+                  <td class="code-line"><code>```text</code></td>
+                </tr><tr id="L153">
+                  <td class="line-number"><a href="#L153">153</a></td>
+                  <td class="code-line"><code>target/release/gossip_protocol</code></td>
+                </tr><tr id="L154">
+                  <td class="line-number"><a href="#L154">154</a></td>
+                  <td class="code-line"><code>```</code></td>
+                </tr><tr id="L155">
+                  <td class="line-number"><a href="#L155">155</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L156">
+                  <td class="line-number"><a href="#L156">156</a></td>
+                  <td class="code-line"><code>Use the CLI help to inspect the current command surface:</code></td>
+                </tr><tr id="L157">
+                  <td class="line-number"><a href="#L157">157</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L158">
+                  <td class="line-number"><a href="#L158">158</a></td>
+                  <td class="code-line"><code>```bash</code></td>
+                </tr><tr id="L159">
+                  <td class="line-number"><a href="#L159">159</a></td>
+                  <td class="code-line"><code>cargo run -- --help</code></td>
+                </tr><tr id="L160">
+                  <td class="line-number"><a href="#L160">160</a></td>
+                  <td class="code-line"><code>```</code></td>
+                </tr><tr id="L161">
+                  <td class="line-number"><a href="#L161">161</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L162">
+                  <td class="line-number"><a href="#L162">162</a></td>
+                  <td class="code-line"><code>## Documentation</code></td>
+                </tr><tr id="L163">
+                  <td class="line-number"><a href="#L163">163</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L164">
+                  <td class="line-number"><a href="#L164">164</a></td>
+                  <td class="code-line"><code>The static docs mirror the current implementation:</code></td>
+                </tr><tr id="L165">
+                  <td class="line-number"><a href="#L165">165</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L166">
+                  <td class="line-number"><a href="#L166">166</a></td>
+                  <td class="code-line"><code>- `site/docs/index.html`: documentation entry point</code></td>
+                </tr><tr id="L167">
+                  <td class="line-number"><a href="#L167">167</a></td>
+                  <td class="code-line"><code>- `site/docs/functionality.html`: validator, agent, storage, browser, compute,</code></td>
+                </tr><tr id="L168">
+                  <td class="line-number"><a href="#L168">168</a></td>
+                  <td class="code-line"><code>  swap, and DNS behavior</code></td>
+                </tr><tr id="L169">
+                  <td class="line-number"><a href="#L169">169</a></td>
+                  <td class="code-line"><code>- `site/docs/settings.html`: flags, JSON specs, limits, fees, and endpoint</code></td>
+                </tr><tr id="L170">
+                  <td class="line-number"><a href="#L170">170</a></td>
+                  <td class="code-line"><code>  defaults</code></td>
+                </tr><tr id="L171">
+                  <td class="line-number"><a href="#L171">171</a></td>
+                  <td class="code-line"><code>- `site/repo/index.html`: source map for the public website</code></td>
+                </tr><tr id="L172">
+                  <td class="line-number"><a href="#L172">172</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L173">
+                  <td class="line-number"><a href="#L173">173</a></td>
+                  <td class="code-line"><code>## Security</code></td>
+                </tr><tr id="L174">
+                  <td class="line-number"><a href="#L174">174</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L175">
+                  <td class="line-number"><a href="#L175">175</a></td>
+                  <td class="code-line"><code>Read `SECURITY.md` before exposing validators, storage hosts, or delegated</code></td>
+                </tr><tr id="L176">
+                  <td class="line-number"><a href="#L176">176</a></td>
+                  <td class="code-line"><code>agents outside a local machine. Public deployments should use TLS, bearer</code></td>
+                </tr><tr id="L177">
+                  <td class="line-number"><a href="#L177">177</a></td>
+                  <td class="code-line"><code>tokens, reverse-proxy rate limits, peer allowlists for internal gossip endpoints,</code></td>
+                </tr><tr id="L178">
+                  <td class="line-number"><a href="#L178">178</a></td>
+                  <td class="code-line"><code>and external secret management for wallet passphrases and browser secrets.</code></td>
+                </tr><tr id="L179">
+                  <td class="line-number"><a href="#L179">179</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L180">
+                  <td class="line-number"><a href="#L180">180</a></td>
+                  <td class="code-line"><code>If a bearer token is not configured for an API surface, the implementation treats</code></td>
+                </tr><tr id="L181">
+                  <td class="line-number"><a href="#L181">181</a></td>
+                  <td class="code-line"><code>that surface as unauthenticated. Do not expose public nodes, storage hosts, or</code></td>
+                </tr><tr id="L182">
+                  <td class="line-number"><a href="#L182">182</a></td>
+                  <td class="code-line"><code>agents without reviewing the security policy.</code></td>
+                </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>Gossip Protocol</span>
+    <span>Peer-witnessed monitoring, compute, storage, DNS, swaps, and publishing.</span>
+  </footer>
+
+  <script src="/assets/app.js" defer></script>
+</body>
+</html>

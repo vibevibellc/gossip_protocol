@@ -1,0 +1,12 @@
+# robots.txt for https://gossip-protocol.com/
+#
+# Search engines: please crawl the public site, docs, and hosted source mirror.
+# Raw mirrored files are intentionally public, but the HTML source viewer pages
+# are better crawl targets than duplicate raw text downloads.
+
+User-agent: *
+Allow: /
+Allow: /assets/
+Disallow: /repo/tree/raw/
+
+Sitemap: https://gossip-protocol.com/sitemap.xml

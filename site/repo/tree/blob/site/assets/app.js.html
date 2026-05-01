@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>site/assets/app.js - Gossip Protocol Source Mirror</title>
+  <meta name="description" content="Static source viewer for site/assets/app.js.">
+  <meta property="og:title" content="site/assets/app.js - Gossip Protocol Source Mirror">
+  <meta property="og:description" content="Static source viewer for site/assets/app.js.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://gossip-protocol.com/repo/tree/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/styles.css?v=responsive-3" as="style">
+  <link rel="stylesheet" href="/assets/styles.css?v=responsive-3">
+</head>
+<body>
+  <canvas id="network-canvas" aria-hidden="true"></canvas>
+
+  <main class="docs-page repo-browser">
+    <nav class="docs-nav" aria-label="Repository mirror navigation">
+      <a href="/">Home</a>
+      <a href="/docs/">Docs</a>
+      <a href="/repo/">Repo</a>
+      <a href="/repo/tree/">Source tree</a>
+      <a href="https://github.com/vibevibellc/gossip_protocol">GitHub</a>
+    </nav>
+
+    <section class="docs-hero repo-file-hero">
+      <p class="eyebrow">source file</p>
+      <h1>site/assets/app.js</h1>
+      <p class="hero-text">3.4 KB mirrored from the public source tree.</p>
+      <div class="hero-actions hero-actions-left" aria-label="Source file actions">
+        <a class="cta-button cta-button-primary" href="/repo/tree/raw/site/assets/app.js">Open raw</a>
+        <a class="cta-button cta-button-secondary" href="/repo/tree/site/assets/">Parent directory</a>
+        
+      </div>
+    </section>
+
+    <section class="docs-section repo-file-section">
+      <h2>Source</h2>
+      <div class="repo-breadcrumbs"><a href="/repo/tree/">gossip_protocol</a><span>/</span><a href="/repo/tree/site/">site</a><span>/</span><a href="/repo/tree/site/assets/">assets</a></div>
+      <div class="repo-code-wrap">
+        <table class="repo-code">
+          <tbody>
+            <tr id="L1">
+                  <td class="line-number"><a href="#L1">1</a></td>
+                  <td class="code-line"><code>const canvas = document.getElementById(&quot;network-canvas&quot;);</code></td>
+                </tr><tr id="L2">
+                  <td class="line-number"><a href="#L2">2</a></td>
+                  <td class="code-line"><code>const ctx = canvas.getContext(&quot;2d&quot;, { alpha: true });</code></td>
+                </tr><tr id="L3">
+                  <td class="line-number"><a href="#L3">3</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L4">
+                  <td class="line-number"><a href="#L4">4</a></td>
+                  <td class="code-line"><code>const palette = [&quot;#f2b84b&quot;, &quot;#61d394&quot;, &quot;#74d7ec&quot;, &quot;#ff6b5f&quot;, &quot;#f7f3e8&quot;];</code></td>
+                </tr><tr id="L5">
+                  <td class="line-number"><a href="#L5">5</a></td>
+                  <td class="code-line"><code>let width = 0;</code></td>
+                </tr><tr id="L6">
+                  <td class="line-number"><a href="#L6">6</a></td>
+                  <td class="code-line"><code>let height = 0;</code></td>
+                </tr><tr id="L7">
+                  <td class="line-number"><a href="#L7">7</a></td>
+                  <td class="code-line"><code>let nodes = [];</code></td>
+                </tr><tr id="L8">
+                  <td class="line-number"><a href="#L8">8</a></td>
+                  <td class="code-line"><code>let packets = [];</code></td>
+                </tr><tr id="L9">
+                  <td class="line-number"><a href="#L9">9</a></td>
+                  <td class="code-line"><code>let last = 0;</code></td>
+                </tr><tr id="L10">
+                  <td class="line-number"><a href="#L10">10</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L11">
+                  <td class="line-number"><a href="#L11">11</a></td>
+                  <td class="code-line"><code>function resize() {</code></td>
+                </tr><tr id="L12">
+                  <td class="line-number"><a href="#L12">12</a></td>
+                  <td class="code-line"><code>  const scale = Math.min(window.devicePixelRatio || 1, 2);</code></td>
+                </tr><tr id="L13">
+                  <td class="line-number"><a href="#L13">13</a></td>
+                  <td class="code-line"><code>  width = window.innerWidth;</code></td>
+                </tr><tr id="L14">
+                  <td class="line-number"><a href="#L14">14</a></td>
+                  <td class="code-line"><code>  height = window.innerHeight;</code></td>
+                </tr><tr id="L15">
+                  <td class="line-number"><a href="#L15">15</a></td>
+                  <td class="code-line"><code>  canvas.width = Math.floor(width * scale);</code></td>
+                </tr><tr id="L16">
+                  <td class="line-number"><a href="#L16">16</a></td>
+                  <td class="code-line"><code>  canvas.height = Math.floor(height * scale);</code></td>
+                </tr><tr id="L17">
+                  <td class="line-number"><a href="#L17">17</a></td>
+                  <td class="code-line"><code>  canvas.style.width = `${width}px`;</code></td>
+                </tr><tr id="L18">
+                  <td class="line-number"><a href="#L18">18</a></td>
+                  <td class="code-line"><code>  canvas.style.height = `${height}px`;</code></td>
+                </tr><tr id="L19">
+                  <td class="line-number"><a href="#L19">19</a></td>
+                  <td class="code-line"><code>  ctx.setTransform(scale, 0, 0, scale, 0, 0);</code></td>
+                </tr><tr id="L20">
+                  <td class="line-number"><a href="#L20">20</a></td>
+                  <td class="code-line"><code>  buildNetwork();</code></td>
+                </tr><tr id="L21">
+                  <td class="line-number"><a href="#L21">21</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L22">
+                  <td class="line-number"><a href="#L22">22</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L23">
+                  <td class="line-number"><a href="#L23">23</a></td>
+                  <td class="code-line"><code>function buildNetwork() {</code></td>
+                </tr><tr id="L24">
+                  <td class="line-number"><a href="#L24">24</a></td>
+                  <td class="code-line"><code>  const count = width &lt; 700 ? 22 : 38;</code></td>
+                </tr><tr id="L25">
+                  <td class="line-number"><a href="#L25">25</a></td>
+                  <td class="code-line"><code>  nodes = Array.from({ length: count }, (_, index) =&gt; {</code></td>
+                </tr><tr id="L26">
+                  <td class="line-number"><a href="#L26">26</a></td>
+                  <td class="code-line"><code>    const ring = index % 7;</code></td>
+                </tr><tr id="L27">
+                  <td class="line-number"><a href="#L27">27</a></td>
+                  <td class="code-line"><code>    return {</code></td>
+                </tr><tr id="L28">
+                  <td class="line-number"><a href="#L28">28</a></td>
+                  <td class="code-line"><code>      x: 40 + Math.random() * Math.max(width - 80, 1),</code></td>
+                </tr><tr id="L29">
+                  <td class="line-number"><a href="#L29">29</a></td>
+                  <td class="code-line"><code>      y: 70 + Math.random() * Math.max(height - 140, 1),</code></td>
+                </tr><tr id="L30">
+                  <td class="line-number"><a href="#L30">30</a></td>
+                  <td class="code-line"><code>      vx: (Math.random() - 0.5) * 0.22,</code></td>
+                </tr><tr id="L31">
+                  <td class="line-number"><a href="#L31">31</a></td>
+                  <td class="code-line"><code>      vy: (Math.random() - 0.5) * 0.22,</code></td>
+                </tr><tr id="L32">
+                  <td class="line-number"><a href="#L32">32</a></td>
+                  <td class="code-line"><code>      r: 2.2 + (ring % 3),</code></td>
+                </tr><tr id="L33">
+                  <td class="line-number"><a href="#L33">33</a></td>
+                  <td class="code-line"><code>      color: palette[ring % palette.length],</code></td>
+                </tr><tr id="L34">
+                  <td class="line-number"><a href="#L34">34</a></td>
+                  <td class="code-line"><code>    };</code></td>
+                </tr><tr id="L35">
+                  <td class="line-number"><a href="#L35">35</a></td>
+                  <td class="code-line"><code>  });</code></td>
+                </tr><tr id="L36">
+                  <td class="line-number"><a href="#L36">36</a></td>
+                  <td class="code-line"><code>  packets = Array.from({ length: Math.max(10, Math.floor(count / 2)) }, () =&gt; spawnPacket());</code></td>
+                </tr><tr id="L37">
+                  <td class="line-number"><a href="#L37">37</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L38">
+                  <td class="line-number"><a href="#L38">38</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L39">
+                  <td class="line-number"><a href="#L39">39</a></td>
+                  <td class="code-line"><code>function nearestPair() {</code></td>
+                </tr><tr id="L40">
+                  <td class="line-number"><a href="#L40">40</a></td>
+                  <td class="code-line"><code>  const a = nodes[Math.floor(Math.random() * nodes.length)];</code></td>
+                </tr><tr id="L41">
+                  <td class="line-number"><a href="#L41">41</a></td>
+                  <td class="code-line"><code>  let b = nodes[Math.floor(Math.random() * nodes.length)];</code></td>
+                </tr><tr id="L42">
+                  <td class="line-number"><a href="#L42">42</a></td>
+                  <td class="code-line"><code>  let best = Infinity;</code></td>
+                </tr><tr id="L43">
+                  <td class="line-number"><a href="#L43">43</a></td>
+                  <td class="code-line"><code>  for (const candidate of nodes) {</code></td>
+                </tr><tr id="L44">
+                  <td class="line-number"><a href="#L44">44</a></td>
+                  <td class="code-line"><code>    if (candidate === a) continue;</code></td>
+                </tr><tr id="L45">
+                  <td class="line-number"><a href="#L45">45</a></td>
+                  <td class="code-line"><code>    const dist = Math.hypot(candidate.x - a.x, candidate.y - a.y);</code></td>
+                </tr><tr id="L46">
+                  <td class="line-number"><a href="#L46">46</a></td>
+                  <td class="code-line"><code>    if (dist &lt; best &amp;&amp; dist &gt; 80) {</code></td>
+                </tr><tr id="L47">
+                  <td class="line-number"><a href="#L47">47</a></td>
+                  <td class="code-line"><code>      best = dist;</code></td>
+                </tr><tr id="L48">
+                  <td class="line-number"><a href="#L48">48</a></td>
+                  <td class="code-line"><code>      b = candidate;</code></td>
+                </tr><tr id="L49">
+                  <td class="line-number"><a href="#L49">49</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L50">
+                  <td class="line-number"><a href="#L50">50</a></td>
+                  <td class="code-line"><code>  }</code></td>
+                </tr><tr id="L51">
+                  <td class="line-number"><a href="#L51">51</a></td>
+                  <td class="code-line"><code>  return { a, b };</code></td>
+                </tr><tr id="L52">
+                  <td class="line-number"><a href="#L52">52</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L53">
+                  <td class="line-number"><a href="#L53">53</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L54">
+                  <td class="line-number"><a href="#L54">54</a></td>
+                  <td class="code-line"><code>function spawnPacket() {</code></td>
+                </tr><tr id="L55">
+                  <td class="line-number"><a href="#L55">55</a></td>
+                  <td class="code-line"><code>  const { a, b } = nearestPair();</code></td>
+                </tr><tr id="L56">
+                  <td class="line-number"><a href="#L56">56</a></td>
+                  <td class="code-line"><code>  return {</code></td>
+                </tr><tr id="L57">
+                  <td class="line-number"><a href="#L57">57</a></td>
+                  <td class="code-line"><code>    a,</code></td>
+                </tr><tr id="L58">
+                  <td class="line-number"><a href="#L58">58</a></td>
+                  <td class="code-line"><code>    b,</code></td>
+                </tr><tr id="L59">
+                  <td class="line-number"><a href="#L59">59</a></td>
+                  <td class="code-line"><code>    t: Math.random(),</code></td>
+                </tr><tr id="L60">
+                  <td class="line-number"><a href="#L60">60</a></td>
+                  <td class="code-line"><code>    speed: 0.12 + Math.random() * 0.2,</code></td>
+                </tr><tr id="L61">
+                  <td class="line-number"><a href="#L61">61</a></td>
+                  <td class="code-line"><code>    color: palette[Math.floor(Math.random() * palette.length)],</code></td>
+                </tr><tr id="L62">
+                  <td class="line-number"><a href="#L62">62</a></td>
+                  <td class="code-line"><code>  };</code></td>
+                </tr><tr id="L63">
+                  <td class="line-number"><a href="#L63">63</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L64">
+                  <td class="line-number"><a href="#L64">64</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L65">
+                  <td class="line-number"><a href="#L65">65</a></td>
+                  <td class="code-line"><code>function step(time) {</code></td>
+                </tr><tr id="L66">
+                  <td class="line-number"><a href="#L66">66</a></td>
+                  <td class="code-line"><code>  const elapsed = Math.min((time - last) / 1000 || 0.016, 0.04);</code></td>
+                </tr><tr id="L67">
+                  <td class="line-number"><a href="#L67">67</a></td>
+                  <td class="code-line"><code>  last = time;</code></td>
+                </tr><tr id="L68">
+                  <td class="line-number"><a href="#L68">68</a></td>
+                  <td class="code-line"><code>  ctx.clearRect(0, 0, width, height);</code></td>
+                </tr><tr id="L69">
+                  <td class="line-number"><a href="#L69">69</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L70">
+                  <td class="line-number"><a href="#L70">70</a></td>
+                  <td class="code-line"><code>  for (const node of nodes) {</code></td>
+                </tr><tr id="L71">
+                  <td class="line-number"><a href="#L71">71</a></td>
+                  <td class="code-line"><code>    node.x += node.vx * elapsed * 60;</code></td>
+                </tr><tr id="L72">
+                  <td class="line-number"><a href="#L72">72</a></td>
+                  <td class="code-line"><code>    node.y += node.vy * elapsed * 60;</code></td>
+                </tr><tr id="L73">
+                  <td class="line-number"><a href="#L73">73</a></td>
+                  <td class="code-line"><code>    if (node.x &lt; 24 || node.x &gt; width - 24) node.vx *= -1;</code></td>
+                </tr><tr id="L74">
+                  <td class="line-number"><a href="#L74">74</a></td>
+                  <td class="code-line"><code>    if (node.y &lt; 24 || node.y &gt; height - 24) node.vy *= -1;</code></td>
+                </tr><tr id="L75">
+                  <td class="line-number"><a href="#L75">75</a></td>
+                  <td class="code-line"><code>  }</code></td>
+                </tr><tr id="L76">
+                  <td class="line-number"><a href="#L76">76</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L77">
+                  <td class="line-number"><a href="#L77">77</a></td>
+                  <td class="code-line"><code>  ctx.lineWidth = 1;</code></td>
+                </tr><tr id="L78">
+                  <td class="line-number"><a href="#L78">78</a></td>
+                  <td class="code-line"><code>  for (let i = 0; i &lt; nodes.length; i += 1) {</code></td>
+                </tr><tr id="L79">
+                  <td class="line-number"><a href="#L79">79</a></td>
+                  <td class="code-line"><code>    for (let j = i + 1; j &lt; nodes.length; j += 1) {</code></td>
+                </tr><tr id="L80">
+                  <td class="line-number"><a href="#L80">80</a></td>
+                  <td class="code-line"><code>      const a = nodes[i];</code></td>
+                </tr><tr id="L81">
+                  <td class="line-number"><a href="#L81">81</a></td>
+                  <td class="code-line"><code>      const b = nodes[j];</code></td>
+                </tr><tr id="L82">
+                  <td class="line-number"><a href="#L82">82</a></td>
+                  <td class="code-line"><code>      const dist = Math.hypot(a.x - b.x, a.y - b.y);</code></td>
+                </tr><tr id="L83">
+                  <td class="line-number"><a href="#L83">83</a></td>
+                  <td class="code-line"><code>      if (dist &gt; 170) continue;</code></td>
+                </tr><tr id="L84">
+                  <td class="line-number"><a href="#L84">84</a></td>
+                  <td class="code-line"><code>      const alpha = Math.max(0, 1 - dist / 170) * 0.18;</code></td>
+                </tr><tr id="L85">
+                  <td class="line-number"><a href="#L85">85</a></td>
+                  <td class="code-line"><code>      ctx.strokeStyle = `rgba(247, 243, 232, ${alpha})`;</code></td>
+                </tr><tr id="L86">
+                  <td class="line-number"><a href="#L86">86</a></td>
+                  <td class="code-line"><code>      ctx.beginPath();</code></td>
+                </tr><tr id="L87">
+                  <td class="line-number"><a href="#L87">87</a></td>
+                  <td class="code-line"><code>      ctx.moveTo(a.x, a.y);</code></td>
+                </tr><tr id="L88">
+                  <td class="line-number"><a href="#L88">88</a></td>
+                  <td class="code-line"><code>      ctx.lineTo(b.x, b.y);</code></td>
+                </tr><tr id="L89">
+                  <td class="line-number"><a href="#L89">89</a></td>
+                  <td class="code-line"><code>      ctx.stroke();</code></td>
+                </tr><tr id="L90">
+                  <td class="line-number"><a href="#L90">90</a></td>
+                  <td class="code-line"><code>    }</code></td>
+                </tr><tr id="L91">
+                  <td class="line-number"><a href="#L91">91</a></td>
+                  <td class="code-line"><code>  }</code></td>
+                </tr><tr id="L92">
+                  <td class="line-number"><a href="#L92">92</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L93">
+                  <td class="line-number"><a href="#L93">93</a></td>
+                  <td class="code-line"><code>  for (const packet of packets) {</code></td>
+                </tr><tr id="L94">
+                  <td class="line-number"><a href="#L94">94</a></td>
+                  <td class="code-line"><code>    packet.t += packet.speed * elapsed;</code></td>
+                </tr><tr id="L95">
+                  <td class="line-number"><a href="#L95">95</a></td>
+                  <td class="code-line"><code>    if (packet.t &gt;= 1) Object.assign(packet, spawnPacket());</code></td>
+                </tr><tr id="L96">
+                  <td class="line-number"><a href="#L96">96</a></td>
+                  <td class="code-line"><code>    const x = packet.a.x + (packet.b.x - packet.a.x) * packet.t;</code></td>
+                </tr><tr id="L97">
+                  <td class="line-number"><a href="#L97">97</a></td>
+                  <td class="code-line"><code>    const y = packet.a.y + (packet.b.y - packet.a.y) * packet.t;</code></td>
+                </tr><tr id="L98">
+                  <td class="line-number"><a href="#L98">98</a></td>
+                  <td class="code-line"><code>    ctx.fillStyle = packet.color;</code></td>
+                </tr><tr id="L99">
+                  <td class="line-number"><a href="#L99">99</a></td>
+                  <td class="code-line"><code>    ctx.beginPath();</code></td>
+                </tr><tr id="L100">
+                  <td class="line-number"><a href="#L100">100</a></td>
+                  <td class="code-line"><code>    ctx.arc(x, y, 3.2, 0, Math.PI * 2);</code></td>
+                </tr><tr id="L101">
+                  <td class="line-number"><a href="#L101">101</a></td>
+                  <td class="code-line"><code>    ctx.fill();</code></td>
+                </tr><tr id="L102">
+                  <td class="line-number"><a href="#L102">102</a></td>
+                  <td class="code-line"><code>  }</code></td>
+                </tr><tr id="L103">
+                  <td class="line-number"><a href="#L103">103</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L104">
+                  <td class="line-number"><a href="#L104">104</a></td>
+                  <td class="code-line"><code>  for (const node of nodes) {</code></td>
+                </tr><tr id="L105">
+                  <td class="line-number"><a href="#L105">105</a></td>
+                  <td class="code-line"><code>    ctx.fillStyle = node.color;</code></td>
+                </tr><tr id="L106">
+                  <td class="line-number"><a href="#L106">106</a></td>
+                  <td class="code-line"><code>    ctx.beginPath();</code></td>
+                </tr><tr id="L107">
+                  <td class="line-number"><a href="#L107">107</a></td>
+                  <td class="code-line"><code>    ctx.arc(node.x, node.y, node.r, 0, Math.PI * 2);</code></td>
+                </tr><tr id="L108">
+                  <td class="line-number"><a href="#L108">108</a></td>
+                  <td class="code-line"><code>    ctx.fill();</code></td>
+                </tr><tr id="L109">
+                  <td class="line-number"><a href="#L109">109</a></td>
+                  <td class="code-line"><code>    ctx.strokeStyle = &quot;rgba(247, 243, 232, 0.18)&quot;;</code></td>
+                </tr><tr id="L110">
+                  <td class="line-number"><a href="#L110">110</a></td>
+                  <td class="code-line"><code>    ctx.beginPath();</code></td>
+                </tr><tr id="L111">
+                  <td class="line-number"><a href="#L111">111</a></td>
+                  <td class="code-line"><code>    ctx.arc(node.x, node.y, node.r + 7, 0, Math.PI * 2);</code></td>
+                </tr><tr id="L112">
+                  <td class="line-number"><a href="#L112">112</a></td>
+                  <td class="code-line"><code>    ctx.stroke();</code></td>
+                </tr><tr id="L113">
+                  <td class="line-number"><a href="#L113">113</a></td>
+                  <td class="code-line"><code>  }</code></td>
+                </tr><tr id="L114">
+                  <td class="line-number"><a href="#L114">114</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L115">
+                  <td class="line-number"><a href="#L115">115</a></td>
+                  <td class="code-line"><code>  requestAnimationFrame(step);</code></td>
+                </tr><tr id="L116">
+                  <td class="line-number"><a href="#L116">116</a></td>
+                  <td class="code-line"><code>}</code></td>
+                </tr><tr id="L117">
+                  <td class="line-number"><a href="#L117">117</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L118">
+                  <td class="line-number"><a href="#L118">118</a></td>
+                  <td class="code-line"><code>window.addEventListener(&quot;resize&quot;, resize, { passive: true });</code></td>
+                </tr><tr id="L119">
+                  <td class="line-number"><a href="#L119">119</a></td>
+                  <td class="code-line"><code>resize();</code></td>
+                </tr><tr id="L120">
+                  <td class="line-number"><a href="#L120">120</a></td>
+                  <td class="code-line"><code>requestAnimationFrame(step);</code></td>
+                </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>Gossip Protocol</span>
+    <span>Peer-witnessed monitoring, compute, storage, DNS, swaps, and publishing.</span>
+  </footer>
+
+  <script src="/assets/app.js" defer></script>
+</body>
+</html>

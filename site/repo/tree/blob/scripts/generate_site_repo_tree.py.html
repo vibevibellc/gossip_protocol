@@ -1,0 +1,1731 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>scripts/generate_site_repo_tree.py - Gossip Protocol Source Mirror</title>
+  <meta name="description" content="Static source viewer for scripts/generate_site_repo_tree.py.">
+  <meta property="og:title" content="scripts/generate_site_repo_tree.py - Gossip Protocol Source Mirror">
+  <meta property="og:description" content="Static source viewer for scripts/generate_site_repo_tree.py.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://gossip-protocol.com/repo/tree/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/styles.css?v=responsive-3" as="style">
+  <link rel="stylesheet" href="/assets/styles.css?v=responsive-3">
+</head>
+<body>
+  <canvas id="network-canvas" aria-hidden="true"></canvas>
+
+  <main class="docs-page repo-browser">
+    <nav class="docs-nav" aria-label="Repository mirror navigation">
+      <a href="/">Home</a>
+      <a href="/docs/">Docs</a>
+      <a href="/repo/">Repo</a>
+      <a href="/repo/tree/">Source tree</a>
+      <a href="https://github.com/vibevibellc/gossip_protocol">GitHub</a>
+    </nav>
+
+    <section class="docs-hero repo-file-hero">
+      <p class="eyebrow">source file</p>
+      <h1>scripts/generate_site_repo_tree.py</h1>
+      <p class="hero-text">17.7 KB mirrored from the public source tree.</p>
+      <div class="hero-actions hero-actions-left" aria-label="Source file actions">
+        <a class="cta-button cta-button-primary" href="/repo/tree/raw/scripts/generate_site_repo_tree.py">Open raw</a>
+        <a class="cta-button cta-button-secondary" href="/repo/tree/scripts/">Parent directory</a>
+        
+      </div>
+    </section>
+
+    <section class="docs-section repo-file-section">
+      <h2>Source</h2>
+      <div class="repo-breadcrumbs"><a href="/repo/tree/">gossip_protocol</a><span>/</span><a href="/repo/tree/scripts/">scripts</a></div>
+      <div class="repo-code-wrap">
+        <table class="repo-code">
+          <tbody>
+            <tr id="L1">
+                  <td class="line-number"><a href="#L1">1</a></td>
+                  <td class="code-line"><code>#!/usr/bin/env python3</code></td>
+                </tr><tr id="L2">
+                  <td class="line-number"><a href="#L2">2</a></td>
+                  <td class="code-line"><code>&quot;&quot;&quot;Generate the static source mirror served at /repo/tree/.&quot;&quot;&quot;</code></td>
+                </tr><tr id="L3">
+                  <td class="line-number"><a href="#L3">3</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L4">
+                  <td class="line-number"><a href="#L4">4</a></td>
+                  <td class="code-line"><code>from __future__ import annotations</code></td>
+                </tr><tr id="L5">
+                  <td class="line-number"><a href="#L5">5</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L6">
+                  <td class="line-number"><a href="#L6">6</a></td>
+                  <td class="code-line"><code>import html</code></td>
+                </tr><tr id="L7">
+                  <td class="line-number"><a href="#L7">7</a></td>
+                  <td class="code-line"><code>import re</code></td>
+                </tr><tr id="L8">
+                  <td class="line-number"><a href="#L8">8</a></td>
+                  <td class="code-line"><code>import shutil</code></td>
+                </tr><tr id="L9">
+                  <td class="line-number"><a href="#L9">9</a></td>
+                  <td class="code-line"><code>import subprocess</code></td>
+                </tr><tr id="L10">
+                  <td class="line-number"><a href="#L10">10</a></td>
+                  <td class="code-line"><code>from dataclasses import dataclass, field</code></td>
+                </tr><tr id="L11">
+                  <td class="line-number"><a href="#L11">11</a></td>
+                  <td class="code-line"><code>from pathlib import Path</code></td>
+                </tr><tr id="L12">
+                  <td class="line-number"><a href="#L12">12</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L13">
+                  <td class="line-number"><a href="#L13">13</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L14">
+                  <td class="line-number"><a href="#L14">14</a></td>
+                  <td class="code-line"><code>REPO_ROOT = Path(__file__).resolve().parents[1]</code></td>
+                </tr><tr id="L15">
+                  <td class="line-number"><a href="#L15">15</a></td>
+                  <td class="code-line"><code>MIRROR_ROOT = REPO_ROOT / &quot;site&quot; / &quot;repo&quot; / &quot;tree&quot;</code></td>
+                </tr><tr id="L16">
+                  <td class="line-number"><a href="#L16">16</a></td>
+                  <td class="code-line"><code>RAW_ROOT = MIRROR_ROOT / &quot;raw&quot;</code></td>
+                </tr><tr id="L17">
+                  <td class="line-number"><a href="#L17">17</a></td>
+                  <td class="code-line"><code>BLOB_ROOT = MIRROR_ROOT / &quot;blob&quot;</code></td>
+                </tr><tr id="L18">
+                  <td class="line-number"><a href="#L18">18</a></td>
+                  <td class="code-line"><code>CSS_VERSION = &quot;responsive-3&quot;</code></td>
+                </tr><tr id="L19">
+                  <td class="line-number"><a href="#L19">19</a></td>
+                  <td class="code-line"><code>EXCLUDED_PREFIXES = (&quot;site/repo/tree/&quot;,)</code></td>
+                </tr><tr id="L20">
+                  <td class="line-number"><a href="#L20">20</a></td>
+                  <td class="code-line"><code>TABLE_SEPARATOR_RE = re.compile(r&quot;^:?-{3,}:?$&quot;)</code></td>
+                </tr><tr id="L21">
+                  <td class="line-number"><a href="#L21">21</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L22">
+                  <td class="line-number"><a href="#L22">22</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L23">
+                  <td class="line-number"><a href="#L23">23</a></td>
+                  <td class="code-line"><code>@dataclass</code></td>
+                </tr><tr id="L24">
+                  <td class="line-number"><a href="#L24">24</a></td>
+                  <td class="code-line"><code>class TreeNode:</code></td>
+                </tr><tr id="L25">
+                  <td class="line-number"><a href="#L25">25</a></td>
+                  <td class="code-line"><code>    dirs: dict[str, &quot;TreeNode&quot;] = field(default_factory=dict)</code></td>
+                </tr><tr id="L26">
+                  <td class="line-number"><a href="#L26">26</a></td>
+                  <td class="code-line"><code>    files: list[str] = field(default_factory=list)</code></td>
+                </tr><tr id="L27">
+                  <td class="line-number"><a href="#L27">27</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L28">
+                  <td class="line-number"><a href="#L28">28</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L29">
+                  <td class="line-number"><a href="#L29">29</a></td>
+                  <td class="code-line"><code>def run_git(args: list[str]) -&gt; str:</code></td>
+                </tr><tr id="L30">
+                  <td class="line-number"><a href="#L30">30</a></td>
+                  <td class="code-line"><code>    result = subprocess.run(</code></td>
+                </tr><tr id="L31">
+                  <td class="line-number"><a href="#L31">31</a></td>
+                  <td class="code-line"><code>        [&quot;git&quot;, *args],</code></td>
+                </tr><tr id="L32">
+                  <td class="line-number"><a href="#L32">32</a></td>
+                  <td class="code-line"><code>        cwd=REPO_ROOT,</code></td>
+                </tr><tr id="L33">
+                  <td class="line-number"><a href="#L33">33</a></td>
+                  <td class="code-line"><code>        check=True,</code></td>
+                </tr><tr id="L34">
+                  <td class="line-number"><a href="#L34">34</a></td>
+                  <td class="code-line"><code>        text=True,</code></td>
+                </tr><tr id="L35">
+                  <td class="line-number"><a href="#L35">35</a></td>
+                  <td class="code-line"><code>        stdout=subprocess.PIPE,</code></td>
+                </tr><tr id="L36">
+                  <td class="line-number"><a href="#L36">36</a></td>
+                  <td class="code-line"><code>    )</code></td>
+                </tr><tr id="L37">
+                  <td class="line-number"><a href="#L37">37</a></td>
+                  <td class="code-line"><code>    return result.stdout</code></td>
+                </tr><tr id="L38">
+                  <td class="line-number"><a href="#L38">38</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L39">
+                  <td class="line-number"><a href="#L39">39</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L40">
+                  <td class="line-number"><a href="#L40">40</a></td>
+                  <td class="code-line"><code>def tracked_files() -&gt; list[str]:</code></td>
+                </tr><tr id="L41">
+                  <td class="line-number"><a href="#L41">41</a></td>
+                  <td class="code-line"><code>    paths = []</code></td>
+                </tr><tr id="L42">
+                  <td class="line-number"><a href="#L42">42</a></td>
+                  <td class="code-line"><code>    for path in run_git([&quot;ls-files&quot;]).splitlines():</code></td>
+                </tr><tr id="L43">
+                  <td class="line-number"><a href="#L43">43</a></td>
+                  <td class="code-line"><code>        if path.startswith(EXCLUDED_PREFIXES):</code></td>
+                </tr><tr id="L44">
+                  <td class="line-number"><a href="#L44">44</a></td>
+                  <td class="code-line"><code>            continue</code></td>
+                </tr><tr id="L45">
+                  <td class="line-number"><a href="#L45">45</a></td>
+                  <td class="code-line"><code>        if not (REPO_ROOT / path).is_file():</code></td>
+                </tr><tr id="L46">
+                  <td class="line-number"><a href="#L46">46</a></td>
+                  <td class="code-line"><code>            continue</code></td>
+                </tr><tr id="L47">
+                  <td class="line-number"><a href="#L47">47</a></td>
+                  <td class="code-line"><code>        paths.append(path)</code></td>
+                </tr><tr id="L48">
+                  <td class="line-number"><a href="#L48">48</a></td>
+                  <td class="code-line"><code>    return sorted(paths)</code></td>
+                </tr><tr id="L49">
+                  <td class="line-number"><a href="#L49">49</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L50">
+                  <td class="line-number"><a href="#L50">50</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L51">
+                  <td class="line-number"><a href="#L51">51</a></td>
+                  <td class="code-line"><code>def build_tree(paths: list[str]) -&gt; TreeNode:</code></td>
+                </tr><tr id="L52">
+                  <td class="line-number"><a href="#L52">52</a></td>
+                  <td class="code-line"><code>    root = TreeNode()</code></td>
+                </tr><tr id="L53">
+                  <td class="line-number"><a href="#L53">53</a></td>
+                  <td class="code-line"><code>    for path in paths:</code></td>
+                </tr><tr id="L54">
+                  <td class="line-number"><a href="#L54">54</a></td>
+                  <td class="code-line"><code>        parts = path.split(&quot;/&quot;)</code></td>
+                </tr><tr id="L55">
+                  <td class="line-number"><a href="#L55">55</a></td>
+                  <td class="code-line"><code>        node = root</code></td>
+                </tr><tr id="L56">
+                  <td class="line-number"><a href="#L56">56</a></td>
+                  <td class="code-line"><code>        for directory in parts[:-1]:</code></td>
+                </tr><tr id="L57">
+                  <td class="line-number"><a href="#L57">57</a></td>
+                  <td class="code-line"><code>            node = node.dirs.setdefault(directory, TreeNode())</code></td>
+                </tr><tr id="L58">
+                  <td class="line-number"><a href="#L58">58</a></td>
+                  <td class="code-line"><code>        node.files.append(parts[-1])</code></td>
+                </tr><tr id="L59">
+                  <td class="line-number"><a href="#L59">59</a></td>
+                  <td class="code-line"><code>    return root</code></td>
+                </tr><tr id="L60">
+                  <td class="line-number"><a href="#L60">60</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L61">
+                  <td class="line-number"><a href="#L61">61</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L62">
+                  <td class="line-number"><a href="#L62">62</a></td>
+                  <td class="code-line"><code>def format_size(size: int) -&gt; str:</code></td>
+                </tr><tr id="L63">
+                  <td class="line-number"><a href="#L63">63</a></td>
+                  <td class="code-line"><code>    if size &lt; 1024:</code></td>
+                </tr><tr id="L64">
+                  <td class="line-number"><a href="#L64">64</a></td>
+                  <td class="code-line"><code>        return f&quot;{size} B&quot;</code></td>
+                </tr><tr id="L65">
+                  <td class="line-number"><a href="#L65">65</a></td>
+                  <td class="code-line"><code>    if size &lt; 1024 * 1024:</code></td>
+                </tr><tr id="L66">
+                  <td class="line-number"><a href="#L66">66</a></td>
+                  <td class="code-line"><code>        return f&quot;{size / 1024:.1f} KB&quot;</code></td>
+                </tr><tr id="L67">
+                  <td class="line-number"><a href="#L67">67</a></td>
+                  <td class="code-line"><code>    return f&quot;{size / (1024 * 1024):.1f} MB&quot;</code></td>
+                </tr><tr id="L68">
+                  <td class="line-number"><a href="#L68">68</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L69">
+                  <td class="line-number"><a href="#L69">69</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L70">
+                  <td class="line-number"><a href="#L70">70</a></td>
+                  <td class="code-line"><code>def page_shell(title: str, body: str, description: str) -&gt; str:</code></td>
+                </tr><tr id="L71">
+                  <td class="line-number"><a href="#L71">71</a></td>
+                  <td class="code-line"><code>    return f&quot;&quot;&quot;&lt;!doctype html&gt;</code></td>
+                </tr><tr id="L72">
+                  <td class="line-number"><a href="#L72">72</a></td>
+                  <td class="code-line"><code>&lt;html lang=&quot;en&quot;&gt;</code></td>
+                </tr><tr id="L73">
+                  <td class="line-number"><a href="#L73">73</a></td>
+                  <td class="code-line"><code>&lt;head&gt;</code></td>
+                </tr><tr id="L74">
+                  <td class="line-number"><a href="#L74">74</a></td>
+                  <td class="code-line"><code>  &lt;meta charset=&quot;utf-8&quot;&gt;</code></td>
+                </tr><tr id="L75">
+                  <td class="line-number"><a href="#L75">75</a></td>
+                  <td class="code-line"><code>  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;</code></td>
+                </tr><tr id="L76">
+                  <td class="line-number"><a href="#L76">76</a></td>
+                  <td class="code-line"><code>  &lt;title&gt;{html.escape(title)}&lt;/title&gt;</code></td>
+                </tr><tr id="L77">
+                  <td class="line-number"><a href="#L77">77</a></td>
+                  <td class="code-line"><code>  &lt;meta name=&quot;description&quot; content=&quot;{html.escape(description)}&quot;&gt;</code></td>
+                </tr><tr id="L78">
+                  <td class="line-number"><a href="#L78">78</a></td>
+                  <td class="code-line"><code>  &lt;meta property=&quot;og:title&quot; content=&quot;{html.escape(title)}&quot;&gt;</code></td>
+                </tr><tr id="L79">
+                  <td class="line-number"><a href="#L79">79</a></td>
+                  <td class="code-line"><code>  &lt;meta property=&quot;og:description&quot; content=&quot;{html.escape(description)}&quot;&gt;</code></td>
+                </tr><tr id="L80">
+                  <td class="line-number"><a href="#L80">80</a></td>
+                  <td class="code-line"><code>  &lt;meta property=&quot;og:type&quot; content=&quot;website&quot;&gt;</code></td>
+                </tr><tr id="L81">
+                  <td class="line-number"><a href="#L81">81</a></td>
+                  <td class="code-line"><code>  &lt;meta property=&quot;og:url&quot; content=&quot;https://gossip-protocol.com/repo/tree/&quot;&gt;</code></td>
+                </tr><tr id="L82">
+                  <td class="line-number"><a href="#L82">82</a></td>
+                  <td class="code-line"><code>  &lt;link rel=&quot;icon&quot; href=&quot;/favicon.svg&quot; type=&quot;image/svg+xml&quot;&gt;</code></td>
+                </tr><tr id="L83">
+                  <td class="line-number"><a href="#L83">83</a></td>
+                  <td class="code-line"><code>  &lt;link rel=&quot;preload&quot; href=&quot;/assets/styles.css?v={CSS_VERSION}&quot; as=&quot;style&quot;&gt;</code></td>
+                </tr><tr id="L84">
+                  <td class="line-number"><a href="#L84">84</a></td>
+                  <td class="code-line"><code>  &lt;link rel=&quot;stylesheet&quot; href=&quot;/assets/styles.css?v={CSS_VERSION}&quot;&gt;</code></td>
+                </tr><tr id="L85">
+                  <td class="line-number"><a href="#L85">85</a></td>
+                  <td class="code-line"><code>&lt;/head&gt;</code></td>
+                </tr><tr id="L86">
+                  <td class="line-number"><a href="#L86">86</a></td>
+                  <td class="code-line"><code>&lt;body&gt;</code></td>
+                </tr><tr id="L87">
+                  <td class="line-number"><a href="#L87">87</a></td>
+                  <td class="code-line"><code>  &lt;canvas id=&quot;network-canvas&quot; aria-hidden=&quot;true&quot;&gt;&lt;/canvas&gt;</code></td>
+                </tr><tr id="L88">
+                  <td class="line-number"><a href="#L88">88</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L89">
+                  <td class="line-number"><a href="#L89">89</a></td>
+                  <td class="code-line"><code>  &lt;main class=&quot;docs-page repo-browser&quot;&gt;</code></td>
+                </tr><tr id="L90">
+                  <td class="line-number"><a href="#L90">90</a></td>
+                  <td class="code-line"><code>    &lt;nav class=&quot;docs-nav&quot; aria-label=&quot;Repository mirror navigation&quot;&gt;</code></td>
+                </tr><tr id="L91">
+                  <td class="line-number"><a href="#L91">91</a></td>
+                  <td class="code-line"><code>      &lt;a href=&quot;/&quot;&gt;Home&lt;/a&gt;</code></td>
+                </tr><tr id="L92">
+                  <td class="line-number"><a href="#L92">92</a></td>
+                  <td class="code-line"><code>      &lt;a href=&quot;/docs/&quot;&gt;Docs&lt;/a&gt;</code></td>
+                </tr><tr id="L93">
+                  <td class="line-number"><a href="#L93">93</a></td>
+                  <td class="code-line"><code>      &lt;a href=&quot;/repo/&quot;&gt;Repo&lt;/a&gt;</code></td>
+                </tr><tr id="L94">
+                  <td class="line-number"><a href="#L94">94</a></td>
+                  <td class="code-line"><code>      &lt;a href=&quot;/repo/tree/&quot;&gt;Source tree&lt;/a&gt;</code></td>
+                </tr><tr id="L95">
+                  <td class="line-number"><a href="#L95">95</a></td>
+                  <td class="code-line"><code>      &lt;a href=&quot;https://github.com/vibevibellc/gossip_protocol&quot;&gt;GitHub&lt;/a&gt;</code></td>
+                </tr><tr id="L96">
+                  <td class="line-number"><a href="#L96">96</a></td>
+                  <td class="code-line"><code>    &lt;/nav&gt;</code></td>
+                </tr><tr id="L97">
+                  <td class="line-number"><a href="#L97">97</a></td>
+                  <td class="code-line"><code>{body}</code></td>
+                </tr><tr id="L98">
+                  <td class="line-number"><a href="#L98">98</a></td>
+                  <td class="code-line"><code>  &lt;/main&gt;</code></td>
+                </tr><tr id="L99">
+                  <td class="line-number"><a href="#L99">99</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L100">
+                  <td class="line-number"><a href="#L100">100</a></td>
+                  <td class="code-line"><code>  &lt;footer&gt;</code></td>
+                </tr><tr id="L101">
+                  <td class="line-number"><a href="#L101">101</a></td>
+                  <td class="code-line"><code>    &lt;span&gt;Gossip Protocol&lt;/span&gt;</code></td>
+                </tr><tr id="L102">
+                  <td class="line-number"><a href="#L102">102</a></td>
+                  <td class="code-line"><code>    &lt;span&gt;Peer-witnessed monitoring, compute, storage, DNS, swaps, and publishing.&lt;/span&gt;</code></td>
+                </tr><tr id="L103">
+                  <td class="line-number"><a href="#L103">103</a></td>
+                  <td class="code-line"><code>  &lt;/footer&gt;</code></td>
+                </tr><tr id="L104">
+                  <td class="line-number"><a href="#L104">104</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L105">
+                  <td class="line-number"><a href="#L105">105</a></td>
+                  <td class="code-line"><code>  &lt;script src=&quot;/assets/app.js&quot; defer&gt;&lt;/script&gt;</code></td>
+                </tr><tr id="L106">
+                  <td class="line-number"><a href="#L106">106</a></td>
+                  <td class="code-line"><code>&lt;/body&gt;</code></td>
+                </tr><tr id="L107">
+                  <td class="line-number"><a href="#L107">107</a></td>
+                  <td class="code-line"><code>&lt;/html&gt;</code></td>
+                </tr><tr id="L108">
+                  <td class="line-number"><a href="#L108">108</a></td>
+                  <td class="code-line"><code>&quot;&quot;&quot;</code></td>
+                </tr><tr id="L109">
+                  <td class="line-number"><a href="#L109">109</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L110">
+                  <td class="line-number"><a href="#L110">110</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L111">
+                  <td class="line-number"><a href="#L111">111</a></td>
+                  <td class="code-line"><code>def breadcrumbs(parts: list[str]) -&gt; str:</code></td>
+                </tr><tr id="L112">
+                  <td class="line-number"><a href="#L112">112</a></td>
+                  <td class="code-line"><code>    links = [&#x27;&lt;a href=&quot;/repo/tree/&quot;&gt;gossip_protocol&lt;/a&gt;&#x27;]</code></td>
+                </tr><tr id="L113">
+                  <td class="line-number"><a href="#L113">113</a></td>
+                  <td class="code-line"><code>    current: list[str] = []</code></td>
+                </tr><tr id="L114">
+                  <td class="line-number"><a href="#L114">114</a></td>
+                  <td class="code-line"><code>    for part in parts:</code></td>
+                </tr><tr id="L115">
+                  <td class="line-number"><a href="#L115">115</a></td>
+                  <td class="code-line"><code>        current.append(part)</code></td>
+                </tr><tr id="L116">
+                  <td class="line-number"><a href="#L116">116</a></td>
+                  <td class="code-line"><code>        href = &quot;/repo/tree/&quot; + &quot;/&quot;.join(current) + &quot;/&quot;</code></td>
+                </tr><tr id="L117">
+                  <td class="line-number"><a href="#L117">117</a></td>
+                  <td class="code-line"><code>        links.append(f&#x27;&lt;a href=&quot;{html.escape(href)}&quot;&gt;{html.escape(part)}&lt;/a&gt;&#x27;)</code></td>
+                </tr><tr id="L118">
+                  <td class="line-number"><a href="#L118">118</a></td>
+                  <td class="code-line"><code>    return &#x27;&lt;div class=&quot;repo-breadcrumbs&quot;&gt;&#x27; + &#x27;&lt;span&gt;/&lt;/span&gt;&#x27;.join(links) + &quot;&lt;/div&gt;&quot;</code></td>
+                </tr><tr id="L119">
+                  <td class="line-number"><a href="#L119">119</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L120">
+                  <td class="line-number"><a href="#L120">120</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L121">
+                  <td class="line-number"><a href="#L121">121</a></td>
+                  <td class="code-line"><code>def rendered_site_link(path: str) -&gt; str | None:</code></td>
+                </tr><tr id="L122">
+                  <td class="line-number"><a href="#L122">122</a></td>
+                  <td class="code-line"><code>    if not path.startswith(&quot;site/&quot;):</code></td>
+                </tr><tr id="L123">
+                  <td class="line-number"><a href="#L123">123</a></td>
+                  <td class="code-line"><code>        return None</code></td>
+                </tr><tr id="L124">
+                  <td class="line-number"><a href="#L124">124</a></td>
+                  <td class="code-line"><code>    relative = path.removeprefix(&quot;site/&quot;)</code></td>
+                </tr><tr id="L125">
+                  <td class="line-number"><a href="#L125">125</a></td>
+                  <td class="code-line"><code>    if relative == &quot;index.html&quot;:</code></td>
+                </tr><tr id="L126">
+                  <td class="line-number"><a href="#L126">126</a></td>
+                  <td class="code-line"><code>        return &quot;/&quot;</code></td>
+                </tr><tr id="L127">
+                  <td class="line-number"><a href="#L127">127</a></td>
+                  <td class="code-line"><code>    if relative.endswith(&quot;/index.html&quot;):</code></td>
+                </tr><tr id="L128">
+                  <td class="line-number"><a href="#L128">128</a></td>
+                  <td class="code-line"><code>        return &quot;/&quot; + relative.removesuffix(&quot;index.html&quot;)</code></td>
+                </tr><tr id="L129">
+                  <td class="line-number"><a href="#L129">129</a></td>
+                  <td class="code-line"><code>    if relative.endswith(&quot;.html&quot;):</code></td>
+                </tr><tr id="L130">
+                  <td class="line-number"><a href="#L130">130</a></td>
+                  <td class="code-line"><code>        return &quot;/&quot; + relative</code></td>
+                </tr><tr id="L131">
+                  <td class="line-number"><a href="#L131">131</a></td>
+                  <td class="code-line"><code>    return None</code></td>
+                </tr><tr id="L132">
+                  <td class="line-number"><a href="#L132">132</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L133">
+                  <td class="line-number"><a href="#L133">133</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L134">
+                  <td class="line-number"><a href="#L134">134</a></td>
+                  <td class="code-line"><code>def directory_url(parts: list[str]) -&gt; str:</code></td>
+                </tr><tr id="L135">
+                  <td class="line-number"><a href="#L135">135</a></td>
+                  <td class="code-line"><code>    if not parts:</code></td>
+                </tr><tr id="L136">
+                  <td class="line-number"><a href="#L136">136</a></td>
+                  <td class="code-line"><code>        return &quot;/repo/tree/&quot;</code></td>
+                </tr><tr id="L137">
+                  <td class="line-number"><a href="#L137">137</a></td>
+                  <td class="code-line"><code>    return &quot;/repo/tree/&quot; + &quot;/&quot;.join(parts) + &quot;/&quot;</code></td>
+                </tr><tr id="L138">
+                  <td class="line-number"><a href="#L138">138</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L139">
+                  <td class="line-number"><a href="#L139">139</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L140">
+                  <td class="line-number"><a href="#L140">140</a></td>
+                  <td class="code-line"><code>def blob_url(path: str) -&gt; str:</code></td>
+                </tr><tr id="L141">
+                  <td class="line-number"><a href="#L141">141</a></td>
+                  <td class="code-line"><code>    return &quot;/repo/tree/blob/&quot; + path + &quot;.html&quot;</code></td>
+                </tr><tr id="L142">
+                  <td class="line-number"><a href="#L142">142</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L143">
+                  <td class="line-number"><a href="#L143">143</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L144">
+                  <td class="line-number"><a href="#L144">144</a></td>
+                  <td class="code-line"><code>def raw_url(path: str) -&gt; str:</code></td>
+                </tr><tr id="L145">
+                  <td class="line-number"><a href="#L145">145</a></td>
+                  <td class="code-line"><code>    return &quot;/repo/tree/raw/&quot; + path</code></td>
+                </tr><tr id="L146">
+                  <td class="line-number"><a href="#L146">146</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L147">
+                  <td class="line-number"><a href="#L147">147</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L148">
+                  <td class="line-number"><a href="#L148">148</a></td>
+                  <td class="code-line"><code>def safe_link_href(href: str) -&gt; str | None:</code></td>
+                </tr><tr id="L149">
+                  <td class="line-number"><a href="#L149">149</a></td>
+                  <td class="code-line"><code>    href = href.strip()</code></td>
+                </tr><tr id="L150">
+                  <td class="line-number"><a href="#L150">150</a></td>
+                  <td class="code-line"><code>    allowed_prefixes = (&quot;https://&quot;, &quot;http://&quot;, &quot;/&quot;, &quot;#&quot;, &quot;mailto:&quot;)</code></td>
+                </tr><tr id="L151">
+                  <td class="line-number"><a href="#L151">151</a></td>
+                  <td class="code-line"><code>    if href.startswith(allowed_prefixes):</code></td>
+                </tr><tr id="L152">
+                  <td class="line-number"><a href="#L152">152</a></td>
+                  <td class="code-line"><code>        return href</code></td>
+                </tr><tr id="L153">
+                  <td class="line-number"><a href="#L153">153</a></td>
+                  <td class="code-line"><code>    return None</code></td>
+                </tr><tr id="L154">
+                  <td class="line-number"><a href="#L154">154</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L155">
+                  <td class="line-number"><a href="#L155">155</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L156">
+                  <td class="line-number"><a href="#L156">156</a></td>
+                  <td class="code-line"><code>def render_inline_markdown(text: str) -&gt; str:</code></td>
+                </tr><tr id="L157">
+                  <td class="line-number"><a href="#L157">157</a></td>
+                  <td class="code-line"><code>    tokens: dict[str, str] = {}</code></td>
+                </tr><tr id="L158">
+                  <td class="line-number"><a href="#L158">158</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L159">
+                  <td class="line-number"><a href="#L159">159</a></td>
+                  <td class="code-line"><code>    def token(value: str) -&gt; str:</code></td>
+                </tr><tr id="L160">
+                  <td class="line-number"><a href="#L160">160</a></td>
+                  <td class="code-line"><code>        key = f&quot;@@MDTOKEN{len(tokens)}@@&quot;</code></td>
+                </tr><tr id="L161">
+                  <td class="line-number"><a href="#L161">161</a></td>
+                  <td class="code-line"><code>        tokens[key] = value</code></td>
+                </tr><tr id="L162">
+                  <td class="line-number"><a href="#L162">162</a></td>
+                  <td class="code-line"><code>        return key</code></td>
+                </tr><tr id="L163">
+                  <td class="line-number"><a href="#L163">163</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L164">
+                  <td class="line-number"><a href="#L164">164</a></td>
+                  <td class="code-line"><code>    def code_replacement(match: re.Match[str]) -&gt; str:</code></td>
+                </tr><tr id="L165">
+                  <td class="line-number"><a href="#L165">165</a></td>
+                  <td class="code-line"><code>        return token(f&quot;&lt;code&gt;{html.escape(match.group(1))}&lt;/code&gt;&quot;)</code></td>
+                </tr><tr id="L166">
+                  <td class="line-number"><a href="#L166">166</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L167">
+                  <td class="line-number"><a href="#L167">167</a></td>
+                  <td class="code-line"><code>    def link_replacement(match: re.Match[str]) -&gt; str:</code></td>
+                </tr><tr id="L168">
+                  <td class="line-number"><a href="#L168">168</a></td>
+                  <td class="code-line"><code>        label = html.escape(match.group(1))</code></td>
+                </tr><tr id="L169">
+                  <td class="line-number"><a href="#L169">169</a></td>
+                  <td class="code-line"><code>        href = safe_link_href(match.group(2))</code></td>
+                </tr><tr id="L170">
+                  <td class="line-number"><a href="#L170">170</a></td>
+                  <td class="code-line"><code>        if href is None:</code></td>
+                </tr><tr id="L171">
+                  <td class="line-number"><a href="#L171">171</a></td>
+                  <td class="code-line"><code>            return label</code></td>
+                </tr><tr id="L172">
+                  <td class="line-number"><a href="#L172">172</a></td>
+                  <td class="code-line"><code>        escaped_href = html.escape(href, quote=True)</code></td>
+                </tr><tr id="L173">
+                  <td class="line-number"><a href="#L173">173</a></td>
+                  <td class="code-line"><code>        return token(f&#x27;&lt;a href=&quot;{escaped_href}&quot;&gt;{label}&lt;/a&gt;&#x27;)</code></td>
+                </tr><tr id="L174">
+                  <td class="line-number"><a href="#L174">174</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L175">
+                  <td class="line-number"><a href="#L175">175</a></td>
+                  <td class="code-line"><code>    def bare_url_replacement(match: re.Match[str]) -&gt; str:</code></td>
+                </tr><tr id="L176">
+                  <td class="line-number"><a href="#L176">176</a></td>
+                  <td class="code-line"><code>        href = match.group(1).rstrip(&quot;.,)&quot;)</code></td>
+                </tr><tr id="L177">
+                  <td class="line-number"><a href="#L177">177</a></td>
+                  <td class="code-line"><code>        suffix = match.group(1)[len(href) :]</code></td>
+                </tr><tr id="L178">
+                  <td class="line-number"><a href="#L178">178</a></td>
+                  <td class="code-line"><code>        escaped_href = html.escape(href, quote=True)</code></td>
+                </tr><tr id="L179">
+                  <td class="line-number"><a href="#L179">179</a></td>
+                  <td class="code-line"><code>        escaped_label = html.escape(href)</code></td>
+                </tr><tr id="L180">
+                  <td class="line-number"><a href="#L180">180</a></td>
+                  <td class="code-line"><code>        return token(f&#x27;&lt;a href=&quot;{escaped_href}&quot;&gt;{escaped_label}&lt;/a&gt;&#x27;) + suffix</code></td>
+                </tr><tr id="L181">
+                  <td class="line-number"><a href="#L181">181</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L182">
+                  <td class="line-number"><a href="#L182">182</a></td>
+                  <td class="code-line"><code>    text = re.sub(r&quot;`([^`]+)`&quot;, code_replacement, text)</code></td>
+                </tr><tr id="L183">
+                  <td class="line-number"><a href="#L183">183</a></td>
+                  <td class="code-line"><code>    text = re.sub(r&quot;\[([^\]]+)\]\(([^)\s]+)\)&quot;, link_replacement, text)</code></td>
+                </tr><tr id="L184">
+                  <td class="line-number"><a href="#L184">184</a></td>
+                  <td class="code-line"><code>    text = re.sub(r&quot;(?&lt;![\&quot;&#x27;=])\b(https?://[^\s&lt;]+)&quot;, bare_url_replacement, text)</code></td>
+                </tr><tr id="L185">
+                  <td class="line-number"><a href="#L185">185</a></td>
+                  <td class="code-line"><code>    rendered = html.escape(text)</code></td>
+                </tr><tr id="L186">
+                  <td class="line-number"><a href="#L186">186</a></td>
+                  <td class="code-line"><code>    rendered = re.sub(r&quot;\*\*([^*]+)\*\*&quot;, r&quot;&lt;strong&gt;\1&lt;/strong&gt;&quot;, rendered)</code></td>
+                </tr><tr id="L187">
+                  <td class="line-number"><a href="#L187">187</a></td>
+                  <td class="code-line"><code>    for key, value in tokens.items():</code></td>
+                </tr><tr id="L188">
+                  <td class="line-number"><a href="#L188">188</a></td>
+                  <td class="code-line"><code>        rendered = rendered.replace(key, value)</code></td>
+                </tr><tr id="L189">
+                  <td class="line-number"><a href="#L189">189</a></td>
+                  <td class="code-line"><code>    return rendered</code></td>
+                </tr><tr id="L190">
+                  <td class="line-number"><a href="#L190">190</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L191">
+                  <td class="line-number"><a href="#L191">191</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L192">
+                  <td class="line-number"><a href="#L192">192</a></td>
+                  <td class="code-line"><code>def split_table_row(line: str) -&gt; list[str]:</code></td>
+                </tr><tr id="L193">
+                  <td class="line-number"><a href="#L193">193</a></td>
+                  <td class="code-line"><code>    stripped = line.strip()</code></td>
+                </tr><tr id="L194">
+                  <td class="line-number"><a href="#L194">194</a></td>
+                  <td class="code-line"><code>    if stripped.startswith(&quot;|&quot;):</code></td>
+                </tr><tr id="L195">
+                  <td class="line-number"><a href="#L195">195</a></td>
+                  <td class="code-line"><code>        stripped = stripped[1:]</code></td>
+                </tr><tr id="L196">
+                  <td class="line-number"><a href="#L196">196</a></td>
+                  <td class="code-line"><code>    if stripped.endswith(&quot;|&quot;):</code></td>
+                </tr><tr id="L197">
+                  <td class="line-number"><a href="#L197">197</a></td>
+                  <td class="code-line"><code>        stripped = stripped[:-1]</code></td>
+                </tr><tr id="L198">
+                  <td class="line-number"><a href="#L198">198</a></td>
+                  <td class="code-line"><code>    return [cell.strip() for cell in stripped.split(&quot;|&quot;)]</code></td>
+                </tr><tr id="L199">
+                  <td class="line-number"><a href="#L199">199</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L200">
+                  <td class="line-number"><a href="#L200">200</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L201">
+                  <td class="line-number"><a href="#L201">201</a></td>
+                  <td class="code-line"><code>def is_table_separator(line: str) -&gt; bool:</code></td>
+                </tr><tr id="L202">
+                  <td class="line-number"><a href="#L202">202</a></td>
+                  <td class="code-line"><code>    cells = split_table_row(line)</code></td>
+                </tr><tr id="L203">
+                  <td class="line-number"><a href="#L203">203</a></td>
+                  <td class="code-line"><code>    return bool(cells) and all(TABLE_SEPARATOR_RE.match(cell) for cell in cells)</code></td>
+                </tr><tr id="L204">
+                  <td class="line-number"><a href="#L204">204</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L205">
+                  <td class="line-number"><a href="#L205">205</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L206">
+                  <td class="line-number"><a href="#L206">206</a></td>
+                  <td class="code-line"><code>def render_markdown_table(lines: list[str], start: int) -&gt; tuple[str, int] | None:</code></td>
+                </tr><tr id="L207">
+                  <td class="line-number"><a href="#L207">207</a></td>
+                  <td class="code-line"><code>    if start + 1 &gt;= len(lines) or not is_table_separator(lines[start + 1]):</code></td>
+                </tr><tr id="L208">
+                  <td class="line-number"><a href="#L208">208</a></td>
+                  <td class="code-line"><code>        return None</code></td>
+                </tr><tr id="L209">
+                  <td class="line-number"><a href="#L209">209</a></td>
+                  <td class="code-line"><code>    header = split_table_row(lines[start])</code></td>
+                </tr><tr id="L210">
+                  <td class="line-number"><a href="#L210">210</a></td>
+                  <td class="code-line"><code>    rows: list[list[str]] = []</code></td>
+                </tr><tr id="L211">
+                  <td class="line-number"><a href="#L211">211</a></td>
+                  <td class="code-line"><code>    index = start + 2</code></td>
+                </tr><tr id="L212">
+                  <td class="line-number"><a href="#L212">212</a></td>
+                  <td class="code-line"><code>    while index &lt; len(lines) and lines[index].strip().startswith(&quot;|&quot;):</code></td>
+                </tr><tr id="L213">
+                  <td class="line-number"><a href="#L213">213</a></td>
+                  <td class="code-line"><code>        rows.append(split_table_row(lines[index]))</code></td>
+                </tr><tr id="L214">
+                  <td class="line-number"><a href="#L214">214</a></td>
+                  <td class="code-line"><code>        index += 1</code></td>
+                </tr><tr id="L215">
+                  <td class="line-number"><a href="#L215">215</a></td>
+                  <td class="code-line"><code>    header_html = &quot;&quot;.join(</code></td>
+                </tr><tr id="L216">
+                  <td class="line-number"><a href="#L216">216</a></td>
+                  <td class="code-line"><code>        f&quot;&lt;th&gt;{render_inline_markdown(cell)}&lt;/th&gt;&quot; for cell in header</code></td>
+                </tr><tr id="L217">
+                  <td class="line-number"><a href="#L217">217</a></td>
+                  <td class="code-line"><code>    )</code></td>
+                </tr><tr id="L218">
+                  <td class="line-number"><a href="#L218">218</a></td>
+                  <td class="code-line"><code>    body_rows = []</code></td>
+                </tr><tr id="L219">
+                  <td class="line-number"><a href="#L219">219</a></td>
+                  <td class="code-line"><code>    for row in rows:</code></td>
+                </tr><tr id="L220">
+                  <td class="line-number"><a href="#L220">220</a></td>
+                  <td class="code-line"><code>        padded = row + [&quot;&quot;] * max(0, len(header) - len(row))</code></td>
+                </tr><tr id="L221">
+                  <td class="line-number"><a href="#L221">221</a></td>
+                  <td class="code-line"><code>        cells = &quot;&quot;.join(</code></td>
+                </tr><tr id="L222">
+                  <td class="line-number"><a href="#L222">222</a></td>
+                  <td class="code-line"><code>            f&quot;&lt;td&gt;{render_inline_markdown(cell)}&lt;/td&gt;&quot; for cell in padded[: len(header)]</code></td>
+                </tr><tr id="L223">
+                  <td class="line-number"><a href="#L223">223</a></td>
+                  <td class="code-line"><code>        )</code></td>
+                </tr><tr id="L224">
+                  <td class="line-number"><a href="#L224">224</a></td>
+                  <td class="code-line"><code>        body_rows.append(f&quot;&lt;tr&gt;{cells}&lt;/tr&gt;&quot;)</code></td>
+                </tr><tr id="L225">
+                  <td class="line-number"><a href="#L225">225</a></td>
+                  <td class="code-line"><code>    table = f&quot;&quot;&quot;&lt;div class=&quot;repo-markdown-table-wrap&quot;&gt;</code></td>
+                </tr><tr id="L226">
+                  <td class="line-number"><a href="#L226">226</a></td>
+                  <td class="code-line"><code>        &lt;table&gt;</code></td>
+                </tr><tr id="L227">
+                  <td class="line-number"><a href="#L227">227</a></td>
+                  <td class="code-line"><code>          &lt;thead&gt;&lt;tr&gt;{header_html}&lt;/tr&gt;&lt;/thead&gt;</code></td>
+                </tr><tr id="L228">
+                  <td class="line-number"><a href="#L228">228</a></td>
+                  <td class="code-line"><code>          &lt;tbody&gt;{&#x27;&#x27;.join(body_rows)}&lt;/tbody&gt;</code></td>
+                </tr><tr id="L229">
+                  <td class="line-number"><a href="#L229">229</a></td>
+                  <td class="code-line"><code>        &lt;/table&gt;</code></td>
+                </tr><tr id="L230">
+                  <td class="line-number"><a href="#L230">230</a></td>
+                  <td class="code-line"><code>      &lt;/div&gt;&quot;&quot;&quot;</code></td>
+                </tr><tr id="L231">
+                  <td class="line-number"><a href="#L231">231</a></td>
+                  <td class="code-line"><code>    return table, index</code></td>
+                </tr><tr id="L232">
+                  <td class="line-number"><a href="#L232">232</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L233">
+                  <td class="line-number"><a href="#L233">233</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L234">
+                  <td class="line-number"><a href="#L234">234</a></td>
+                  <td class="code-line"><code>def render_markdown_document(text: str) -&gt; str:</code></td>
+                </tr><tr id="L235">
+                  <td class="line-number"><a href="#L235">235</a></td>
+                  <td class="code-line"><code>    lines = text.splitlines()</code></td>
+                </tr><tr id="L236">
+                  <td class="line-number"><a href="#L236">236</a></td>
+                  <td class="code-line"><code>    output: list[str] = []</code></td>
+                </tr><tr id="L237">
+                  <td class="line-number"><a href="#L237">237</a></td>
+                  <td class="code-line"><code>    paragraph: list[str] = []</code></td>
+                </tr><tr id="L238">
+                  <td class="line-number"><a href="#L238">238</a></td>
+                  <td class="code-line"><code>    list_tag: str | None = None</code></td>
+                </tr><tr id="L239">
+                  <td class="line-number"><a href="#L239">239</a></td>
+                  <td class="code-line"><code>    list_items: list[str] = []</code></td>
+                </tr><tr id="L240">
+                  <td class="line-number"><a href="#L240">240</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L241">
+                  <td class="line-number"><a href="#L241">241</a></td>
+                  <td class="code-line"><code>    def flush_paragraph() -&gt; None:</code></td>
+                </tr><tr id="L242">
+                  <td class="line-number"><a href="#L242">242</a></td>
+                  <td class="code-line"><code>        nonlocal paragraph</code></td>
+                </tr><tr id="L243">
+                  <td class="line-number"><a href="#L243">243</a></td>
+                  <td class="code-line"><code>        if paragraph:</code></td>
+                </tr><tr id="L244">
+                  <td class="line-number"><a href="#L244">244</a></td>
+                  <td class="code-line"><code>            joined = &quot; &quot;.join(part.strip() for part in paragraph)</code></td>
+                </tr><tr id="L245">
+                  <td class="line-number"><a href="#L245">245</a></td>
+                  <td class="code-line"><code>            output.append(f&quot;&lt;p&gt;{render_inline_markdown(joined)}&lt;/p&gt;&quot;)</code></td>
+                </tr><tr id="L246">
+                  <td class="line-number"><a href="#L246">246</a></td>
+                  <td class="code-line"><code>            paragraph = []</code></td>
+                </tr><tr id="L247">
+                  <td class="line-number"><a href="#L247">247</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L248">
+                  <td class="line-number"><a href="#L248">248</a></td>
+                  <td class="code-line"><code>    def flush_list() -&gt; None:</code></td>
+                </tr><tr id="L249">
+                  <td class="line-number"><a href="#L249">249</a></td>
+                  <td class="code-line"><code>        nonlocal list_tag, list_items</code></td>
+                </tr><tr id="L250">
+                  <td class="line-number"><a href="#L250">250</a></td>
+                  <td class="code-line"><code>        if list_tag and list_items:</code></td>
+                </tr><tr id="L251">
+                  <td class="line-number"><a href="#L251">251</a></td>
+                  <td class="code-line"><code>            items = &quot;&quot;.join(f&quot;&lt;li&gt;{item}&lt;/li&gt;&quot; for item in list_items)</code></td>
+                </tr><tr id="L252">
+                  <td class="line-number"><a href="#L252">252</a></td>
+                  <td class="code-line"><code>            output.append(f&quot;&lt;{list_tag}&gt;{items}&lt;/{list_tag}&gt;&quot;)</code></td>
+                </tr><tr id="L253">
+                  <td class="line-number"><a href="#L253">253</a></td>
+                  <td class="code-line"><code>        list_tag = None</code></td>
+                </tr><tr id="L254">
+                  <td class="line-number"><a href="#L254">254</a></td>
+                  <td class="code-line"><code>        list_items = []</code></td>
+                </tr><tr id="L255">
+                  <td class="line-number"><a href="#L255">255</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L256">
+                  <td class="line-number"><a href="#L256">256</a></td>
+                  <td class="code-line"><code>    index = 0</code></td>
+                </tr><tr id="L257">
+                  <td class="line-number"><a href="#L257">257</a></td>
+                  <td class="code-line"><code>    while index &lt; len(lines):</code></td>
+                </tr><tr id="L258">
+                  <td class="line-number"><a href="#L258">258</a></td>
+                  <td class="code-line"><code>        line = lines[index]</code></td>
+                </tr><tr id="L259">
+                  <td class="line-number"><a href="#L259">259</a></td>
+                  <td class="code-line"><code>        stripped = line.strip()</code></td>
+                </tr><tr id="L260">
+                  <td class="line-number"><a href="#L260">260</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L261">
+                  <td class="line-number"><a href="#L261">261</a></td>
+                  <td class="code-line"><code>        if not stripped:</code></td>
+                </tr><tr id="L262">
+                  <td class="line-number"><a href="#L262">262</a></td>
+                  <td class="code-line"><code>            flush_paragraph()</code></td>
+                </tr><tr id="L263">
+                  <td class="line-number"><a href="#L263">263</a></td>
+                  <td class="code-line"><code>            flush_list()</code></td>
+                </tr><tr id="L264">
+                  <td class="line-number"><a href="#L264">264</a></td>
+                  <td class="code-line"><code>            index += 1</code></td>
+                </tr><tr id="L265">
+                  <td class="line-number"><a href="#L265">265</a></td>
+                  <td class="code-line"><code>            continue</code></td>
+                </tr><tr id="L266">
+                  <td class="line-number"><a href="#L266">266</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L267">
+                  <td class="line-number"><a href="#L267">267</a></td>
+                  <td class="code-line"><code>        if stripped.startswith(&quot;```&quot;):</code></td>
+                </tr><tr id="L268">
+                  <td class="line-number"><a href="#L268">268</a></td>
+                  <td class="code-line"><code>            flush_paragraph()</code></td>
+                </tr><tr id="L269">
+                  <td class="line-number"><a href="#L269">269</a></td>
+                  <td class="code-line"><code>            flush_list()</code></td>
+                </tr><tr id="L270">
+                  <td class="line-number"><a href="#L270">270</a></td>
+                  <td class="code-line"><code>            fence_language = stripped.removeprefix(&quot;```&quot;).strip()</code></td>
+                </tr><tr id="L271">
+                  <td class="line-number"><a href="#L271">271</a></td>
+                  <td class="code-line"><code>            code_lines: list[str] = []</code></td>
+                </tr><tr id="L272">
+                  <td class="line-number"><a href="#L272">272</a></td>
+                  <td class="code-line"><code>            index += 1</code></td>
+                </tr><tr id="L273">
+                  <td class="line-number"><a href="#L273">273</a></td>
+                  <td class="code-line"><code>            while index &lt; len(lines) and not lines[index].strip().startswith(&quot;```&quot;):</code></td>
+                </tr><tr id="L274">
+                  <td class="line-number"><a href="#L274">274</a></td>
+                  <td class="code-line"><code>                code_lines.append(lines[index])</code></td>
+                </tr><tr id="L275">
+                  <td class="line-number"><a href="#L275">275</a></td>
+                  <td class="code-line"><code>                index += 1</code></td>
+                </tr><tr id="L276">
+                  <td class="line-number"><a href="#L276">276</a></td>
+                  <td class="code-line"><code>            if index &lt; len(lines):</code></td>
+                </tr><tr id="L277">
+                  <td class="line-number"><a href="#L277">277</a></td>
+                  <td class="code-line"><code>                index += 1</code></td>
+                </tr><tr id="L278">
+                  <td class="line-number"><a href="#L278">278</a></td>
+                  <td class="code-line"><code>            language_attr = (</code></td>
+                </tr><tr id="L279">
+                  <td class="line-number"><a href="#L279">279</a></td>
+                  <td class="code-line"><code>                f&#x27; data-language=&quot;{html.escape(fence_language, quote=True)}&quot;&#x27;</code></td>
+                </tr><tr id="L280">
+                  <td class="line-number"><a href="#L280">280</a></td>
+                  <td class="code-line"><code>                if fence_language</code></td>
+                </tr><tr id="L281">
+                  <td class="line-number"><a href="#L281">281</a></td>
+                  <td class="code-line"><code>                else &quot;&quot;</code></td>
+                </tr><tr id="L282">
+                  <td class="line-number"><a href="#L282">282</a></td>
+                  <td class="code-line"><code>            )</code></td>
+                </tr><tr id="L283">
+                  <td class="line-number"><a href="#L283">283</a></td>
+                  <td class="code-line"><code>            output.append(</code></td>
+                </tr><tr id="L284">
+                  <td class="line-number"><a href="#L284">284</a></td>
+                  <td class="code-line"><code>                f&#x27;&lt;pre class=&quot;repo-markdown-code&quot;{language_attr}&gt;&lt;code&gt;{html.escape(chr(10).join(code_lines))}&lt;/code&gt;&lt;/pre&gt;&#x27;</code></td>
+                </tr><tr id="L285">
+                  <td class="line-number"><a href="#L285">285</a></td>
+                  <td class="code-line"><code>            )</code></td>
+                </tr><tr id="L286">
+                  <td class="line-number"><a href="#L286">286</a></td>
+                  <td class="code-line"><code>            continue</code></td>
+                </tr><tr id="L287">
+                  <td class="line-number"><a href="#L287">287</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L288">
+                  <td class="line-number"><a href="#L288">288</a></td>
+                  <td class="code-line"><code>        table = render_markdown_table(lines, index)</code></td>
+                </tr><tr id="L289">
+                  <td class="line-number"><a href="#L289">289</a></td>
+                  <td class="code-line"><code>        if table:</code></td>
+                </tr><tr id="L290">
+                  <td class="line-number"><a href="#L290">290</a></td>
+                  <td class="code-line"><code>            flush_paragraph()</code></td>
+                </tr><tr id="L291">
+                  <td class="line-number"><a href="#L291">291</a></td>
+                  <td class="code-line"><code>            flush_list()</code></td>
+                </tr><tr id="L292">
+                  <td class="line-number"><a href="#L292">292</a></td>
+                  <td class="code-line"><code>            rendered_table, index = table</code></td>
+                </tr><tr id="L293">
+                  <td class="line-number"><a href="#L293">293</a></td>
+                  <td class="code-line"><code>            output.append(rendered_table)</code></td>
+                </tr><tr id="L294">
+                  <td class="line-number"><a href="#L294">294</a></td>
+                  <td class="code-line"><code>            continue</code></td>
+                </tr><tr id="L295">
+                  <td class="line-number"><a href="#L295">295</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L296">
+                  <td class="line-number"><a href="#L296">296</a></td>
+                  <td class="code-line"><code>        heading = re.match(r&quot;^(#{1,6})\s+(.+)$&quot;, stripped)</code></td>
+                </tr><tr id="L297">
+                  <td class="line-number"><a href="#L297">297</a></td>
+                  <td class="code-line"><code>        if heading:</code></td>
+                </tr><tr id="L298">
+                  <td class="line-number"><a href="#L298">298</a></td>
+                  <td class="code-line"><code>            flush_paragraph()</code></td>
+                </tr><tr id="L299">
+                  <td class="line-number"><a href="#L299">299</a></td>
+                  <td class="code-line"><code>            flush_list()</code></td>
+                </tr><tr id="L300">
+                  <td class="line-number"><a href="#L300">300</a></td>
+                  <td class="code-line"><code>            level = len(heading.group(1))</code></td>
+                </tr><tr id="L301">
+                  <td class="line-number"><a href="#L301">301</a></td>
+                  <td class="code-line"><code>            output.append(</code></td>
+                </tr><tr id="L302">
+                  <td class="line-number"><a href="#L302">302</a></td>
+                  <td class="code-line"><code>                f&quot;&lt;h{level}&gt;{render_inline_markdown(heading.group(2))}&lt;/h{level}&gt;&quot;</code></td>
+                </tr><tr id="L303">
+                  <td class="line-number"><a href="#L303">303</a></td>
+                  <td class="code-line"><code>            )</code></td>
+                </tr><tr id="L304">
+                  <td class="line-number"><a href="#L304">304</a></td>
+                  <td class="code-line"><code>            index += 1</code></td>
+                </tr><tr id="L305">
+                  <td class="line-number"><a href="#L305">305</a></td>
+                  <td class="code-line"><code>            continue</code></td>
+                </tr><tr id="L306">
+                  <td class="line-number"><a href="#L306">306</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L307">
+                  <td class="line-number"><a href="#L307">307</a></td>
+                  <td class="code-line"><code>        unordered = re.match(r&quot;^[-*]\s+(.+)$&quot;, stripped)</code></td>
+                </tr><tr id="L308">
+                  <td class="line-number"><a href="#L308">308</a></td>
+                  <td class="code-line"><code>        ordered = re.match(r&quot;^\d+\.\s+(.+)$&quot;, stripped)</code></td>
+                </tr><tr id="L309">
+                  <td class="line-number"><a href="#L309">309</a></td>
+                  <td class="code-line"><code>        if unordered or ordered:</code></td>
+                </tr><tr id="L310">
+                  <td class="line-number"><a href="#L310">310</a></td>
+                  <td class="code-line"><code>            flush_paragraph()</code></td>
+                </tr><tr id="L311">
+                  <td class="line-number"><a href="#L311">311</a></td>
+                  <td class="code-line"><code>            desired_tag = &quot;ul&quot; if unordered else &quot;ol&quot;</code></td>
+                </tr><tr id="L312">
+                  <td class="line-number"><a href="#L312">312</a></td>
+                  <td class="code-line"><code>            if list_tag != desired_tag:</code></td>
+                </tr><tr id="L313">
+                  <td class="line-number"><a href="#L313">313</a></td>
+                  <td class="code-line"><code>                flush_list()</code></td>
+                </tr><tr id="L314">
+                  <td class="line-number"><a href="#L314">314</a></td>
+                  <td class="code-line"><code>                list_tag = desired_tag</code></td>
+                </tr><tr id="L315">
+                  <td class="line-number"><a href="#L315">315</a></td>
+                  <td class="code-line"><code>            item_text = (unordered or ordered).group(1)</code></td>
+                </tr><tr id="L316">
+                  <td class="line-number"><a href="#L316">316</a></td>
+                  <td class="code-line"><code>            list_items.append(render_inline_markdown(item_text))</code></td>
+                </tr><tr id="L317">
+                  <td class="line-number"><a href="#L317">317</a></td>
+                  <td class="code-line"><code>            index += 1</code></td>
+                </tr><tr id="L318">
+                  <td class="line-number"><a href="#L318">318</a></td>
+                  <td class="code-line"><code>            continue</code></td>
+                </tr><tr id="L319">
+                  <td class="line-number"><a href="#L319">319</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L320">
+                  <td class="line-number"><a href="#L320">320</a></td>
+                  <td class="code-line"><code>        continuation = re.match(r&quot;^\s{2,}(.+)$&quot;, line)</code></td>
+                </tr><tr id="L321">
+                  <td class="line-number"><a href="#L321">321</a></td>
+                  <td class="code-line"><code>        if continuation and list_tag and list_items:</code></td>
+                </tr><tr id="L322">
+                  <td class="line-number"><a href="#L322">322</a></td>
+                  <td class="code-line"><code>            list_items[-1] += &quot; &quot; + render_inline_markdown(continuation.group(1))</code></td>
+                </tr><tr id="L323">
+                  <td class="line-number"><a href="#L323">323</a></td>
+                  <td class="code-line"><code>            index += 1</code></td>
+                </tr><tr id="L324">
+                  <td class="line-number"><a href="#L324">324</a></td>
+                  <td class="code-line"><code>            continue</code></td>
+                </tr><tr id="L325">
+                  <td class="line-number"><a href="#L325">325</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L326">
+                  <td class="line-number"><a href="#L326">326</a></td>
+                  <td class="code-line"><code>        flush_list()</code></td>
+                </tr><tr id="L327">
+                  <td class="line-number"><a href="#L327">327</a></td>
+                  <td class="code-line"><code>        paragraph.append(stripped)</code></td>
+                </tr><tr id="L328">
+                  <td class="line-number"><a href="#L328">328</a></td>
+                  <td class="code-line"><code>        index += 1</code></td>
+                </tr><tr id="L329">
+                  <td class="line-number"><a href="#L329">329</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L330">
+                  <td class="line-number"><a href="#L330">330</a></td>
+                  <td class="code-line"><code>    flush_paragraph()</code></td>
+                </tr><tr id="L331">
+                  <td class="line-number"><a href="#L331">331</a></td>
+                  <td class="code-line"><code>    flush_list()</code></td>
+                </tr><tr id="L332">
+                  <td class="line-number"><a href="#L332">332</a></td>
+                  <td class="code-line"><code>    return &quot;\n&quot;.join(output)</code></td>
+                </tr><tr id="L333">
+                  <td class="line-number"><a href="#L333">333</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L334">
+                  <td class="line-number"><a href="#L334">334</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L335">
+                  <td class="line-number"><a href="#L335">335</a></td>
+                  <td class="code-line"><code>def directory_body(parts: list[str], node: TreeNode, all_paths: list[str]) -&gt; str:</code></td>
+                </tr><tr id="L336">
+                  <td class="line-number"><a href="#L336">336</a></td>
+                  <td class="code-line"><code>    path_label = &quot;/&quot;.join(parts) if parts else &quot;Repository root&quot;</code></td>
+                </tr><tr id="L337">
+                  <td class="line-number"><a href="#L337">337</a></td>
+                  <td class="code-line"><code>    rows = []</code></td>
+                </tr><tr id="L338">
+                  <td class="line-number"><a href="#L338">338</a></td>
+                  <td class="code-line"><code>    if parts:</code></td>
+                </tr><tr id="L339">
+                  <td class="line-number"><a href="#L339">339</a></td>
+                  <td class="code-line"><code>        parent = parts[:-1]</code></td>
+                </tr><tr id="L340">
+                  <td class="line-number"><a href="#L340">340</a></td>
+                  <td class="code-line"><code>        rows.append(</code></td>
+                </tr><tr id="L341">
+                  <td class="line-number"><a href="#L341">341</a></td>
+                  <td class="code-line"><code>            f&quot;&quot;&quot;&lt;tr&gt;</code></td>
+                </tr><tr id="L342">
+                  <td class="line-number"><a href="#L342">342</a></td>
+                  <td class="code-line"><code>              &lt;td class=&quot;repo-entry-name&quot;&gt;&lt;a href=&quot;{html.escape(directory_url(parent))}&quot;&gt;..&lt;/a&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L343">
+                  <td class="line-number"><a href="#L343">343</a></td>
+                  <td class="code-line"><code>              &lt;td&gt;Directory&lt;/td&gt;</code></td>
+                </tr><tr id="L344">
+                  <td class="line-number"><a href="#L344">344</a></td>
+                  <td class="code-line"><code>              &lt;td&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L345">
+                  <td class="line-number"><a href="#L345">345</a></td>
+                  <td class="code-line"><code>              &lt;td&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L346">
+                  <td class="line-number"><a href="#L346">346</a></td>
+                  <td class="code-line"><code>            &lt;/tr&gt;&quot;&quot;&quot;</code></td>
+                </tr><tr id="L347">
+                  <td class="line-number"><a href="#L347">347</a></td>
+                  <td class="code-line"><code>        )</code></td>
+                </tr><tr id="L348">
+                  <td class="line-number"><a href="#L348">348</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L349">
+                  <td class="line-number"><a href="#L349">349</a></td>
+                  <td class="code-line"><code>    for name in sorted(node.dirs):</code></td>
+                </tr><tr id="L350">
+                  <td class="line-number"><a href="#L350">350</a></td>
+                  <td class="code-line"><code>        child_parts = [*parts, name]</code></td>
+                </tr><tr id="L351">
+                  <td class="line-number"><a href="#L351">351</a></td>
+                  <td class="code-line"><code>        rows.append(</code></td>
+                </tr><tr id="L352">
+                  <td class="line-number"><a href="#L352">352</a></td>
+                  <td class="code-line"><code>            f&quot;&quot;&quot;&lt;tr&gt;</code></td>
+                </tr><tr id="L353">
+                  <td class="line-number"><a href="#L353">353</a></td>
+                  <td class="code-line"><code>              &lt;td class=&quot;repo-entry-name&quot;&gt;&lt;a href=&quot;{html.escape(directory_url(child_parts))}&quot;&gt;&lt;span class=&quot;repo-entry-icon&quot;&gt;dir&lt;/span&gt;{html.escape(name)}/&lt;/a&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L354">
+                  <td class="line-number"><a href="#L354">354</a></td>
+                  <td class="code-line"><code>              &lt;td&gt;Directory&lt;/td&gt;</code></td>
+                </tr><tr id="L355">
+                  <td class="line-number"><a href="#L355">355</a></td>
+                  <td class="code-line"><code>              &lt;td&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L356">
+                  <td class="line-number"><a href="#L356">356</a></td>
+                  <td class="code-line"><code>              &lt;td&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L357">
+                  <td class="line-number"><a href="#L357">357</a></td>
+                  <td class="code-line"><code>            &lt;/tr&gt;&quot;&quot;&quot;</code></td>
+                </tr><tr id="L358">
+                  <td class="line-number"><a href="#L358">358</a></td>
+                  <td class="code-line"><code>        )</code></td>
+                </tr><tr id="L359">
+                  <td class="line-number"><a href="#L359">359</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L360">
+                  <td class="line-number"><a href="#L360">360</a></td>
+                  <td class="code-line"><code>    directory_path = &quot;/&quot;.join(parts)</code></td>
+                </tr><tr id="L361">
+                  <td class="line-number"><a href="#L361">361</a></td>
+                  <td class="code-line"><code>    for name in sorted(node.files):</code></td>
+                </tr><tr id="L362">
+                  <td class="line-number"><a href="#L362">362</a></td>
+                  <td class="code-line"><code>        path = f&quot;{directory_path}/{name}&quot; if directory_path else name</code></td>
+                </tr><tr id="L363">
+                  <td class="line-number"><a href="#L363">363</a></td>
+                  <td class="code-line"><code>        file_size = (REPO_ROOT / path).stat().st_size</code></td>
+                </tr><tr id="L364">
+                  <td class="line-number"><a href="#L364">364</a></td>
+                  <td class="code-line"><code>        rendered = rendered_site_link(path)</code></td>
+                </tr><tr id="L365">
+                  <td class="line-number"><a href="#L365">365</a></td>
+                  <td class="code-line"><code>        if path.endswith(&quot;.md&quot;):</code></td>
+                </tr><tr id="L366">
+                  <td class="line-number"><a href="#L366">366</a></td>
+                  <td class="code-line"><code>            rendered_link = (</code></td>
+                </tr><tr id="L367">
+                  <td class="line-number"><a href="#L367">367</a></td>
+                  <td class="code-line"><code>                f&#x27;&lt;a href=&quot;{html.escape(blob_url(path))}#rendered-markdown&quot;&gt;Rendered&lt;/a&gt;&#x27;</code></td>
+                </tr><tr id="L368">
+                  <td class="line-number"><a href="#L368">368</a></td>
+                  <td class="code-line"><code>            )</code></td>
+                </tr><tr id="L369">
+                  <td class="line-number"><a href="#L369">369</a></td>
+                  <td class="code-line"><code>        elif rendered:</code></td>
+                </tr><tr id="L370">
+                  <td class="line-number"><a href="#L370">370</a></td>
+                  <td class="code-line"><code>            rendered_link = f&#x27;&lt;a href=&quot;{html.escape(rendered)}&quot;&gt;Rendered&lt;/a&gt;&#x27;</code></td>
+                </tr><tr id="L371">
+                  <td class="line-number"><a href="#L371">371</a></td>
+                  <td class="code-line"><code>        else:</code></td>
+                </tr><tr id="L372">
+                  <td class="line-number"><a href="#L372">372</a></td>
+                  <td class="code-line"><code>            rendered_link = &quot;&quot;</code></td>
+                </tr><tr id="L373">
+                  <td class="line-number"><a href="#L373">373</a></td>
+                  <td class="code-line"><code>        rows.append(</code></td>
+                </tr><tr id="L374">
+                  <td class="line-number"><a href="#L374">374</a></td>
+                  <td class="code-line"><code>            f&quot;&quot;&quot;&lt;tr&gt;</code></td>
+                </tr><tr id="L375">
+                  <td class="line-number"><a href="#L375">375</a></td>
+                  <td class="code-line"><code>              &lt;td class=&quot;repo-entry-name&quot;&gt;&lt;a href=&quot;{html.escape(blob_url(path))}&quot;&gt;&lt;span class=&quot;repo-entry-icon&quot;&gt;file&lt;/span&gt;{html.escape(name)}&lt;/a&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L376">
+                  <td class="line-number"><a href="#L376">376</a></td>
+                  <td class="code-line"><code>              &lt;td&gt;File&lt;/td&gt;</code></td>
+                </tr><tr id="L377">
+                  <td class="line-number"><a href="#L377">377</a></td>
+                  <td class="code-line"><code>              &lt;td&gt;{format_size(file_size)}&lt;/td&gt;</code></td>
+                </tr><tr id="L378">
+                  <td class="line-number"><a href="#L378">378</a></td>
+                  <td class="code-line"><code>              &lt;td class=&quot;repo-entry-actions&quot;&gt;&lt;a href=&quot;{html.escape(raw_url(path))}&quot;&gt;Raw&lt;/a&gt;{rendered_link}&lt;/td&gt;</code></td>
+                </tr><tr id="L379">
+                  <td class="line-number"><a href="#L379">379</a></td>
+                  <td class="code-line"><code>            &lt;/tr&gt;&quot;&quot;&quot;</code></td>
+                </tr><tr id="L380">
+                  <td class="line-number"><a href="#L380">380</a></td>
+                  <td class="code-line"><code>        )</code></td>
+                </tr><tr id="L381">
+                  <td class="line-number"><a href="#L381">381</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L382">
+                  <td class="line-number"><a href="#L382">382</a></td>
+                  <td class="code-line"><code>    intro = &quot;&quot;</code></td>
+                </tr><tr id="L383">
+                  <td class="line-number"><a href="#L383">383</a></td>
+                  <td class="code-line"><code>    if not parts:</code></td>
+                </tr><tr id="L384">
+                  <td class="line-number"><a href="#L384">384</a></td>
+                  <td class="code-line"><code>        intro = f&quot;&quot;&quot;</code></td>
+                </tr><tr id="L385">
+                  <td class="line-number"><a href="#L385">385</a></td>
+                  <td class="code-line"><code>    &lt;section class=&quot;docs-hero repo-tree-hero&quot;&gt;</code></td>
+                </tr><tr id="L386">
+                  <td class="line-number"><a href="#L386">386</a></td>
+                  <td class="code-line"><code>      &lt;p class=&quot;eyebrow&quot;&gt;source mirror&lt;/p&gt;</code></td>
+                </tr><tr id="L387">
+                  <td class="line-number"><a href="#L387">387</a></td>
+                  <td class="code-line"><code>      &lt;h1&gt;Repository tree&lt;/h1&gt;</code></td>
+                </tr><tr id="L388">
+                  <td class="line-number"><a href="#L388">388</a></td>
+                  <td class="code-line"><code>      &lt;p class=&quot;hero-text&quot;&gt;</code></td>
+                </tr><tr id="L389">
+                  <td class="line-number"><a href="#L389">389</a></td>
+                  <td class="code-line"><code>        A static public mirror of the source files, hosted alongside the docs. Browse directories,</code></td>
+                </tr><tr id="L390">
+                  <td class="line-number"><a href="#L390">390</a></td>
+                  <td class="code-line"><code>        inspect files, open raw source, or jump into rendered site documentation.</code></td>
+                </tr><tr id="L391">
+                  <td class="line-number"><a href="#L391">391</a></td>
+                  <td class="code-line"><code>      &lt;/p&gt;</code></td>
+                </tr><tr id="L392">
+                  <td class="line-number"><a href="#L392">392</a></td>
+                  <td class="code-line"><code>      &lt;div class=&quot;hero-actions hero-actions-left&quot; aria-label=&quot;Repository mirror actions&quot;&gt;</code></td>
+                </tr><tr id="L393">
+                  <td class="line-number"><a href="#L393">393</a></td>
+                  <td class="code-line"><code>        &lt;a class=&quot;cta-button cta-button-primary&quot; href=&quot;https://github.com/vibevibellc/gossip_protocol&quot;&gt;Open GitHub&lt;/a&gt;</code></td>
+                </tr><tr id="L394">
+                  <td class="line-number"><a href="#L394">394</a></td>
+                  <td class="code-line"><code>        &lt;a class=&quot;cta-button cta-button-secondary&quot; href=&quot;/repo/tree/blob/README.md.html&quot;&gt;View README&lt;/a&gt;</code></td>
+                </tr><tr id="L395">
+                  <td class="line-number"><a href="#L395">395</a></td>
+                  <td class="code-line"><code>      &lt;/div&gt;</code></td>
+                </tr><tr id="L396">
+                  <td class="line-number"><a href="#L396">396</a></td>
+                  <td class="code-line"><code>    &lt;/section&gt;</code></td>
+                </tr><tr id="L397">
+                  <td class="line-number"><a href="#L397">397</a></td>
+                  <td class="code-line"><code>    &lt;section class=&quot;repo-quick-links&quot; aria-label=&quot;Quick source links&quot;&gt;</code></td>
+                </tr><tr id="L398">
+                  <td class="line-number"><a href="#L398">398</a></td>
+                  <td class="code-line"><code>      &lt;a href=&quot;/repo/tree/blob/README.md.html&quot;&gt;README.md&lt;/a&gt;</code></td>
+                </tr><tr id="L399">
+                  <td class="line-number"><a href="#L399">399</a></td>
+                  <td class="code-line"><code>      &lt;a href=&quot;/repo/tree/src/&quot;&gt;src/&lt;/a&gt;</code></td>
+                </tr><tr id="L400">
+                  <td class="line-number"><a href="#L400">400</a></td>
+                  <td class="code-line"><code>      &lt;a href=&quot;/repo/tree/site/docs/&quot;&gt;site/docs/&lt;/a&gt;</code></td>
+                </tr><tr id="L401">
+                  <td class="line-number"><a href="#L401">401</a></td>
+                  <td class="code-line"><code>      &lt;a href=&quot;/repo/tree/browser_runner/&quot;&gt;browser_runner/&lt;/a&gt;</code></td>
+                </tr><tr id="L402">
+                  <td class="line-number"><a href="#L402">402</a></td>
+                  <td class="code-line"><code>      &lt;a href=&quot;/docs/&quot;&gt;Rendered docs&lt;/a&gt;</code></td>
+                </tr><tr id="L403">
+                  <td class="line-number"><a href="#L403">403</a></td>
+                  <td class="code-line"><code>    &lt;/section&gt;</code></td>
+                </tr><tr id="L404">
+                  <td class="line-number"><a href="#L404">404</a></td>
+                  <td class="code-line"><code>&quot;&quot;&quot;</code></td>
+                </tr><tr id="L405">
+                  <td class="line-number"><a href="#L405">405</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L406">
+                  <td class="line-number"><a href="#L406">406</a></td>
+                  <td class="code-line"><code>    return f&quot;&quot;&quot;</code></td>
+                </tr><tr id="L407">
+                  <td class="line-number"><a href="#L407">407</a></td>
+                  <td class="code-line"><code>    {intro}</code></td>
+                </tr><tr id="L408">
+                  <td class="line-number"><a href="#L408">408</a></td>
+                  <td class="code-line"><code>    &lt;section class=&quot;docs-section repo-tree-section&quot;&gt;</code></td>
+                </tr><tr id="L409">
+                  <td class="line-number"><a href="#L409">409</a></td>
+                  <td class="code-line"><code>      {breadcrumbs(parts)}</code></td>
+                </tr><tr id="L410">
+                  <td class="line-number"><a href="#L410">410</a></td>
+                  <td class="code-line"><code>      &lt;div class=&quot;repo-tree-header&quot;&gt;</code></td>
+                </tr><tr id="L411">
+                  <td class="line-number"><a href="#L411">411</a></td>
+                  <td class="code-line"><code>        &lt;h2&gt;{html.escape(path_label)}&lt;/h2&gt;</code></td>
+                </tr><tr id="L412">
+                  <td class="line-number"><a href="#L412">412</a></td>
+                  <td class="code-line"><code>        &lt;span&gt;{len(all_paths)} source files mirrored&lt;/span&gt;</code></td>
+                </tr><tr id="L413">
+                  <td class="line-number"><a href="#L413">413</a></td>
+                  <td class="code-line"><code>      &lt;/div&gt;</code></td>
+                </tr><tr id="L414">
+                  <td class="line-number"><a href="#L414">414</a></td>
+                  <td class="code-line"><code>      &lt;div class=&quot;repo-table-wrap&quot;&gt;</code></td>
+                </tr><tr id="L415">
+                  <td class="line-number"><a href="#L415">415</a></td>
+                  <td class="code-line"><code>        &lt;table class=&quot;repo-table&quot;&gt;</code></td>
+                </tr><tr id="L416">
+                  <td class="line-number"><a href="#L416">416</a></td>
+                  <td class="code-line"><code>          &lt;thead&gt;</code></td>
+                </tr><tr id="L417">
+                  <td class="line-number"><a href="#L417">417</a></td>
+                  <td class="code-line"><code>            &lt;tr&gt;</code></td>
+                </tr><tr id="L418">
+                  <td class="line-number"><a href="#L418">418</a></td>
+                  <td class="code-line"><code>              &lt;th&gt;Name&lt;/th&gt;</code></td>
+                </tr><tr id="L419">
+                  <td class="line-number"><a href="#L419">419</a></td>
+                  <td class="code-line"><code>              &lt;th&gt;Type&lt;/th&gt;</code></td>
+                </tr><tr id="L420">
+                  <td class="line-number"><a href="#L420">420</a></td>
+                  <td class="code-line"><code>              &lt;th&gt;Size&lt;/th&gt;</code></td>
+                </tr><tr id="L421">
+                  <td class="line-number"><a href="#L421">421</a></td>
+                  <td class="code-line"><code>              &lt;th&gt;Links&lt;/th&gt;</code></td>
+                </tr><tr id="L422">
+                  <td class="line-number"><a href="#L422">422</a></td>
+                  <td class="code-line"><code>            &lt;/tr&gt;</code></td>
+                </tr><tr id="L423">
+                  <td class="line-number"><a href="#L423">423</a></td>
+                  <td class="code-line"><code>          &lt;/thead&gt;</code></td>
+                </tr><tr id="L424">
+                  <td class="line-number"><a href="#L424">424</a></td>
+                  <td class="code-line"><code>          &lt;tbody&gt;</code></td>
+                </tr><tr id="L425">
+                  <td class="line-number"><a href="#L425">425</a></td>
+                  <td class="code-line"><code>            {&#x27;&#x27;.join(rows)}</code></td>
+                </tr><tr id="L426">
+                  <td class="line-number"><a href="#L426">426</a></td>
+                  <td class="code-line"><code>          &lt;/tbody&gt;</code></td>
+                </tr><tr id="L427">
+                  <td class="line-number"><a href="#L427">427</a></td>
+                  <td class="code-line"><code>        &lt;/table&gt;</code></td>
+                </tr><tr id="L428">
+                  <td class="line-number"><a href="#L428">428</a></td>
+                  <td class="code-line"><code>      &lt;/div&gt;</code></td>
+                </tr><tr id="L429">
+                  <td class="line-number"><a href="#L429">429</a></td>
+                  <td class="code-line"><code>    &lt;/section&gt;</code></td>
+                </tr><tr id="L430">
+                  <td class="line-number"><a href="#L430">430</a></td>
+                  <td class="code-line"><code>&quot;&quot;&quot;</code></td>
+                </tr><tr id="L431">
+                  <td class="line-number"><a href="#L431">431</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L432">
+                  <td class="line-number"><a href="#L432">432</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L433">
+                  <td class="line-number"><a href="#L433">433</a></td>
+                  <td class="code-line"><code>def file_body(path: str) -&gt; str:</code></td>
+                </tr><tr id="L434">
+                  <td class="line-number"><a href="#L434">434</a></td>
+                  <td class="code-line"><code>    source_path = REPO_ROOT / path</code></td>
+                </tr><tr id="L435">
+                  <td class="line-number"><a href="#L435">435</a></td>
+                  <td class="code-line"><code>    raw = source_path.read_bytes()</code></td>
+                </tr><tr id="L436">
+                  <td class="line-number"><a href="#L436">436</a></td>
+                  <td class="code-line"><code>    try:</code></td>
+                </tr><tr id="L437">
+                  <td class="line-number"><a href="#L437">437</a></td>
+                  <td class="code-line"><code>        text = raw.decode(&quot;utf-8&quot;)</code></td>
+                </tr><tr id="L438">
+                  <td class="line-number"><a href="#L438">438</a></td>
+                  <td class="code-line"><code>        is_text = True</code></td>
+                </tr><tr id="L439">
+                  <td class="line-number"><a href="#L439">439</a></td>
+                  <td class="code-line"><code>    except UnicodeDecodeError:</code></td>
+                </tr><tr id="L440">
+                  <td class="line-number"><a href="#L440">440</a></td>
+                  <td class="code-line"><code>        text = &quot;&quot;</code></td>
+                </tr><tr id="L441">
+                  <td class="line-number"><a href="#L441">441</a></td>
+                  <td class="code-line"><code>        is_text = False</code></td>
+                </tr><tr id="L442">
+                  <td class="line-number"><a href="#L442">442</a></td>
+                  <td class="code-line"><code>    rendered = rendered_site_link(path)</code></td>
+                </tr><tr id="L443">
+                  <td class="line-number"><a href="#L443">443</a></td>
+                  <td class="code-line"><code>    if path.endswith(&quot;.md&quot;) and is_text:</code></td>
+                </tr><tr id="L444">
+                  <td class="line-number"><a href="#L444">444</a></td>
+                  <td class="code-line"><code>        rendered_action = &#x27;&lt;a class=&quot;cta-button cta-button-secondary&quot; href=&quot;#rendered-markdown&quot;&gt;Rendered Markdown&lt;/a&gt;&#x27;</code></td>
+                </tr><tr id="L445">
+                  <td class="line-number"><a href="#L445">445</a></td>
+                  <td class="code-line"><code>    elif rendered:</code></td>
+                </tr><tr id="L446">
+                  <td class="line-number"><a href="#L446">446</a></td>
+                  <td class="code-line"><code>        rendered_action = f&#x27;&lt;a class=&quot;cta-button cta-button-secondary&quot; href=&quot;{html.escape(rendered)}&quot;&gt;View rendered&lt;/a&gt;&#x27;</code></td>
+                </tr><tr id="L447">
+                  <td class="line-number"><a href="#L447">447</a></td>
+                  <td class="code-line"><code>    else:</code></td>
+                </tr><tr id="L448">
+                  <td class="line-number"><a href="#L448">448</a></td>
+                  <td class="code-line"><code>        rendered_action = &quot;&quot;</code></td>
+                </tr><tr id="L449">
+                  <td class="line-number"><a href="#L449">449</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L450">
+                  <td class="line-number"><a href="#L450">450</a></td>
+                  <td class="code-line"><code>    if is_text:</code></td>
+                </tr><tr id="L451">
+                  <td class="line-number"><a href="#L451">451</a></td>
+                  <td class="code-line"><code>        lines = text.splitlines()</code></td>
+                </tr><tr id="L452">
+                  <td class="line-number"><a href="#L452">452</a></td>
+                  <td class="code-line"><code>        if text.endswith(&quot;\n&quot;):</code></td>
+                </tr><tr id="L453">
+                  <td class="line-number"><a href="#L453">453</a></td>
+                  <td class="code-line"><code>            pass</code></td>
+                </tr><tr id="L454">
+                  <td class="line-number"><a href="#L454">454</a></td>
+                  <td class="code-line"><code>        code_rows = []</code></td>
+                </tr><tr id="L455">
+                  <td class="line-number"><a href="#L455">455</a></td>
+                  <td class="code-line"><code>        for number, line in enumerate(lines, start=1):</code></td>
+                </tr><tr id="L456">
+                  <td class="line-number"><a href="#L456">456</a></td>
+                  <td class="code-line"><code>            escaped = html.escape(line) or &quot; &quot;</code></td>
+                </tr><tr id="L457">
+                  <td class="line-number"><a href="#L457">457</a></td>
+                  <td class="code-line"><code>            code_rows.append(</code></td>
+                </tr><tr id="L458">
+                  <td class="line-number"><a href="#L458">458</a></td>
+                  <td class="code-line"><code>                f&quot;&quot;&quot;&lt;tr id=&quot;L{number}&quot;&gt;</code></td>
+                </tr><tr id="L459">
+                  <td class="line-number"><a href="#L459">459</a></td>
+                  <td class="code-line"><code>                  &lt;td class=&quot;line-number&quot;&gt;&lt;a href=&quot;#L{number}&quot;&gt;{number}&lt;/a&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L460">
+                  <td class="line-number"><a href="#L460">460</a></td>
+                  <td class="code-line"><code>                  &lt;td class=&quot;code-line&quot;&gt;&lt;code&gt;{escaped}&lt;/code&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L461">
+                  <td class="line-number"><a href="#L461">461</a></td>
+                  <td class="code-line"><code>                &lt;/tr&gt;&quot;&quot;&quot;</code></td>
+                </tr><tr id="L462">
+                  <td class="line-number"><a href="#L462">462</a></td>
+                  <td class="code-line"><code>            )</code></td>
+                </tr><tr id="L463">
+                  <td class="line-number"><a href="#L463">463</a></td>
+                  <td class="code-line"><code>        code = f&quot;&quot;&quot;&lt;div class=&quot;repo-code-wrap&quot;&gt;</code></td>
+                </tr><tr id="L464">
+                  <td class="line-number"><a href="#L464">464</a></td>
+                  <td class="code-line"><code>        &lt;table class=&quot;repo-code&quot;&gt;</code></td>
+                </tr><tr id="L465">
+                  <td class="line-number"><a href="#L465">465</a></td>
+                  <td class="code-line"><code>          &lt;tbody&gt;</code></td>
+                </tr><tr id="L466">
+                  <td class="line-number"><a href="#L466">466</a></td>
+                  <td class="code-line"><code>            {&#x27;&#x27;.join(code_rows)}</code></td>
+                </tr><tr id="L467">
+                  <td class="line-number"><a href="#L467">467</a></td>
+                  <td class="code-line"><code>          &lt;/tbody&gt;</code></td>
+                </tr><tr id="L468">
+                  <td class="line-number"><a href="#L468">468</a></td>
+                  <td class="code-line"><code>        &lt;/table&gt;</code></td>
+                </tr><tr id="L469">
+                  <td class="line-number"><a href="#L469">469</a></td>
+                  <td class="code-line"><code>      &lt;/div&gt;&quot;&quot;&quot;</code></td>
+                </tr><tr id="L470">
+                  <td class="line-number"><a href="#L470">470</a></td>
+                  <td class="code-line"><code>    else:</code></td>
+                </tr><tr id="L471">
+                  <td class="line-number"><a href="#L471">471</a></td>
+                  <td class="code-line"><code>        code = &#x27;&lt;p class=&quot;copy-block&quot;&gt;Binary file. Use the raw link to download it.&lt;/p&gt;&#x27;</code></td>
+                </tr><tr id="L472">
+                  <td class="line-number"><a href="#L472">472</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L473">
+                  <td class="line-number"><a href="#L473">473</a></td>
+                  <td class="code-line"><code>    directory_parts = path.split(&quot;/&quot;)[:-1]</code></td>
+                </tr><tr id="L474">
+                  <td class="line-number"><a href="#L474">474</a></td>
+                  <td class="code-line"><code>    markdown_view = &quot;&quot;</code></td>
+                </tr><tr id="L475">
+                  <td class="line-number"><a href="#L475">475</a></td>
+                  <td class="code-line"><code>    if path.endswith(&quot;.md&quot;) and is_text:</code></td>
+                </tr><tr id="L476">
+                  <td class="line-number"><a href="#L476">476</a></td>
+                  <td class="code-line"><code>        markdown_view = f&quot;&quot;&quot;</code></td>
+                </tr><tr id="L477">
+                  <td class="line-number"><a href="#L477">477</a></td>
+                  <td class="code-line"><code>    &lt;section class=&quot;docs-section repo-markdown-section&quot; id=&quot;rendered-markdown&quot;&gt;</code></td>
+                </tr><tr id="L478">
+                  <td class="line-number"><a href="#L478">478</a></td>
+                  <td class="code-line"><code>      &lt;h2&gt;Rendered Markdown&lt;/h2&gt;</code></td>
+                </tr><tr id="L479">
+                  <td class="line-number"><a href="#L479">479</a></td>
+                  <td class="code-line"><code>      &lt;article class=&quot;repo-markdown-body&quot;&gt;</code></td>
+                </tr><tr id="L480">
+                  <td class="line-number"><a href="#L480">480</a></td>
+                  <td class="code-line"><code>        {render_markdown_document(text)}</code></td>
+                </tr><tr id="L481">
+                  <td class="line-number"><a href="#L481">481</a></td>
+                  <td class="code-line"><code>      &lt;/article&gt;</code></td>
+                </tr><tr id="L482">
+                  <td class="line-number"><a href="#L482">482</a></td>
+                  <td class="code-line"><code>    &lt;/section&gt;</code></td>
+                </tr><tr id="L483">
+                  <td class="line-number"><a href="#L483">483</a></td>
+                  <td class="code-line"><code>&quot;&quot;&quot;</code></td>
+                </tr><tr id="L484">
+                  <td class="line-number"><a href="#L484">484</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L485">
+                  <td class="line-number"><a href="#L485">485</a></td>
+                  <td class="code-line"><code>    return f&quot;&quot;&quot;</code></td>
+                </tr><tr id="L486">
+                  <td class="line-number"><a href="#L486">486</a></td>
+                  <td class="code-line"><code>    &lt;section class=&quot;docs-hero repo-file-hero&quot;&gt;</code></td>
+                </tr><tr id="L487">
+                  <td class="line-number"><a href="#L487">487</a></td>
+                  <td class="code-line"><code>      &lt;p class=&quot;eyebrow&quot;&gt;source file&lt;/p&gt;</code></td>
+                </tr><tr id="L488">
+                  <td class="line-number"><a href="#L488">488</a></td>
+                  <td class="code-line"><code>      &lt;h1&gt;{html.escape(path)}&lt;/h1&gt;</code></td>
+                </tr><tr id="L489">
+                  <td class="line-number"><a href="#L489">489</a></td>
+                  <td class="code-line"><code>      &lt;p class=&quot;hero-text&quot;&gt;{format_size(len(raw))} mirrored from the public source tree.&lt;/p&gt;</code></td>
+                </tr><tr id="L490">
+                  <td class="line-number"><a href="#L490">490</a></td>
+                  <td class="code-line"><code>      &lt;div class=&quot;hero-actions hero-actions-left&quot; aria-label=&quot;Source file actions&quot;&gt;</code></td>
+                </tr><tr id="L491">
+                  <td class="line-number"><a href="#L491">491</a></td>
+                  <td class="code-line"><code>        &lt;a class=&quot;cta-button cta-button-primary&quot; href=&quot;{html.escape(raw_url(path))}&quot;&gt;Open raw&lt;/a&gt;</code></td>
+                </tr><tr id="L492">
+                  <td class="line-number"><a href="#L492">492</a></td>
+                  <td class="code-line"><code>        &lt;a class=&quot;cta-button cta-button-secondary&quot; href=&quot;{html.escape(directory_url(directory_parts))}&quot;&gt;Parent directory&lt;/a&gt;</code></td>
+                </tr><tr id="L493">
+                  <td class="line-number"><a href="#L493">493</a></td>
+                  <td class="code-line"><code>        {rendered_action}</code></td>
+                </tr><tr id="L494">
+                  <td class="line-number"><a href="#L494">494</a></td>
+                  <td class="code-line"><code>      &lt;/div&gt;</code></td>
+                </tr><tr id="L495">
+                  <td class="line-number"><a href="#L495">495</a></td>
+                  <td class="code-line"><code>    &lt;/section&gt;</code></td>
+                </tr><tr id="L496">
+                  <td class="line-number"><a href="#L496">496</a></td>
+                  <td class="code-line"><code>{markdown_view}</code></td>
+                </tr><tr id="L497">
+                  <td class="line-number"><a href="#L497">497</a></td>
+                  <td class="code-line"><code>    &lt;section class=&quot;docs-section repo-file-section&quot;&gt;</code></td>
+                </tr><tr id="L498">
+                  <td class="line-number"><a href="#L498">498</a></td>
+                  <td class="code-line"><code>      &lt;h2&gt;Source&lt;/h2&gt;</code></td>
+                </tr><tr id="L499">
+                  <td class="line-number"><a href="#L499">499</a></td>
+                  <td class="code-line"><code>      {breadcrumbs(directory_parts)}</code></td>
+                </tr><tr id="L500">
+                  <td class="line-number"><a href="#L500">500</a></td>
+                  <td class="code-line"><code>      {code}</code></td>
+                </tr><tr id="L501">
+                  <td class="line-number"><a href="#L501">501</a></td>
+                  <td class="code-line"><code>    &lt;/section&gt;</code></td>
+                </tr><tr id="L502">
+                  <td class="line-number"><a href="#L502">502</a></td>
+                  <td class="code-line"><code>&quot;&quot;&quot;</code></td>
+                </tr><tr id="L503">
+                  <td class="line-number"><a href="#L503">503</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L504">
+                  <td class="line-number"><a href="#L504">504</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L505">
+                  <td class="line-number"><a href="#L505">505</a></td>
+                  <td class="code-line"><code>def write_text(path: Path, contents: str) -&gt; None:</code></td>
+                </tr><tr id="L506">
+                  <td class="line-number"><a href="#L506">506</a></td>
+                  <td class="code-line"><code>    path.parent.mkdir(parents=True, exist_ok=True)</code></td>
+                </tr><tr id="L507">
+                  <td class="line-number"><a href="#L507">507</a></td>
+                  <td class="code-line"><code>    path.write_text(contents, encoding=&quot;utf-8&quot;)</code></td>
+                </tr><tr id="L508">
+                  <td class="line-number"><a href="#L508">508</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L509">
+                  <td class="line-number"><a href="#L509">509</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L510">
+                  <td class="line-number"><a href="#L510">510</a></td>
+                  <td class="code-line"><code>def copy_raw_files(paths: list[str]) -&gt; None:</code></td>
+                </tr><tr id="L511">
+                  <td class="line-number"><a href="#L511">511</a></td>
+                  <td class="code-line"><code>    for path in paths:</code></td>
+                </tr><tr id="L512">
+                  <td class="line-number"><a href="#L512">512</a></td>
+                  <td class="code-line"><code>        destination = RAW_ROOT / path</code></td>
+                </tr><tr id="L513">
+                  <td class="line-number"><a href="#L513">513</a></td>
+                  <td class="code-line"><code>        destination.parent.mkdir(parents=True, exist_ok=True)</code></td>
+                </tr><tr id="L514">
+                  <td class="line-number"><a href="#L514">514</a></td>
+                  <td class="code-line"><code>        shutil.copyfile(REPO_ROOT / path, destination)</code></td>
+                </tr><tr id="L515">
+                  <td class="line-number"><a href="#L515">515</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L516">
+                  <td class="line-number"><a href="#L516">516</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L517">
+                  <td class="line-number"><a href="#L517">517</a></td>
+                  <td class="code-line"><code>def write_directory_pages(node: TreeNode, parts: list[str], all_paths: list[str]) -&gt; None:</code></td>
+                </tr><tr id="L518">
+                  <td class="line-number"><a href="#L518">518</a></td>
+                  <td class="code-line"><code>    page_path = MIRROR_ROOT.joinpath(*parts, &quot;index.html&quot;)</code></td>
+                </tr><tr id="L519">
+                  <td class="line-number"><a href="#L519">519</a></td>
+                  <td class="code-line"><code>    title_path = &quot;/&quot;.join(parts) if parts else &quot;Repository Tree&quot;</code></td>
+                </tr><tr id="L520">
+                  <td class="line-number"><a href="#L520">520</a></td>
+                  <td class="code-line"><code>    write_text(</code></td>
+                </tr><tr id="L521">
+                  <td class="line-number"><a href="#L521">521</a></td>
+                  <td class="code-line"><code>        page_path,</code></td>
+                </tr><tr id="L522">
+                  <td class="line-number"><a href="#L522">522</a></td>
+                  <td class="code-line"><code>        page_shell(</code></td>
+                </tr><tr id="L523">
+                  <td class="line-number"><a href="#L523">523</a></td>
+                  <td class="code-line"><code>            f&quot;{title_path} - Gossip Protocol Source Mirror&quot;,</code></td>
+                </tr><tr id="L524">
+                  <td class="line-number"><a href="#L524">524</a></td>
+                  <td class="code-line"><code>            directory_body(parts, node, all_paths),</code></td>
+                </tr><tr id="L525">
+                  <td class="line-number"><a href="#L525">525</a></td>
+                  <td class="code-line"><code>            &quot;Static source tree mirror for Gossip Protocol.&quot;,</code></td>
+                </tr><tr id="L526">
+                  <td class="line-number"><a href="#L526">526</a></td>
+                  <td class="code-line"><code>        ),</code></td>
+                </tr><tr id="L527">
+                  <td class="line-number"><a href="#L527">527</a></td>
+                  <td class="code-line"><code>    )</code></td>
+                </tr><tr id="L528">
+                  <td class="line-number"><a href="#L528">528</a></td>
+                  <td class="code-line"><code>    for name, child in node.dirs.items():</code></td>
+                </tr><tr id="L529">
+                  <td class="line-number"><a href="#L529">529</a></td>
+                  <td class="code-line"><code>        write_directory_pages(child, [*parts, name], all_paths)</code></td>
+                </tr><tr id="L530">
+                  <td class="line-number"><a href="#L530">530</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L531">
+                  <td class="line-number"><a href="#L531">531</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L532">
+                  <td class="line-number"><a href="#L532">532</a></td>
+                  <td class="code-line"><code>def write_file_pages(paths: list[str]) -&gt; None:</code></td>
+                </tr><tr id="L533">
+                  <td class="line-number"><a href="#L533">533</a></td>
+                  <td class="code-line"><code>    for path in paths:</code></td>
+                </tr><tr id="L534">
+                  <td class="line-number"><a href="#L534">534</a></td>
+                  <td class="code-line"><code>        page_path = BLOB_ROOT / f&quot;{path}.html&quot;</code></td>
+                </tr><tr id="L535">
+                  <td class="line-number"><a href="#L535">535</a></td>
+                  <td class="code-line"><code>        write_text(</code></td>
+                </tr><tr id="L536">
+                  <td class="line-number"><a href="#L536">536</a></td>
+                  <td class="code-line"><code>            page_path,</code></td>
+                </tr><tr id="L537">
+                  <td class="line-number"><a href="#L537">537</a></td>
+                  <td class="code-line"><code>            page_shell(</code></td>
+                </tr><tr id="L538">
+                  <td class="line-number"><a href="#L538">538</a></td>
+                  <td class="code-line"><code>                f&quot;{path} - Gossip Protocol Source Mirror&quot;,</code></td>
+                </tr><tr id="L539">
+                  <td class="line-number"><a href="#L539">539</a></td>
+                  <td class="code-line"><code>                file_body(path),</code></td>
+                </tr><tr id="L540">
+                  <td class="line-number"><a href="#L540">540</a></td>
+                  <td class="code-line"><code>                f&quot;Static source viewer for {path}.&quot;,</code></td>
+                </tr><tr id="L541">
+                  <td class="line-number"><a href="#L541">541</a></td>
+                  <td class="code-line"><code>            ),</code></td>
+                </tr><tr id="L542">
+                  <td class="line-number"><a href="#L542">542</a></td>
+                  <td class="code-line"><code>        )</code></td>
+                </tr><tr id="L543">
+                  <td class="line-number"><a href="#L543">543</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L544">
+                  <td class="line-number"><a href="#L544">544</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L545">
+                  <td class="line-number"><a href="#L545">545</a></td>
+                  <td class="code-line"><code>def main() -&gt; None:</code></td>
+                </tr><tr id="L546">
+                  <td class="line-number"><a href="#L546">546</a></td>
+                  <td class="code-line"><code>    paths = tracked_files()</code></td>
+                </tr><tr id="L547">
+                  <td class="line-number"><a href="#L547">547</a></td>
+                  <td class="code-line"><code>    if MIRROR_ROOT.exists():</code></td>
+                </tr><tr id="L548">
+                  <td class="line-number"><a href="#L548">548</a></td>
+                  <td class="code-line"><code>        shutil.rmtree(MIRROR_ROOT)</code></td>
+                </tr><tr id="L549">
+                  <td class="line-number"><a href="#L549">549</a></td>
+                  <td class="code-line"><code>    tree = build_tree(paths)</code></td>
+                </tr><tr id="L550">
+                  <td class="line-number"><a href="#L550">550</a></td>
+                  <td class="code-line"><code>    copy_raw_files(paths)</code></td>
+                </tr><tr id="L551">
+                  <td class="line-number"><a href="#L551">551</a></td>
+                  <td class="code-line"><code>    write_directory_pages(tree, [], paths)</code></td>
+                </tr><tr id="L552">
+                  <td class="line-number"><a href="#L552">552</a></td>
+                  <td class="code-line"><code>    write_file_pages(paths)</code></td>
+                </tr><tr id="L553">
+                  <td class="line-number"><a href="#L553">553</a></td>
+                  <td class="code-line"><code>    print(f&quot;mirrored {len(paths)} files into {MIRROR_ROOT.relative_to(REPO_ROOT)}&quot;)</code></td>
+                </tr><tr id="L554">
+                  <td class="line-number"><a href="#L554">554</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L555">
+                  <td class="line-number"><a href="#L555">555</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L556">
+                  <td class="line-number"><a href="#L556">556</a></td>
+                  <td class="code-line"><code>if __name__ == &quot;__main__&quot;:</code></td>
+                </tr><tr id="L557">
+                  <td class="line-number"><a href="#L557">557</a></td>
+                  <td class="code-line"><code>    main()</code></td>
+                </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>Gossip Protocol</span>
+    <span>Peer-witnessed monitoring, compute, storage, DNS, swaps, and publishing.</span>
+  </footer>
+
+  <script src="/assets/app.js" defer></script>
+</body>
+</html>

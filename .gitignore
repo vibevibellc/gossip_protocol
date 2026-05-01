@@ -1,0 +1,44 @@
+# Rust build outputs
+/target
+
+# Local protocol runtime data
+/wallets
+/state
+/tmp
+/artifacts
+
+# Secrets, keys, local config, and certificates
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+*.csr
+*.p12
+*.pfx
+*.der
+*.jks
+*.keystore
+*.age
+*.asc
+*.gpg
+*secret*
+*secrets*
+*credential*
+*credentials*
+
+# Local databases and logs
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.log
+
+# JavaScript dependency/install outputs
+node_modules/
+npm-debug.log*
+
+# Python and OS/editor noise
+__pycache__/
+.DS_Store

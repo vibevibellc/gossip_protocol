@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gossip Protocol Settings</title>
+  <meta name="description" content="Settings, command flags, JSON fields, defaults, limits, and API endpoints for Gossip Protocol.">
+  <meta property="og:title" content="Gossip Protocol Settings">
+  <meta property="og:description" content="Command and protocol settings reference for Gossip Protocol.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://gossip-protocol.com/docs/settings.html">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/styles.css?v=responsive-3" as="style">
+  <link rel="stylesheet" href="/assets/styles.css?v=responsive-3">
+</head>
+<body>
+  <canvas id="network-canvas" aria-hidden="true"></canvas>
+
+  <main class="docs-page">
+    <nav class="docs-nav" aria-label="Documentation navigation">
+      <a href="/">Home</a>
+      <a href="/docs/">Docs</a>
+      <a href="/repo/">Repo</a>
+      <a href="/docs/functionality.html">Functionality</a>
+      <a href="/docs/settings.html">Settings</a>
+    </nav>
+
+    <section class="docs-hero">
+      <p class="eyebrow">settings</p>
+      <h1>Commands, fields, defaults, and limits</h1>
+      <p class="hero-text">
+        This page documents the current Rust implementation settings. Amounts use six decimal
+        places internally, where <code>1.0</code> token equals <code>1_000_000</code> micro-units.
+      </p>
+    </section>
+
+    <section class="docs-section">
+      <h2>Command groups</h2>
+      <table class="docs-table">
+        <thead>
+          <tr>
+            <th>Group</th>
+            <th>Subcommands</th>
+            <th>Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>wallet</code></td>
+            <td><code>create</code>, <code>address</code>, <code>show</code></td>
+            <td>Create and inspect signing identities.</td>
+          </tr>
+          <tr>
+            <td><code>genesis</code></td>
+            <td><code>create</code></td>
+            <td>Create the chain ID, validator set, treasury, block time, receipt threshold, and starting balances.</td>
+          </tr>
+          <tr>
+            <td><code>node</code></td>
+            <td><code>run</code></td>
+            <td>Run a validator node with HTTP control and gossip endpoints.</td>
+          </tr>
+          <tr>
+            <td><code>tx</code></td>
+            <td>Transfers, health checks, browser checks, compute jobs, monitors, storage, and DNS operations.</td>
+            <td>Build and submit signed ledger transactions.</td>
+          </tr>
+          <tr>
+            <td><code>swap</code></td>
+            <td><code>quote</code>, <code>lock</code>, <code>cancel</code>, <code>settle</code></td>
+            <td>Quote and settle HT against configured settlement adapters.</td>
+          </tr>
+          <tr>
+            <td><code>monitor</code></td>
+            <td><code>hash-token</code></td>
+            <td>Hash heartbeat URL secrets before placing them in monitor specs.</td>
+          </tr>
+          <tr>
+            <td><code>browser</code></td>
+            <td><code>validate-package</code>, <code>hash-package</code></td>
+            <td>Validate and hash browser journey packages.</td>
+          </tr>
+          <tr>
+            <td><code>storage</code></td>
+            <td><code>bundle</code>, <code>module-ref</code>, <code>host</code>, <code>prove</code></td>
+            <td>Build bundles, serve chunks, create WASI module refs, and submit storage proofs.</td>
+          </tr>
+          <tr>
+            <td><code>agent</code></td>
+            <td><code>run</code></td>
+            <td>Run a delegated health, browser, and compute worker.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="docs-section">
+      <h2>Wallet settings</h2>
+      <table class="docs-table">
+        <thead>
+          <tr><th>Setting</th><th>Applies to</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>out</code></td>
+            <td><code>wallet create</code></td>
+            <td>Wallet file path to write.</td>
+          </tr>
+          <tr>
+            <td><code>--passphrase-env</code></td>
+            <td><code>wallet create</code>, signing commands</td>
+            <td>Name of an environment variable containing the wallet passphrase.</td>
+          </tr>
+          <tr>
+            <td><code>--insecure-plaintext</code></td>
+            <td><code>wallet create</code></td>
+            <td>Write an unencrypted wallet file. Intended only for local tests.</td>
+          </tr>
+          <tr>
+            <td><code>wallet</code></td>
+            <td><code>wallet address</code>, <code>wallet show</code></td>
+            <td>Wallet file path to inspect.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="docs-section">
+      <h2>Genesis settings</h2>
+      <table class="docs-table">
+        <thead>
+          <tr><th>Setting</th><th>Default</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>--out</code></td><td>required</td><td>Output path for <code>genesis.json</code>.</td></tr>
+          <tr><td><code>--validator-wallet</code></td><td>required, repeatable</td><td>Wallet files whose addresses become validators.</td></tr>
+          <tr><td><code>--treasury</code></td><td>first validator</td><td>Treasury address for swap quoting and protocol inventory.</td></tr>
+          <tr><td><code>--airdrop</code></td><td>none</td><td>Initial HT balances as <code>address:amount</code>.</td></tr>
+          <tr><td><code>--storage-airdrop</code></td><td>none</td><td>Initial ST balances as <code>address:amount</code>.</td></tr>
+          <tr><td><code>--compute-airdrop</code></td><td>none</td><td>Initial CT balances as <code>address:amount</code>.</td></tr>
+          <tr><td><code>--dns-airdrop</code></td><td>none</td><td>Initial DNS balances as <code>address:amount</code>.</td></tr>
+          <tr><td><code>--block-time-secs</code></td><td><code>10</code></td><td>Target block cadence.</td></tr>
+          <tr><td><code>--min-receipts</code></td><td><code>2</code></td><td>Minimum health receipts required for finalization.</td></tr>
+          <tr><td><code>--chain-id</code></td><td>generated</td><td>Explicit chain identifier.</td></tr>
+        </tbody>
+      </table>
+      <p class="copy-block">
+        The serialized genesis includes <code>chain_id</code>, <code>treasury</code>,
+        <code>validators</code>, <code>chain_started_at</code>, <code>block_time_secs</code>,
+        <code>min_health_receipts</code>, and four airdrop maps.
+      </p>
+    </section>
+
+    <section class="docs-section">
+      <h2>Node run settings</h2>
+      <table class="docs-table">
+        <thead>
+          <tr><th>Setting</th><th>Default</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>--wallet</code></td><td>required</td><td>Validator wallet path.</td></tr>
+          <tr><td><code>--genesis</code></td><td>required</td><td>Genesis JSON path.</td></tr>
+          <tr><td><code>--state-dir</code></td><td>required</td><td>Persistent chain state, journal, blocks, compute archive, and artifacts.</td></tr>
+          <tr><td><code>--bind</code></td><td><code>127.0.0.1:9000</code></td><td>HTTP bind address.</td></tr>
+          <tr><td><code>--peer</code></td><td>repeatable</td><td>Peer base URLs for sync and gossip.</td></tr>
+          <tr><td><code>--swap-config</code></td><td>none</td><td>JSON settlement adapter config.</td></tr>
+          <tr><td><code>--notification-policies</code></td><td>none</td><td>JSON notification policy file for monitor alerts.</td></tr>
+          <tr><td><code>--probe-agents</code></td><td>none</td><td>JSON list of delegated agent endpoints.</td></tr>
+          <tr><td><code>--browser-runner-program</code></td><td>built-in runner path optional</td><td>External program used to execute browser journey packages.</td></tr>
+          <tr><td><code>--browser-runner-arg</code></td><td>repeatable</td><td>Extra arguments passed to the browser runner program.</td></tr>
+          <tr><td><code>--browser-cache-dir</code></td><td>state-derived temp path</td><td>Browser session cache directory.</td></tr>
+          <tr><td><code>--browser-secret-store</code></td><td>none</td><td>JSON secret map used by browser packages with secret references.</td></tr>
+          <tr><td><code>--control-api-token</code></td><td>none</td><td>Optional bearer token required for control endpoints.</td></tr>
+          <tr><td><code>--gossip-api-token</code></td><td>none</td><td>Optional bearer token required for internal gossip endpoints.</td></tr>
+          <tr><td><code>--wallet-passphrase-env</code></td><td>none</td><td>Environment variable containing validator wallet passphrase.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="docs-section">
+      <h2>Agent settings</h2>
+      <table class="docs-table">
+        <thead>
+          <tr><th>Setting</th><th>Default</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>--wallet</code></td><td>required</td><td>Agent wallet path.</td></tr>
+          <tr><td><code>--bind</code></td><td><code>127.0.0.1:0</code></td><td>Agent API bind address.</td></tr>
+          <tr><td><code>--region</code></td><td>none</td><td>Optional region tag copied into delegated receipts.</td></tr>
+          <tr><td><code>--network</code></td><td>none</td><td>Optional network tag copied into delegated receipts.</td></tr>
+          <tr><td><code>--api-token</code></td><td>none</td><td>Optional bearer token required by the agent API.</td></tr>
+          <tr><td><code>--browser-runner-program</code></td><td>none</td><td>Program used for delegated browser checks.</td></tr>
+          <tr><td><code>--browser-runner-arg</code></td><td>repeatable</td><td>Extra runner arguments.</td></tr>
+          <tr><td><code>--browser-cache-dir</code></td><td>temp path</td><td>Browser session cache directory.</td></tr>
+          <tr><td><code>--browser-artifact-dir</code></td><td>temp path</td><td>Directory for screenshots, traces, and videos.</td></tr>
+          <tr><td><code>--browser-secret-store</code></td><td>none</td><td>JSON secret map for browser secret refs.</td></tr>
+          <tr><td><code>--compute-artifact-dir</code></td><td>temp path</td><td>Directory where compute artifacts are written and served.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="docs-section">
+      <h2>Health check settings</h2>
+      <table class="docs-table">
+        <thead>
+          <tr><th>Setting</th><th>Default or limit</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>--url</code></td><td>required, max 2,048 bytes</td><td>HTTP target.</td></tr>
+          <tr><td><code>--method</code></td><td><code>get</code></td><td><code>get</code>, <code>head</code>, or <code>post</code>.</td></tr>
+          <tr><td><code>--header</code></td><td>max 16</td><td>Request headers as <code>name:value</code>.</td></tr>
+          <tr><td><code>--query</code></td><td>max 16</td><td>Query parameters as <code>key=value</code>.</td></tr>
+          <tr><td><code>--timeout-ms</code></td><td><code>3000</code>, range 100 to 30,000</td><td>Request timeout.</td></tr>
+          <tr><td><code>--expect-status</code></td><td><code>200</code></td><td>Expected HTTP status.</td></tr>
+          <tr><td><code>--assert-json</code></td><td>max 16 total assertions</td><td>JSON path equality assertion.</td></tr>
+          <tr><td><code>--assert-json-exists</code></td><td>max 16 total assertions</td><td>JSON path existence assertion.</td></tr>
+          <tr><td><code>--assert-header</code></td><td>max 16 total assertions</td><td>Header equality assertion.</td></tr>
+          <tr><td><code>--assert-body-contains</code></td><td>max 16 total assertions</td><td>Body substring assertion.</td></tr>
+          <tr><td><code>--body-json</code></td><td>max 8,192 serialized bytes</td><td>JSON POST body.</td></tr>
+          <tr><td><code>--allow-http</code></td><td>false</td><td>Permit insecure HTTP URLs.</td></tr>
+          <tr><td><code>--allow-private-targets</code></td><td>false</td><td>Permit private or local network targets.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="docs-section">
+      <h2>Monitor spec fields</h2>
+      <table class="docs-table">
+        <thead>
+          <tr><th>Field</th><th>Default or limit</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>monitor_id</code></td><td>required, max 128 bytes</td><td>Stable monitor identifier.</td></tr>
+          <tr><td><code>slug</code></td><td>optional, max 128 bytes</td><td>Human-readable slug.</td></tr>
+          <tr><td><code>schedule</code></td><td>required</td><td><code>interval</code> with <code>every_secs</code> and <code>anchor_at</code>, or <code>cron_utc</code> with <code>expr</code>.</td></tr>
+          <tr><td><code>grace_secs</code></td><td>max 86,400</td><td>Time after a slot deadline before miss handling.</td></tr>
+          <tr><td><code>pathway</code></td><td>required</td><td><code>heartbeat</code> or <code>browser</code>.</td></tr>
+          <tr><td><code>notification_policy_id</code></td><td>optional, max 128 bytes</td><td>Policy used for alert delivery.</td></tr>
+          <tr><td><code>log_capture</code></td><td><code>none</code>, max 16,384 bytes</td><td>Optional text capture policy.</td></tr>
+          <tr><td><code>tags</code></td><td>max 32</td><td>Tag keys max 64 bytes; values max 256 bytes.</td></tr>
+        </tbody>
+      </table>
+      <p class="copy-block">
+        Heartbeat auth supports <code>secret_url</code>, <code>delegated_key</code>, or
+        <code>dual</code>. Signal policies support success only, start plus success, or start plus
+        success plus fail. Miss policies support record-only, validator confirmation, or delegated
+        agent confirmation with optional region diversity.
+      </p>
+    </section>
+
+    <section class="docs-section">
+      <h2>Browser package fields and limits</h2>
+      <table class="docs-table">
+        <thead>
+          <tr><th>Setting</th><th>Default or limit</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>package_id</code>, <code>journey_id</code></td><td>max 128 bytes each</td><td>Package and journey identifiers.</td></tr>
+          <tr><td><code>manifest_version</code></td><td>required</td><td>Package schema version.</td></tr>
+          <tr><td><code>runtime.engine</code></td><td><code>chromium</code></td><td>Only Chromium is currently accepted.</td></tr>
+          <tr><td><code>runtime.locale</code>, <code>timezone</code></td><td>required</td><td>Browser locale and timezone ID.</td></tr>
+          <tr><td><code>viewport_width</code>, <code>viewport_height</code></td><td>1 to 4,096</td><td>Browser viewport dimensions.</td></tr>
+          <tr><td><code>cache_mode</code></td><td><code>disabled</code> or <code>session_state</code></td><td>Session-state reuse mode.</td></tr>
+          <tr><td><code>steps</code></td><td>max 64</td><td>Navigate, click, fill, press, wait, assert, screenshot, context open, context close.</td></tr>
+          <tr><td><code>max_runtime_secs</code></td><td>1 to 600</td><td>Whole journey runtime limit.</td></tr>
+          <tr><td><code>per_step_timeout_ms</code></td><td>100 to 60,000</td><td>Per-step timeout.</td></tr>
+          <tr><td><code>artifact_policy</code></td><td>all false by default</td><td>Enable video, trace, and screenshot-on-failure capture.</td></tr>
+          <tr><td><code>session_cache</code></td><td>disabled by default</td><td>Optional namespace and max age for session state.</td></tr>
+          <tr><td><code>tags</code></td><td>max 32</td><td>Tag keys max 64 bytes; values max 256 bytes.</td></tr>
+          <tr><td><code>secrets</code></td><td>max 32</td><td>Secret keys max 128 bytes; values max 2,048 bytes.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="docs-section">
+      <h2>Compute job fields and limits</h2>
+      <table class="docs-table">
+        <thead>
+          <tr><th>Setting</th><th>Default or limit</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>request_id</code></td><td>required, max 128 bytes</td><td>Client request identifier.</td></tr>
+          <tr><td><code>workload.type</code></td><td>required</td><td><code>integer_map</code>, <code>monte_carlo_pi</code>, or <code>wasi_preview1</code>.</td></tr>
+          <tr><td><code>shards</code></td><td>1 to 256</td><td>Each shard ID max 128 bytes.</td></tr>
+          <tr><td><code>integer values</code></td><td>max 8,192 per shard</td><td>Absolute value must be at most 1,000,000.</td></tr>
+          <tr><td><code>monte_carlo samples</code></td><td>1 to 10,000,000 per shard</td><td>Samples per shard with seed.</td></tr>
+          <tr><td><code>module_hex</code></td><td>max 64 KiB</td><td>Inline WASI module.</td></tr>
+          <tr><td><code>module_ref</code></td><td>max 64 MiB</td><td>Storage-backed WASI module reference.</td></tr>
+          <tr><td><code>wasi args</code></td><td>max 16, 256 bytes each</td><td>Command arguments.</td></tr>
+          <tr><td><code>wasi env</code></td><td>max 16</td><td>Uppercase, digit, underscore keys; values max 512 bytes.</td></tr>
+          <tr><td><code>wasi input files</code></td><td>max 16</td><td>Each max 64 KiB; total max 128 KiB.</td></tr>
+          <tr><td><code>max_runtime_secs</code></td><td><code>300</code>, range 1 to 3,600</td><td>Compute runtime budget.</td></tr>
+          <tr><td><code>replication</code></td><td><code>1</code>, max 8</td><td>Number of matching executions requested.</td></tr>
+          <tr><td><code>sandbox.max_memory_bytes</code></td><td>64 MiB default, 1 MiB to 512 MiB</td><td>WASI memory budget.</td></tr>
+          <tr><td><code>sandbox.max_fuel</code></td><td>500,000,000 default, max 20,000,000,000</td><td>Wasmtime fuel limit.</td></tr>
+          <tr><td><code>sandbox.max_stdout_bytes</code></td><td>4 KiB default, max 16 KiB</td><td>Captured stdout sample.</td></tr>
+          <tr><td><code>sandbox.max_stderr_bytes</code></td><td>4 KiB default, max 16 KiB</td><td>Captured stderr sample.</td></tr>
+          <tr><td><code>sandbox.allow_network</code></td><td>false only</td><td>Network access is rejected for production jobs.</td></tr>
+          <tr><td><code>artifact_policy.outputs</code></td><td>max 16</td><td>Artifact paths must start with <code>artifacts/</code>.</td></tr>
+          <tr><td><code>artifact_policy.max_total_bytes</code></td><td>max 64 MiB</td><td>Total artifact byte allowance.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="docs-section">
+      <h2>Storage settings</h2>
+      <table class="docs-table">
+        <thead>
+          <tr><th>Setting</th><th>Default or limit</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>storage bundle --input</code></td><td>required</td><td>File or directory to bundle.</td></tr>
+          <tr><td><code>--out-dir</code></td><td>required</td><td>Directory where bundle files are written.</td></tr>
+          <tr><td><code>--host</code></td><td>required</td><td>Host address in the storage contract spec.</td></tr>
+          <tr><td><code>--contract-id</code></td><td>generated if omitted</td><td>Storage contract ID.</td></tr>
+          <tr><td><code>--mode</code></td><td><code>encrypted</code></td><td><code>encrypted</code> or <code>public-raw</code>.</td></tr>
+          <tr><td><code>--index-path</code></td><td><code>index.html</code> for directories</td><td>Public raw static-site index path.</td></tr>
+          <tr><td><code>--chunk-size-bytes</code></td><td>65,536</td><td>Range 1,024 bytes to 64 MiB.</td></tr>
+          <tr><td><code>--duration-secs</code></td><td>2,592,000</td><td>Max 31,536,000 seconds.</td></tr>
+          <tr><td><code>--proof-interval-secs</code></td><td>60</td><td>Max 86,400 seconds.</td></tr>
+          <tr><td><code>--proof-sample-count</code></td><td>4</td><td>Max 64 challenged chunks per proof window.</td></tr>
+          <tr><td><code>--reward-rate-per-64mib-second</code></td><td>1 ST</td><td>Reward rate per 64 MiB-second.</td></tr>
+          <tr><td><code>contract size</code></td><td>max 1 TiB</td><td>Maximum storage contract byte size.</td></tr>
+          <tr><td><code>manifest paths</code></td><td>max 512 bytes</td><td>Public paths and module-ref paths.</td></tr>
+          <tr><td><code>content types</code></td><td>max 64 entries, 128 bytes each</td><td>Static-site content type map.</td></tr>
+        </tbody>
+      </table>
+      <p class="copy-block">
+        A storage host binds with <code>storage host --store-dir</code>,
+        <code>--bind</code> defaulting to <code>127.0.0.1:9100</code>, and optional
+        <code>--node</code> for domain route lookups.
+      </p>
+    </section>
+
+    <section class="docs-section">
+      <h2>DNS settings</h2>
+      <table class="docs-table">
+        <thead>
+          <tr><th>Setting</th><th>Default or limit</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>offering_id</code></td><td>max 128 bytes</td><td>Domain offering ID.</td></tr>
+          <tr><td><code>suffix</code></td><td>max 253 bytes</td><td>DNS suffix controlled by a validator.</td></tr>
+          <tr><td><code>gateway_url</code></td><td>max 512 bytes</td><td>Storage gateway URL for the offering.</td></tr>
+          <tr><td><code>label</code></td><td>max 63 bytes</td><td>Leased DNS label under the offering suffix.</td></tr>
+          <tr><td><code>duration_secs</code></td><td>1 to 31,536,000</td><td>Lease duration and renewal duration.</td></tr>
+          <tr><td><code>target_contract_id</code></td><td>required</td><td>Storage contract served by the route.</td></tr>
+          <tr><td><code>price</code></td><td>1 DNS per subdomain-second</td><td>Lease cost is duration multiplied by the per-second DNS rate.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="docs-section">
+      <h2>Fees and costs</h2>
+      <table class="docs-table">
+        <thead>
+          <tr><th>Area</th><th>Constant</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Token precision</td><td><code>TOKEN_DECIMALS</code></td><td>6 decimal places</td></tr>
+          <tr><td>Health check</td><td><code>HEALTH_CHECK_BASE_COST</code></td><td>1 HT</td></tr>
+          <tr><td>Health timeout surcharge</td><td><code>HEALTH_TIMEOUT_SURCHARGE_STEP_COST</code></td><td>0.1 HT per extra 1,000 ms after 3,000 ms</td></tr>
+          <tr><td>Health complexity surcharge</td><td><code>HEALTH_COMPLEXITY_SURCHARGE_UNIT_COST</code></td><td>0.025 HT per unit after 8 headers, query params, and assertions</td></tr>
+          <tr><td>Health body surcharge</td><td><code>HEALTH_BODY_SURCHARGE_PER_KIB</code></td><td>0.1 HT per KiB after 1 KiB</td></tr>
+          <tr><td>Browser check</td><td><code>BROWSER_CHECK_BASE_COST</code></td><td>2 HT</td></tr>
+          <tr><td>Browser step surcharge</td><td><code>BROWSER_STEP_SURCHARGE_COST</code></td><td>0.125 HT per step after 8</td></tr>
+          <tr><td>Browser runtime surcharge</td><td><code>BROWSER_RUNTIME_SURCHARGE_COST</code></td><td>0.25 HT per 10 seconds after 20 seconds</td></tr>
+          <tr><td>Browser video</td><td><code>BROWSER_VIDEO_SURCHARGE_COST</code></td><td>0.75 HT</td></tr>
+          <tr><td>Browser trace</td><td><code>BROWSER_TRACE_SURCHARGE_COST</code></td><td>0.25 HT</td></tr>
+          <tr><td>Monitor slot</td><td><code>MONITOR_SLOT_RESERVATION_FEE</code></td><td>0.01 HT</td></tr>
+          <tr><td>Monitor ping ingress</td><td><code>MONITOR_PING_INGRESS_FEE</code></td><td>0.001 HT</td></tr>
+          <tr><td>Monitor alert delivery</td><td><code>MONITOR_ALERT_DELIVERY_FEE</code></td><td>0.005 HT</td></tr>
+          <tr><td>Compute job</td><td><code>COMPUTE_JOB_BASE_COST</code></td><td>1 CT</td></tr>
+          <tr><td>Compute shard</td><td><code>COMPUTE_SHARD_BASE_COST</code></td><td>0.1 CT per shard</td></tr>
+          <tr><td>Compute runtime surcharge</td><td><code>COMPUTE_RUNTIME_SURCHARGE_STEP_COST</code></td><td>0.25 CT per extra 60 seconds after 300 seconds</td></tr>
+          <tr><td>WASI surcharge</td><td><code>COMPUTE_WASI_SURCHARGE_COST</code></td><td>1 CT</td></tr>
+          <tr><td>Storage reward</td><td><code>STORAGE_REWARD_PER_QUANTUM_SECOND</code></td><td>1 ST per 64 MiB-second</td></tr>
+          <tr><td>DNS lease</td><td><code>DNS_LEASE_COST_PER_SUBDOMAIN_SECOND</code></td><td>1 DNS per second</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="docs-section">
+      <h2>HTTP endpoints</h2>
+      <table class="docs-table">
+        <thead>
+          <tr><th>Surface</th><th>Endpoint</th><th>Use</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Control</td><td><code>GET /v1/control/status</code></td><td>Node status.</td></tr>
+          <tr><td>Control</td><td><code>GET /v1/control/account/:address</code></td><td>Account balances and nonce.</td></tr>
+          <tr><td>Control</td><td><code>GET /v1/control/ledger</code></td><td>Ledger snapshot.</td></tr>
+          <tr><td>Control</td><td><code>POST /v1/control/submit</code></td><td>Submit signed transactions.</td></tr>
+          <tr><td>Control</td><td><code>GET /v1/control/jobs/:tx_hash</code></td><td>Read finalized or pending job details.</td></tr>
+          <tr><td>Control</td><td><code>/v1/control/monitors*</code></td><td>Create, update, pause, resume, top up, rotate, list slots, and list alerts.</td></tr>
+          <tr><td>Control</td><td><code>GET /v1/control/storage/:contract_id</code></td><td>Read storage contract state.</td></tr>
+          <tr><td>Control</td><td><code>GET /v1/control/domain-route/:host</code></td><td>Resolve a leased host to a storage contract.</td></tr>
+          <tr><td>Ping</td><td><code>/v1/ping/:monitor_id/:token</code></td><td>Secret URL heartbeat success, start, and fail signals.</td></tr>
+          <tr><td>Ping</td><td><code>POST /v1/ping/:monitor_id</code></td><td>Signed heartbeat ping.</td></tr>
+          <tr><td>Gossip</td><td><code>/v1/internal/*</code></td><td>Internal transaction, receipt, proof, heartbeat, block, approval, and monitor confirmation messages.</td></tr>
+          <tr><td>Agent</td><td><code>/v1/internal/agent/*</code></td><td>Delegated health, browser, compute, and artifact service endpoints.</td></tr>
+          <tr><td>Storage host</td><td><code>/v1/storage/contracts/:contract_id/*</code></td><td>Manifest, chunk, and proof endpoints.</td></tr>
+          <tr><td>Storage host</td><td><code>/public/:contract_id/*</code></td><td>Public raw static bundle serving.</td></tr>
+          <tr><td>Storage host</td><td><code>/.well-known/gossip-protocol-route</code></td><td>Domain gateway route metadata.</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer>
+    <span>Gossip Protocol</span>
+    <span>Peer-witnessed monitoring, compute, storage, DNS, swaps, and publishing.</span>
+  </footer>
+
+  <script src="/assets/app.js" defer></script>
+</body>
+</html>

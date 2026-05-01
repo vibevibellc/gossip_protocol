@@ -1,0 +1,8 @@
+{
+  "name": "gossip-protocol-browser-runner",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "playwright": "^1.54.0"
+  }
+}

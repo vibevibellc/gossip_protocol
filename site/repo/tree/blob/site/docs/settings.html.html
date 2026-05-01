@@ -1,0 +1,1311 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>site/docs/settings.html - Gossip Protocol Source Mirror</title>
+  <meta name="description" content="Static source viewer for site/docs/settings.html.">
+  <meta property="og:title" content="site/docs/settings.html - Gossip Protocol Source Mirror">
+  <meta property="og:description" content="Static source viewer for site/docs/settings.html.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://gossip-protocol.com/repo/tree/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/styles.css?v=responsive-3" as="style">
+  <link rel="stylesheet" href="/assets/styles.css?v=responsive-3">
+</head>
+<body>
+  <canvas id="network-canvas" aria-hidden="true"></canvas>
+
+  <main class="docs-page repo-browser">
+    <nav class="docs-nav" aria-label="Repository mirror navigation">
+      <a href="/">Home</a>
+      <a href="/docs/">Docs</a>
+      <a href="/repo/">Repo</a>
+      <a href="/repo/tree/">Source tree</a>
+      <a href="https://github.com/vibevibellc/gossip_protocol">GitHub</a>
+    </nav>
+
+    <section class="docs-hero repo-file-hero">
+      <p class="eyebrow">source file</p>
+      <h1>site/docs/settings.html</h1>
+      <p class="hero-text">26.8 KB mirrored from the public source tree.</p>
+      <div class="hero-actions hero-actions-left" aria-label="Source file actions">
+        <a class="cta-button cta-button-primary" href="/repo/tree/raw/site/docs/settings.html">Open raw</a>
+        <a class="cta-button cta-button-secondary" href="/repo/tree/site/docs/">Parent directory</a>
+        <a class="cta-button cta-button-secondary" href="/docs/settings.html">View rendered</a>
+      </div>
+    </section>
+
+    <section class="docs-section repo-file-section">
+      <h2>Source</h2>
+      <div class="repo-breadcrumbs"><a href="/repo/tree/">gossip_protocol</a><span>/</span><a href="/repo/tree/site/">site</a><span>/</span><a href="/repo/tree/site/docs/">docs</a></div>
+      <div class="repo-code-wrap">
+        <table class="repo-code">
+          <tbody>
+            <tr id="L1">
+                  <td class="line-number"><a href="#L1">1</a></td>
+                  <td class="code-line"><code>&lt;!doctype html&gt;</code></td>
+                </tr><tr id="L2">
+                  <td class="line-number"><a href="#L2">2</a></td>
+                  <td class="code-line"><code>&lt;html lang=&quot;en&quot;&gt;</code></td>
+                </tr><tr id="L3">
+                  <td class="line-number"><a href="#L3">3</a></td>
+                  <td class="code-line"><code>&lt;head&gt;</code></td>
+                </tr><tr id="L4">
+                  <td class="line-number"><a href="#L4">4</a></td>
+                  <td class="code-line"><code>  &lt;meta charset=&quot;utf-8&quot;&gt;</code></td>
+                </tr><tr id="L5">
+                  <td class="line-number"><a href="#L5">5</a></td>
+                  <td class="code-line"><code>  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;</code></td>
+                </tr><tr id="L6">
+                  <td class="line-number"><a href="#L6">6</a></td>
+                  <td class="code-line"><code>  &lt;title&gt;Gossip Protocol Settings&lt;/title&gt;</code></td>
+                </tr><tr id="L7">
+                  <td class="line-number"><a href="#L7">7</a></td>
+                  <td class="code-line"><code>  &lt;meta name=&quot;description&quot; content=&quot;Settings, command flags, JSON fields, defaults, limits, and API endpoints for Gossip Protocol.&quot;&gt;</code></td>
+                </tr><tr id="L8">
+                  <td class="line-number"><a href="#L8">8</a></td>
+                  <td class="code-line"><code>  &lt;meta property=&quot;og:title&quot; content=&quot;Gossip Protocol Settings&quot;&gt;</code></td>
+                </tr><tr id="L9">
+                  <td class="line-number"><a href="#L9">9</a></td>
+                  <td class="code-line"><code>  &lt;meta property=&quot;og:description&quot; content=&quot;Command and protocol settings reference for Gossip Protocol.&quot;&gt;</code></td>
+                </tr><tr id="L10">
+                  <td class="line-number"><a href="#L10">10</a></td>
+                  <td class="code-line"><code>  &lt;meta property=&quot;og:type&quot; content=&quot;article&quot;&gt;</code></td>
+                </tr><tr id="L11">
+                  <td class="line-number"><a href="#L11">11</a></td>
+                  <td class="code-line"><code>  &lt;meta property=&quot;og:url&quot; content=&quot;https://gossip-protocol.com/docs/settings.html&quot;&gt;</code></td>
+                </tr><tr id="L12">
+                  <td class="line-number"><a href="#L12">12</a></td>
+                  <td class="code-line"><code>  &lt;link rel=&quot;icon&quot; href=&quot;/favicon.svg&quot; type=&quot;image/svg+xml&quot;&gt;</code></td>
+                </tr><tr id="L13">
+                  <td class="line-number"><a href="#L13">13</a></td>
+                  <td class="code-line"><code>  &lt;link rel=&quot;preload&quot; href=&quot;/assets/styles.css?v=responsive-3&quot; as=&quot;style&quot;&gt;</code></td>
+                </tr><tr id="L14">
+                  <td class="line-number"><a href="#L14">14</a></td>
+                  <td class="code-line"><code>  &lt;link rel=&quot;stylesheet&quot; href=&quot;/assets/styles.css?v=responsive-3&quot;&gt;</code></td>
+                </tr><tr id="L15">
+                  <td class="line-number"><a href="#L15">15</a></td>
+                  <td class="code-line"><code>&lt;/head&gt;</code></td>
+                </tr><tr id="L16">
+                  <td class="line-number"><a href="#L16">16</a></td>
+                  <td class="code-line"><code>&lt;body&gt;</code></td>
+                </tr><tr id="L17">
+                  <td class="line-number"><a href="#L17">17</a></td>
+                  <td class="code-line"><code>  &lt;canvas id=&quot;network-canvas&quot; aria-hidden=&quot;true&quot;&gt;&lt;/canvas&gt;</code></td>
+                </tr><tr id="L18">
+                  <td class="line-number"><a href="#L18">18</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L19">
+                  <td class="line-number"><a href="#L19">19</a></td>
+                  <td class="code-line"><code>  &lt;main class=&quot;docs-page&quot;&gt;</code></td>
+                </tr><tr id="L20">
+                  <td class="line-number"><a href="#L20">20</a></td>
+                  <td class="code-line"><code>    &lt;nav class=&quot;docs-nav&quot; aria-label=&quot;Documentation navigation&quot;&gt;</code></td>
+                </tr><tr id="L21">
+                  <td class="line-number"><a href="#L21">21</a></td>
+                  <td class="code-line"><code>      &lt;a href=&quot;/&quot;&gt;Home&lt;/a&gt;</code></td>
+                </tr><tr id="L22">
+                  <td class="line-number"><a href="#L22">22</a></td>
+                  <td class="code-line"><code>      &lt;a href=&quot;/docs/&quot;&gt;Docs&lt;/a&gt;</code></td>
+                </tr><tr id="L23">
+                  <td class="line-number"><a href="#L23">23</a></td>
+                  <td class="code-line"><code>      &lt;a href=&quot;/repo/&quot;&gt;Repo&lt;/a&gt;</code></td>
+                </tr><tr id="L24">
+                  <td class="line-number"><a href="#L24">24</a></td>
+                  <td class="code-line"><code>      &lt;a href=&quot;/docs/functionality.html&quot;&gt;Functionality&lt;/a&gt;</code></td>
+                </tr><tr id="L25">
+                  <td class="line-number"><a href="#L25">25</a></td>
+                  <td class="code-line"><code>      &lt;a href=&quot;/docs/settings.html&quot;&gt;Settings&lt;/a&gt;</code></td>
+                </tr><tr id="L26">
+                  <td class="line-number"><a href="#L26">26</a></td>
+                  <td class="code-line"><code>    &lt;/nav&gt;</code></td>
+                </tr><tr id="L27">
+                  <td class="line-number"><a href="#L27">27</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L28">
+                  <td class="line-number"><a href="#L28">28</a></td>
+                  <td class="code-line"><code>    &lt;section class=&quot;docs-hero&quot;&gt;</code></td>
+                </tr><tr id="L29">
+                  <td class="line-number"><a href="#L29">29</a></td>
+                  <td class="code-line"><code>      &lt;p class=&quot;eyebrow&quot;&gt;settings&lt;/p&gt;</code></td>
+                </tr><tr id="L30">
+                  <td class="line-number"><a href="#L30">30</a></td>
+                  <td class="code-line"><code>      &lt;h1&gt;Commands, fields, defaults, and limits&lt;/h1&gt;</code></td>
+                </tr><tr id="L31">
+                  <td class="line-number"><a href="#L31">31</a></td>
+                  <td class="code-line"><code>      &lt;p class=&quot;hero-text&quot;&gt;</code></td>
+                </tr><tr id="L32">
+                  <td class="line-number"><a href="#L32">32</a></td>
+                  <td class="code-line"><code>        This page documents the current Rust implementation settings. Amounts use six decimal</code></td>
+                </tr><tr id="L33">
+                  <td class="line-number"><a href="#L33">33</a></td>
+                  <td class="code-line"><code>        places internally, where &lt;code&gt;1.0&lt;/code&gt; token equals &lt;code&gt;1_000_000&lt;/code&gt; micro-units.</code></td>
+                </tr><tr id="L34">
+                  <td class="line-number"><a href="#L34">34</a></td>
+                  <td class="code-line"><code>      &lt;/p&gt;</code></td>
+                </tr><tr id="L35">
+                  <td class="line-number"><a href="#L35">35</a></td>
+                  <td class="code-line"><code>    &lt;/section&gt;</code></td>
+                </tr><tr id="L36">
+                  <td class="line-number"><a href="#L36">36</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L37">
+                  <td class="line-number"><a href="#L37">37</a></td>
+                  <td class="code-line"><code>    &lt;section class=&quot;docs-section&quot;&gt;</code></td>
+                </tr><tr id="L38">
+                  <td class="line-number"><a href="#L38">38</a></td>
+                  <td class="code-line"><code>      &lt;h2&gt;Command groups&lt;/h2&gt;</code></td>
+                </tr><tr id="L39">
+                  <td class="line-number"><a href="#L39">39</a></td>
+                  <td class="code-line"><code>      &lt;table class=&quot;docs-table&quot;&gt;</code></td>
+                </tr><tr id="L40">
+                  <td class="line-number"><a href="#L40">40</a></td>
+                  <td class="code-line"><code>        &lt;thead&gt;</code></td>
+                </tr><tr id="L41">
+                  <td class="line-number"><a href="#L41">41</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;</code></td>
+                </tr><tr id="L42">
+                  <td class="line-number"><a href="#L42">42</a></td>
+                  <td class="code-line"><code>            &lt;th&gt;Group&lt;/th&gt;</code></td>
+                </tr><tr id="L43">
+                  <td class="line-number"><a href="#L43">43</a></td>
+                  <td class="code-line"><code>            &lt;th&gt;Subcommands&lt;/th&gt;</code></td>
+                </tr><tr id="L44">
+                  <td class="line-number"><a href="#L44">44</a></td>
+                  <td class="code-line"><code>            &lt;th&gt;Purpose&lt;/th&gt;</code></td>
+                </tr><tr id="L45">
+                  <td class="line-number"><a href="#L45">45</a></td>
+                  <td class="code-line"><code>          &lt;/tr&gt;</code></td>
+                </tr><tr id="L46">
+                  <td class="line-number"><a href="#L46">46</a></td>
+                  <td class="code-line"><code>        &lt;/thead&gt;</code></td>
+                </tr><tr id="L47">
+                  <td class="line-number"><a href="#L47">47</a></td>
+                  <td class="code-line"><code>        &lt;tbody&gt;</code></td>
+                </tr><tr id="L48">
+                  <td class="line-number"><a href="#L48">48</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;</code></td>
+                </tr><tr id="L49">
+                  <td class="line-number"><a href="#L49">49</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;&lt;code&gt;wallet&lt;/code&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L50">
+                  <td class="line-number"><a href="#L50">50</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;&lt;code&gt;create&lt;/code&gt;, &lt;code&gt;address&lt;/code&gt;, &lt;code&gt;show&lt;/code&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L51">
+                  <td class="line-number"><a href="#L51">51</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;Create and inspect signing identities.&lt;/td&gt;</code></td>
+                </tr><tr id="L52">
+                  <td class="line-number"><a href="#L52">52</a></td>
+                  <td class="code-line"><code>          &lt;/tr&gt;</code></td>
+                </tr><tr id="L53">
+                  <td class="line-number"><a href="#L53">53</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;</code></td>
+                </tr><tr id="L54">
+                  <td class="line-number"><a href="#L54">54</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;&lt;code&gt;genesis&lt;/code&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L55">
+                  <td class="line-number"><a href="#L55">55</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;&lt;code&gt;create&lt;/code&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L56">
+                  <td class="line-number"><a href="#L56">56</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;Create the chain ID, validator set, treasury, block time, receipt threshold, and starting balances.&lt;/td&gt;</code></td>
+                </tr><tr id="L57">
+                  <td class="line-number"><a href="#L57">57</a></td>
+                  <td class="code-line"><code>          &lt;/tr&gt;</code></td>
+                </tr><tr id="L58">
+                  <td class="line-number"><a href="#L58">58</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;</code></td>
+                </tr><tr id="L59">
+                  <td class="line-number"><a href="#L59">59</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;&lt;code&gt;node&lt;/code&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L60">
+                  <td class="line-number"><a href="#L60">60</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;&lt;code&gt;run&lt;/code&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L61">
+                  <td class="line-number"><a href="#L61">61</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;Run a validator node with HTTP control and gossip endpoints.&lt;/td&gt;</code></td>
+                </tr><tr id="L62">
+                  <td class="line-number"><a href="#L62">62</a></td>
+                  <td class="code-line"><code>          &lt;/tr&gt;</code></td>
+                </tr><tr id="L63">
+                  <td class="line-number"><a href="#L63">63</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;</code></td>
+                </tr><tr id="L64">
+                  <td class="line-number"><a href="#L64">64</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;&lt;code&gt;tx&lt;/code&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L65">
+                  <td class="line-number"><a href="#L65">65</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;Transfers, health checks, browser checks, compute jobs, monitors, storage, and DNS operations.&lt;/td&gt;</code></td>
+                </tr><tr id="L66">
+                  <td class="line-number"><a href="#L66">66</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;Build and submit signed ledger transactions.&lt;/td&gt;</code></td>
+                </tr><tr id="L67">
+                  <td class="line-number"><a href="#L67">67</a></td>
+                  <td class="code-line"><code>          &lt;/tr&gt;</code></td>
+                </tr><tr id="L68">
+                  <td class="line-number"><a href="#L68">68</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;</code></td>
+                </tr><tr id="L69">
+                  <td class="line-number"><a href="#L69">69</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;&lt;code&gt;swap&lt;/code&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L70">
+                  <td class="line-number"><a href="#L70">70</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;&lt;code&gt;quote&lt;/code&gt;, &lt;code&gt;lock&lt;/code&gt;, &lt;code&gt;cancel&lt;/code&gt;, &lt;code&gt;settle&lt;/code&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L71">
+                  <td class="line-number"><a href="#L71">71</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;Quote and settle HT against configured settlement adapters.&lt;/td&gt;</code></td>
+                </tr><tr id="L72">
+                  <td class="line-number"><a href="#L72">72</a></td>
+                  <td class="code-line"><code>          &lt;/tr&gt;</code></td>
+                </tr><tr id="L73">
+                  <td class="line-number"><a href="#L73">73</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;</code></td>
+                </tr><tr id="L74">
+                  <td class="line-number"><a href="#L74">74</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;&lt;code&gt;monitor&lt;/code&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L75">
+                  <td class="line-number"><a href="#L75">75</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;&lt;code&gt;hash-token&lt;/code&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L76">
+                  <td class="line-number"><a href="#L76">76</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;Hash heartbeat URL secrets before placing them in monitor specs.&lt;/td&gt;</code></td>
+                </tr><tr id="L77">
+                  <td class="line-number"><a href="#L77">77</a></td>
+                  <td class="code-line"><code>          &lt;/tr&gt;</code></td>
+                </tr><tr id="L78">
+                  <td class="line-number"><a href="#L78">78</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;</code></td>
+                </tr><tr id="L79">
+                  <td class="line-number"><a href="#L79">79</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;&lt;code&gt;browser&lt;/code&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L80">
+                  <td class="line-number"><a href="#L80">80</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;&lt;code&gt;validate-package&lt;/code&gt;, &lt;code&gt;hash-package&lt;/code&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L81">
+                  <td class="line-number"><a href="#L81">81</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;Validate and hash browser journey packages.&lt;/td&gt;</code></td>
+                </tr><tr id="L82">
+                  <td class="line-number"><a href="#L82">82</a></td>
+                  <td class="code-line"><code>          &lt;/tr&gt;</code></td>
+                </tr><tr id="L83">
+                  <td class="line-number"><a href="#L83">83</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;</code></td>
+                </tr><tr id="L84">
+                  <td class="line-number"><a href="#L84">84</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;&lt;code&gt;storage&lt;/code&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L85">
+                  <td class="line-number"><a href="#L85">85</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;&lt;code&gt;bundle&lt;/code&gt;, &lt;code&gt;module-ref&lt;/code&gt;, &lt;code&gt;host&lt;/code&gt;, &lt;code&gt;prove&lt;/code&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L86">
+                  <td class="line-number"><a href="#L86">86</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;Build bundles, serve chunks, create WASI module refs, and submit storage proofs.&lt;/td&gt;</code></td>
+                </tr><tr id="L87">
+                  <td class="line-number"><a href="#L87">87</a></td>
+                  <td class="code-line"><code>          &lt;/tr&gt;</code></td>
+                </tr><tr id="L88">
+                  <td class="line-number"><a href="#L88">88</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;</code></td>
+                </tr><tr id="L89">
+                  <td class="line-number"><a href="#L89">89</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;&lt;code&gt;agent&lt;/code&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L90">
+                  <td class="line-number"><a href="#L90">90</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;&lt;code&gt;run&lt;/code&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L91">
+                  <td class="line-number"><a href="#L91">91</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;Run a delegated health, browser, and compute worker.&lt;/td&gt;</code></td>
+                </tr><tr id="L92">
+                  <td class="line-number"><a href="#L92">92</a></td>
+                  <td class="code-line"><code>          &lt;/tr&gt;</code></td>
+                </tr><tr id="L93">
+                  <td class="line-number"><a href="#L93">93</a></td>
+                  <td class="code-line"><code>        &lt;/tbody&gt;</code></td>
+                </tr><tr id="L94">
+                  <td class="line-number"><a href="#L94">94</a></td>
+                  <td class="code-line"><code>      &lt;/table&gt;</code></td>
+                </tr><tr id="L95">
+                  <td class="line-number"><a href="#L95">95</a></td>
+                  <td class="code-line"><code>    &lt;/section&gt;</code></td>
+                </tr><tr id="L96">
+                  <td class="line-number"><a href="#L96">96</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L97">
+                  <td class="line-number"><a href="#L97">97</a></td>
+                  <td class="code-line"><code>    &lt;section class=&quot;docs-section&quot;&gt;</code></td>
+                </tr><tr id="L98">
+                  <td class="line-number"><a href="#L98">98</a></td>
+                  <td class="code-line"><code>      &lt;h2&gt;Wallet settings&lt;/h2&gt;</code></td>
+                </tr><tr id="L99">
+                  <td class="line-number"><a href="#L99">99</a></td>
+                  <td class="code-line"><code>      &lt;table class=&quot;docs-table&quot;&gt;</code></td>
+                </tr><tr id="L100">
+                  <td class="line-number"><a href="#L100">100</a></td>
+                  <td class="code-line"><code>        &lt;thead&gt;</code></td>
+                </tr><tr id="L101">
+                  <td class="line-number"><a href="#L101">101</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;th&gt;Setting&lt;/th&gt;&lt;th&gt;Applies to&lt;/th&gt;&lt;th&gt;Description&lt;/th&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L102">
+                  <td class="line-number"><a href="#L102">102</a></td>
+                  <td class="code-line"><code>        &lt;/thead&gt;</code></td>
+                </tr><tr id="L103">
+                  <td class="line-number"><a href="#L103">103</a></td>
+                  <td class="code-line"><code>        &lt;tbody&gt;</code></td>
+                </tr><tr id="L104">
+                  <td class="line-number"><a href="#L104">104</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;</code></td>
+                </tr><tr id="L105">
+                  <td class="line-number"><a href="#L105">105</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;&lt;code&gt;out&lt;/code&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L106">
+                  <td class="line-number"><a href="#L106">106</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;&lt;code&gt;wallet create&lt;/code&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L107">
+                  <td class="line-number"><a href="#L107">107</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;Wallet file path to write.&lt;/td&gt;</code></td>
+                </tr><tr id="L108">
+                  <td class="line-number"><a href="#L108">108</a></td>
+                  <td class="code-line"><code>          &lt;/tr&gt;</code></td>
+                </tr><tr id="L109">
+                  <td class="line-number"><a href="#L109">109</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;</code></td>
+                </tr><tr id="L110">
+                  <td class="line-number"><a href="#L110">110</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;&lt;code&gt;--passphrase-env&lt;/code&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L111">
+                  <td class="line-number"><a href="#L111">111</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;&lt;code&gt;wallet create&lt;/code&gt;, signing commands&lt;/td&gt;</code></td>
+                </tr><tr id="L112">
+                  <td class="line-number"><a href="#L112">112</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;Name of an environment variable containing the wallet passphrase.&lt;/td&gt;</code></td>
+                </tr><tr id="L113">
+                  <td class="line-number"><a href="#L113">113</a></td>
+                  <td class="code-line"><code>          &lt;/tr&gt;</code></td>
+                </tr><tr id="L114">
+                  <td class="line-number"><a href="#L114">114</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;</code></td>
+                </tr><tr id="L115">
+                  <td class="line-number"><a href="#L115">115</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;&lt;code&gt;--insecure-plaintext&lt;/code&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L116">
+                  <td class="line-number"><a href="#L116">116</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;&lt;code&gt;wallet create&lt;/code&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L117">
+                  <td class="line-number"><a href="#L117">117</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;Write an unencrypted wallet file. Intended only for local tests.&lt;/td&gt;</code></td>
+                </tr><tr id="L118">
+                  <td class="line-number"><a href="#L118">118</a></td>
+                  <td class="code-line"><code>          &lt;/tr&gt;</code></td>
+                </tr><tr id="L119">
+                  <td class="line-number"><a href="#L119">119</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;</code></td>
+                </tr><tr id="L120">
+                  <td class="line-number"><a href="#L120">120</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;&lt;code&gt;wallet&lt;/code&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L121">
+                  <td class="line-number"><a href="#L121">121</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;&lt;code&gt;wallet address&lt;/code&gt;, &lt;code&gt;wallet show&lt;/code&gt;&lt;/td&gt;</code></td>
+                </tr><tr id="L122">
+                  <td class="line-number"><a href="#L122">122</a></td>
+                  <td class="code-line"><code>            &lt;td&gt;Wallet file path to inspect.&lt;/td&gt;</code></td>
+                </tr><tr id="L123">
+                  <td class="line-number"><a href="#L123">123</a></td>
+                  <td class="code-line"><code>          &lt;/tr&gt;</code></td>
+                </tr><tr id="L124">
+                  <td class="line-number"><a href="#L124">124</a></td>
+                  <td class="code-line"><code>        &lt;/tbody&gt;</code></td>
+                </tr><tr id="L125">
+                  <td class="line-number"><a href="#L125">125</a></td>
+                  <td class="code-line"><code>      &lt;/table&gt;</code></td>
+                </tr><tr id="L126">
+                  <td class="line-number"><a href="#L126">126</a></td>
+                  <td class="code-line"><code>    &lt;/section&gt;</code></td>
+                </tr><tr id="L127">
+                  <td class="line-number"><a href="#L127">127</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L128">
+                  <td class="line-number"><a href="#L128">128</a></td>
+                  <td class="code-line"><code>    &lt;section class=&quot;docs-section&quot;&gt;</code></td>
+                </tr><tr id="L129">
+                  <td class="line-number"><a href="#L129">129</a></td>
+                  <td class="code-line"><code>      &lt;h2&gt;Genesis settings&lt;/h2&gt;</code></td>
+                </tr><tr id="L130">
+                  <td class="line-number"><a href="#L130">130</a></td>
+                  <td class="code-line"><code>      &lt;table class=&quot;docs-table&quot;&gt;</code></td>
+                </tr><tr id="L131">
+                  <td class="line-number"><a href="#L131">131</a></td>
+                  <td class="code-line"><code>        &lt;thead&gt;</code></td>
+                </tr><tr id="L132">
+                  <td class="line-number"><a href="#L132">132</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;th&gt;Setting&lt;/th&gt;&lt;th&gt;Default&lt;/th&gt;&lt;th&gt;Description&lt;/th&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L133">
+                  <td class="line-number"><a href="#L133">133</a></td>
+                  <td class="code-line"><code>        &lt;/thead&gt;</code></td>
+                </tr><tr id="L134">
+                  <td class="line-number"><a href="#L134">134</a></td>
+                  <td class="code-line"><code>        &lt;tbody&gt;</code></td>
+                </tr><tr id="L135">
+                  <td class="line-number"><a href="#L135">135</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--out&lt;/code&gt;&lt;/td&gt;&lt;td&gt;required&lt;/td&gt;&lt;td&gt;Output path for &lt;code&gt;genesis.json&lt;/code&gt;.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L136">
+                  <td class="line-number"><a href="#L136">136</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--validator-wallet&lt;/code&gt;&lt;/td&gt;&lt;td&gt;required, repeatable&lt;/td&gt;&lt;td&gt;Wallet files whose addresses become validators.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L137">
+                  <td class="line-number"><a href="#L137">137</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--treasury&lt;/code&gt;&lt;/td&gt;&lt;td&gt;first validator&lt;/td&gt;&lt;td&gt;Treasury address for swap quoting and protocol inventory.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L138">
+                  <td class="line-number"><a href="#L138">138</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--airdrop&lt;/code&gt;&lt;/td&gt;&lt;td&gt;none&lt;/td&gt;&lt;td&gt;Initial HT balances as &lt;code&gt;address:amount&lt;/code&gt;.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L139">
+                  <td class="line-number"><a href="#L139">139</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--storage-airdrop&lt;/code&gt;&lt;/td&gt;&lt;td&gt;none&lt;/td&gt;&lt;td&gt;Initial ST balances as &lt;code&gt;address:amount&lt;/code&gt;.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L140">
+                  <td class="line-number"><a href="#L140">140</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--compute-airdrop&lt;/code&gt;&lt;/td&gt;&lt;td&gt;none&lt;/td&gt;&lt;td&gt;Initial CT balances as &lt;code&gt;address:amount&lt;/code&gt;.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L141">
+                  <td class="line-number"><a href="#L141">141</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--dns-airdrop&lt;/code&gt;&lt;/td&gt;&lt;td&gt;none&lt;/td&gt;&lt;td&gt;Initial DNS balances as &lt;code&gt;address:amount&lt;/code&gt;.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L142">
+                  <td class="line-number"><a href="#L142">142</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--block-time-secs&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;10&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Target block cadence.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L143">
+                  <td class="line-number"><a href="#L143">143</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--min-receipts&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;2&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Minimum health receipts required for finalization.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L144">
+                  <td class="line-number"><a href="#L144">144</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--chain-id&lt;/code&gt;&lt;/td&gt;&lt;td&gt;generated&lt;/td&gt;&lt;td&gt;Explicit chain identifier.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L145">
+                  <td class="line-number"><a href="#L145">145</a></td>
+                  <td class="code-line"><code>        &lt;/tbody&gt;</code></td>
+                </tr><tr id="L146">
+                  <td class="line-number"><a href="#L146">146</a></td>
+                  <td class="code-line"><code>      &lt;/table&gt;</code></td>
+                </tr><tr id="L147">
+                  <td class="line-number"><a href="#L147">147</a></td>
+                  <td class="code-line"><code>      &lt;p class=&quot;copy-block&quot;&gt;</code></td>
+                </tr><tr id="L148">
+                  <td class="line-number"><a href="#L148">148</a></td>
+                  <td class="code-line"><code>        The serialized genesis includes &lt;code&gt;chain_id&lt;/code&gt;, &lt;code&gt;treasury&lt;/code&gt;,</code></td>
+                </tr><tr id="L149">
+                  <td class="line-number"><a href="#L149">149</a></td>
+                  <td class="code-line"><code>        &lt;code&gt;validators&lt;/code&gt;, &lt;code&gt;chain_started_at&lt;/code&gt;, &lt;code&gt;block_time_secs&lt;/code&gt;,</code></td>
+                </tr><tr id="L150">
+                  <td class="line-number"><a href="#L150">150</a></td>
+                  <td class="code-line"><code>        &lt;code&gt;min_health_receipts&lt;/code&gt;, and four airdrop maps.</code></td>
+                </tr><tr id="L151">
+                  <td class="line-number"><a href="#L151">151</a></td>
+                  <td class="code-line"><code>      &lt;/p&gt;</code></td>
+                </tr><tr id="L152">
+                  <td class="line-number"><a href="#L152">152</a></td>
+                  <td class="code-line"><code>    &lt;/section&gt;</code></td>
+                </tr><tr id="L153">
+                  <td class="line-number"><a href="#L153">153</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L154">
+                  <td class="line-number"><a href="#L154">154</a></td>
+                  <td class="code-line"><code>    &lt;section class=&quot;docs-section&quot;&gt;</code></td>
+                </tr><tr id="L155">
+                  <td class="line-number"><a href="#L155">155</a></td>
+                  <td class="code-line"><code>      &lt;h2&gt;Node run settings&lt;/h2&gt;</code></td>
+                </tr><tr id="L156">
+                  <td class="line-number"><a href="#L156">156</a></td>
+                  <td class="code-line"><code>      &lt;table class=&quot;docs-table&quot;&gt;</code></td>
+                </tr><tr id="L157">
+                  <td class="line-number"><a href="#L157">157</a></td>
+                  <td class="code-line"><code>        &lt;thead&gt;</code></td>
+                </tr><tr id="L158">
+                  <td class="line-number"><a href="#L158">158</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;th&gt;Setting&lt;/th&gt;&lt;th&gt;Default&lt;/th&gt;&lt;th&gt;Description&lt;/th&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L159">
+                  <td class="line-number"><a href="#L159">159</a></td>
+                  <td class="code-line"><code>        &lt;/thead&gt;</code></td>
+                </tr><tr id="L160">
+                  <td class="line-number"><a href="#L160">160</a></td>
+                  <td class="code-line"><code>        &lt;tbody&gt;</code></td>
+                </tr><tr id="L161">
+                  <td class="line-number"><a href="#L161">161</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--wallet&lt;/code&gt;&lt;/td&gt;&lt;td&gt;required&lt;/td&gt;&lt;td&gt;Validator wallet path.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L162">
+                  <td class="line-number"><a href="#L162">162</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--genesis&lt;/code&gt;&lt;/td&gt;&lt;td&gt;required&lt;/td&gt;&lt;td&gt;Genesis JSON path.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L163">
+                  <td class="line-number"><a href="#L163">163</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--state-dir&lt;/code&gt;&lt;/td&gt;&lt;td&gt;required&lt;/td&gt;&lt;td&gt;Persistent chain state, journal, blocks, compute archive, and artifacts.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L164">
+                  <td class="line-number"><a href="#L164">164</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--bind&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;127.0.0.1:9000&lt;/code&gt;&lt;/td&gt;&lt;td&gt;HTTP bind address.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L165">
+                  <td class="line-number"><a href="#L165">165</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--peer&lt;/code&gt;&lt;/td&gt;&lt;td&gt;repeatable&lt;/td&gt;&lt;td&gt;Peer base URLs for sync and gossip.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L166">
+                  <td class="line-number"><a href="#L166">166</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--swap-config&lt;/code&gt;&lt;/td&gt;&lt;td&gt;none&lt;/td&gt;&lt;td&gt;JSON settlement adapter config.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L167">
+                  <td class="line-number"><a href="#L167">167</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--notification-policies&lt;/code&gt;&lt;/td&gt;&lt;td&gt;none&lt;/td&gt;&lt;td&gt;JSON notification policy file for monitor alerts.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L168">
+                  <td class="line-number"><a href="#L168">168</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--probe-agents&lt;/code&gt;&lt;/td&gt;&lt;td&gt;none&lt;/td&gt;&lt;td&gt;JSON list of delegated agent endpoints.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L169">
+                  <td class="line-number"><a href="#L169">169</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--browser-runner-program&lt;/code&gt;&lt;/td&gt;&lt;td&gt;built-in runner path optional&lt;/td&gt;&lt;td&gt;External program used to execute browser journey packages.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L170">
+                  <td class="line-number"><a href="#L170">170</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--browser-runner-arg&lt;/code&gt;&lt;/td&gt;&lt;td&gt;repeatable&lt;/td&gt;&lt;td&gt;Extra arguments passed to the browser runner program.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L171">
+                  <td class="line-number"><a href="#L171">171</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--browser-cache-dir&lt;/code&gt;&lt;/td&gt;&lt;td&gt;state-derived temp path&lt;/td&gt;&lt;td&gt;Browser session cache directory.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L172">
+                  <td class="line-number"><a href="#L172">172</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--browser-secret-store&lt;/code&gt;&lt;/td&gt;&lt;td&gt;none&lt;/td&gt;&lt;td&gt;JSON secret map used by browser packages with secret references.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L173">
+                  <td class="line-number"><a href="#L173">173</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--control-api-token&lt;/code&gt;&lt;/td&gt;&lt;td&gt;none&lt;/td&gt;&lt;td&gt;Optional bearer token required for control endpoints.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L174">
+                  <td class="line-number"><a href="#L174">174</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--gossip-api-token&lt;/code&gt;&lt;/td&gt;&lt;td&gt;none&lt;/td&gt;&lt;td&gt;Optional bearer token required for internal gossip endpoints.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L175">
+                  <td class="line-number"><a href="#L175">175</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--wallet-passphrase-env&lt;/code&gt;&lt;/td&gt;&lt;td&gt;none&lt;/td&gt;&lt;td&gt;Environment variable containing validator wallet passphrase.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L176">
+                  <td class="line-number"><a href="#L176">176</a></td>
+                  <td class="code-line"><code>        &lt;/tbody&gt;</code></td>
+                </tr><tr id="L177">
+                  <td class="line-number"><a href="#L177">177</a></td>
+                  <td class="code-line"><code>      &lt;/table&gt;</code></td>
+                </tr><tr id="L178">
+                  <td class="line-number"><a href="#L178">178</a></td>
+                  <td class="code-line"><code>    &lt;/section&gt;</code></td>
+                </tr><tr id="L179">
+                  <td class="line-number"><a href="#L179">179</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L180">
+                  <td class="line-number"><a href="#L180">180</a></td>
+                  <td class="code-line"><code>    &lt;section class=&quot;docs-section&quot;&gt;</code></td>
+                </tr><tr id="L181">
+                  <td class="line-number"><a href="#L181">181</a></td>
+                  <td class="code-line"><code>      &lt;h2&gt;Agent settings&lt;/h2&gt;</code></td>
+                </tr><tr id="L182">
+                  <td class="line-number"><a href="#L182">182</a></td>
+                  <td class="code-line"><code>      &lt;table class=&quot;docs-table&quot;&gt;</code></td>
+                </tr><tr id="L183">
+                  <td class="line-number"><a href="#L183">183</a></td>
+                  <td class="code-line"><code>        &lt;thead&gt;</code></td>
+                </tr><tr id="L184">
+                  <td class="line-number"><a href="#L184">184</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;th&gt;Setting&lt;/th&gt;&lt;th&gt;Default&lt;/th&gt;&lt;th&gt;Description&lt;/th&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L185">
+                  <td class="line-number"><a href="#L185">185</a></td>
+                  <td class="code-line"><code>        &lt;/thead&gt;</code></td>
+                </tr><tr id="L186">
+                  <td class="line-number"><a href="#L186">186</a></td>
+                  <td class="code-line"><code>        &lt;tbody&gt;</code></td>
+                </tr><tr id="L187">
+                  <td class="line-number"><a href="#L187">187</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--wallet&lt;/code&gt;&lt;/td&gt;&lt;td&gt;required&lt;/td&gt;&lt;td&gt;Agent wallet path.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L188">
+                  <td class="line-number"><a href="#L188">188</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--bind&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;127.0.0.1:0&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Agent API bind address.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L189">
+                  <td class="line-number"><a href="#L189">189</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--region&lt;/code&gt;&lt;/td&gt;&lt;td&gt;none&lt;/td&gt;&lt;td&gt;Optional region tag copied into delegated receipts.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L190">
+                  <td class="line-number"><a href="#L190">190</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--network&lt;/code&gt;&lt;/td&gt;&lt;td&gt;none&lt;/td&gt;&lt;td&gt;Optional network tag copied into delegated receipts.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L191">
+                  <td class="line-number"><a href="#L191">191</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--api-token&lt;/code&gt;&lt;/td&gt;&lt;td&gt;none&lt;/td&gt;&lt;td&gt;Optional bearer token required by the agent API.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L192">
+                  <td class="line-number"><a href="#L192">192</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--browser-runner-program&lt;/code&gt;&lt;/td&gt;&lt;td&gt;none&lt;/td&gt;&lt;td&gt;Program used for delegated browser checks.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L193">
+                  <td class="line-number"><a href="#L193">193</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--browser-runner-arg&lt;/code&gt;&lt;/td&gt;&lt;td&gt;repeatable&lt;/td&gt;&lt;td&gt;Extra runner arguments.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L194">
+                  <td class="line-number"><a href="#L194">194</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--browser-cache-dir&lt;/code&gt;&lt;/td&gt;&lt;td&gt;temp path&lt;/td&gt;&lt;td&gt;Browser session cache directory.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L195">
+                  <td class="line-number"><a href="#L195">195</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--browser-artifact-dir&lt;/code&gt;&lt;/td&gt;&lt;td&gt;temp path&lt;/td&gt;&lt;td&gt;Directory for screenshots, traces, and videos.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L196">
+                  <td class="line-number"><a href="#L196">196</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--browser-secret-store&lt;/code&gt;&lt;/td&gt;&lt;td&gt;none&lt;/td&gt;&lt;td&gt;JSON secret map for browser secret refs.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L197">
+                  <td class="line-number"><a href="#L197">197</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--compute-artifact-dir&lt;/code&gt;&lt;/td&gt;&lt;td&gt;temp path&lt;/td&gt;&lt;td&gt;Directory where compute artifacts are written and served.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L198">
+                  <td class="line-number"><a href="#L198">198</a></td>
+                  <td class="code-line"><code>        &lt;/tbody&gt;</code></td>
+                </tr><tr id="L199">
+                  <td class="line-number"><a href="#L199">199</a></td>
+                  <td class="code-line"><code>      &lt;/table&gt;</code></td>
+                </tr><tr id="L200">
+                  <td class="line-number"><a href="#L200">200</a></td>
+                  <td class="code-line"><code>    &lt;/section&gt;</code></td>
+                </tr><tr id="L201">
+                  <td class="line-number"><a href="#L201">201</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L202">
+                  <td class="line-number"><a href="#L202">202</a></td>
+                  <td class="code-line"><code>    &lt;section class=&quot;docs-section&quot;&gt;</code></td>
+                </tr><tr id="L203">
+                  <td class="line-number"><a href="#L203">203</a></td>
+                  <td class="code-line"><code>      &lt;h2&gt;Health check settings&lt;/h2&gt;</code></td>
+                </tr><tr id="L204">
+                  <td class="line-number"><a href="#L204">204</a></td>
+                  <td class="code-line"><code>      &lt;table class=&quot;docs-table&quot;&gt;</code></td>
+                </tr><tr id="L205">
+                  <td class="line-number"><a href="#L205">205</a></td>
+                  <td class="code-line"><code>        &lt;thead&gt;</code></td>
+                </tr><tr id="L206">
+                  <td class="line-number"><a href="#L206">206</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;th&gt;Setting&lt;/th&gt;&lt;th&gt;Default or limit&lt;/th&gt;&lt;th&gt;Description&lt;/th&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L207">
+                  <td class="line-number"><a href="#L207">207</a></td>
+                  <td class="code-line"><code>        &lt;/thead&gt;</code></td>
+                </tr><tr id="L208">
+                  <td class="line-number"><a href="#L208">208</a></td>
+                  <td class="code-line"><code>        &lt;tbody&gt;</code></td>
+                </tr><tr id="L209">
+                  <td class="line-number"><a href="#L209">209</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--url&lt;/code&gt;&lt;/td&gt;&lt;td&gt;required, max 2,048 bytes&lt;/td&gt;&lt;td&gt;HTTP target.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L210">
+                  <td class="line-number"><a href="#L210">210</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--method&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;get&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;get&lt;/code&gt;, &lt;code&gt;head&lt;/code&gt;, or &lt;code&gt;post&lt;/code&gt;.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L211">
+                  <td class="line-number"><a href="#L211">211</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--header&lt;/code&gt;&lt;/td&gt;&lt;td&gt;max 16&lt;/td&gt;&lt;td&gt;Request headers as &lt;code&gt;name:value&lt;/code&gt;.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L212">
+                  <td class="line-number"><a href="#L212">212</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--query&lt;/code&gt;&lt;/td&gt;&lt;td&gt;max 16&lt;/td&gt;&lt;td&gt;Query parameters as &lt;code&gt;key=value&lt;/code&gt;.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L213">
+                  <td class="line-number"><a href="#L213">213</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--timeout-ms&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;3000&lt;/code&gt;, range 100 to 30,000&lt;/td&gt;&lt;td&gt;Request timeout.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L214">
+                  <td class="line-number"><a href="#L214">214</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--expect-status&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;200&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Expected HTTP status.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L215">
+                  <td class="line-number"><a href="#L215">215</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--assert-json&lt;/code&gt;&lt;/td&gt;&lt;td&gt;max 16 total assertions&lt;/td&gt;&lt;td&gt;JSON path equality assertion.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L216">
+                  <td class="line-number"><a href="#L216">216</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--assert-json-exists&lt;/code&gt;&lt;/td&gt;&lt;td&gt;max 16 total assertions&lt;/td&gt;&lt;td&gt;JSON path existence assertion.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L217">
+                  <td class="line-number"><a href="#L217">217</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--assert-header&lt;/code&gt;&lt;/td&gt;&lt;td&gt;max 16 total assertions&lt;/td&gt;&lt;td&gt;Header equality assertion.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L218">
+                  <td class="line-number"><a href="#L218">218</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--assert-body-contains&lt;/code&gt;&lt;/td&gt;&lt;td&gt;max 16 total assertions&lt;/td&gt;&lt;td&gt;Body substring assertion.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L219">
+                  <td class="line-number"><a href="#L219">219</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--body-json&lt;/code&gt;&lt;/td&gt;&lt;td&gt;max 8,192 serialized bytes&lt;/td&gt;&lt;td&gt;JSON POST body.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L220">
+                  <td class="line-number"><a href="#L220">220</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--allow-http&lt;/code&gt;&lt;/td&gt;&lt;td&gt;false&lt;/td&gt;&lt;td&gt;Permit insecure HTTP URLs.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L221">
+                  <td class="line-number"><a href="#L221">221</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--allow-private-targets&lt;/code&gt;&lt;/td&gt;&lt;td&gt;false&lt;/td&gt;&lt;td&gt;Permit private or local network targets.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L222">
+                  <td class="line-number"><a href="#L222">222</a></td>
+                  <td class="code-line"><code>        &lt;/tbody&gt;</code></td>
+                </tr><tr id="L223">
+                  <td class="line-number"><a href="#L223">223</a></td>
+                  <td class="code-line"><code>      &lt;/table&gt;</code></td>
+                </tr><tr id="L224">
+                  <td class="line-number"><a href="#L224">224</a></td>
+                  <td class="code-line"><code>    &lt;/section&gt;</code></td>
+                </tr><tr id="L225">
+                  <td class="line-number"><a href="#L225">225</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L226">
+                  <td class="line-number"><a href="#L226">226</a></td>
+                  <td class="code-line"><code>    &lt;section class=&quot;docs-section&quot;&gt;</code></td>
+                </tr><tr id="L227">
+                  <td class="line-number"><a href="#L227">227</a></td>
+                  <td class="code-line"><code>      &lt;h2&gt;Monitor spec fields&lt;/h2&gt;</code></td>
+                </tr><tr id="L228">
+                  <td class="line-number"><a href="#L228">228</a></td>
+                  <td class="code-line"><code>      &lt;table class=&quot;docs-table&quot;&gt;</code></td>
+                </tr><tr id="L229">
+                  <td class="line-number"><a href="#L229">229</a></td>
+                  <td class="code-line"><code>        &lt;thead&gt;</code></td>
+                </tr><tr id="L230">
+                  <td class="line-number"><a href="#L230">230</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;th&gt;Field&lt;/th&gt;&lt;th&gt;Default or limit&lt;/th&gt;&lt;th&gt;Description&lt;/th&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L231">
+                  <td class="line-number"><a href="#L231">231</a></td>
+                  <td class="code-line"><code>        &lt;/thead&gt;</code></td>
+                </tr><tr id="L232">
+                  <td class="line-number"><a href="#L232">232</a></td>
+                  <td class="code-line"><code>        &lt;tbody&gt;</code></td>
+                </tr><tr id="L233">
+                  <td class="line-number"><a href="#L233">233</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;monitor_id&lt;/code&gt;&lt;/td&gt;&lt;td&gt;required, max 128 bytes&lt;/td&gt;&lt;td&gt;Stable monitor identifier.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L234">
+                  <td class="line-number"><a href="#L234">234</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;slug&lt;/code&gt;&lt;/td&gt;&lt;td&gt;optional, max 128 bytes&lt;/td&gt;&lt;td&gt;Human-readable slug.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L235">
+                  <td class="line-number"><a href="#L235">235</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;schedule&lt;/code&gt;&lt;/td&gt;&lt;td&gt;required&lt;/td&gt;&lt;td&gt;&lt;code&gt;interval&lt;/code&gt; with &lt;code&gt;every_secs&lt;/code&gt; and &lt;code&gt;anchor_at&lt;/code&gt;, or &lt;code&gt;cron_utc&lt;/code&gt; with &lt;code&gt;expr&lt;/code&gt;.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L236">
+                  <td class="line-number"><a href="#L236">236</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;grace_secs&lt;/code&gt;&lt;/td&gt;&lt;td&gt;max 86,400&lt;/td&gt;&lt;td&gt;Time after a slot deadline before miss handling.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L237">
+                  <td class="line-number"><a href="#L237">237</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;pathway&lt;/code&gt;&lt;/td&gt;&lt;td&gt;required&lt;/td&gt;&lt;td&gt;&lt;code&gt;heartbeat&lt;/code&gt; or &lt;code&gt;browser&lt;/code&gt;.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L238">
+                  <td class="line-number"><a href="#L238">238</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;notification_policy_id&lt;/code&gt;&lt;/td&gt;&lt;td&gt;optional, max 128 bytes&lt;/td&gt;&lt;td&gt;Policy used for alert delivery.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L239">
+                  <td class="line-number"><a href="#L239">239</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;log_capture&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;none&lt;/code&gt;, max 16,384 bytes&lt;/td&gt;&lt;td&gt;Optional text capture policy.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L240">
+                  <td class="line-number"><a href="#L240">240</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;tags&lt;/code&gt;&lt;/td&gt;&lt;td&gt;max 32&lt;/td&gt;&lt;td&gt;Tag keys max 64 bytes; values max 256 bytes.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L241">
+                  <td class="line-number"><a href="#L241">241</a></td>
+                  <td class="code-line"><code>        &lt;/tbody&gt;</code></td>
+                </tr><tr id="L242">
+                  <td class="line-number"><a href="#L242">242</a></td>
+                  <td class="code-line"><code>      &lt;/table&gt;</code></td>
+                </tr><tr id="L243">
+                  <td class="line-number"><a href="#L243">243</a></td>
+                  <td class="code-line"><code>      &lt;p class=&quot;copy-block&quot;&gt;</code></td>
+                </tr><tr id="L244">
+                  <td class="line-number"><a href="#L244">244</a></td>
+                  <td class="code-line"><code>        Heartbeat auth supports &lt;code&gt;secret_url&lt;/code&gt;, &lt;code&gt;delegated_key&lt;/code&gt;, or</code></td>
+                </tr><tr id="L245">
+                  <td class="line-number"><a href="#L245">245</a></td>
+                  <td class="code-line"><code>        &lt;code&gt;dual&lt;/code&gt;. Signal policies support success only, start plus success, or start plus</code></td>
+                </tr><tr id="L246">
+                  <td class="line-number"><a href="#L246">246</a></td>
+                  <td class="code-line"><code>        success plus fail. Miss policies support record-only, validator confirmation, or delegated</code></td>
+                </tr><tr id="L247">
+                  <td class="line-number"><a href="#L247">247</a></td>
+                  <td class="code-line"><code>        agent confirmation with optional region diversity.</code></td>
+                </tr><tr id="L248">
+                  <td class="line-number"><a href="#L248">248</a></td>
+                  <td class="code-line"><code>      &lt;/p&gt;</code></td>
+                </tr><tr id="L249">
+                  <td class="line-number"><a href="#L249">249</a></td>
+                  <td class="code-line"><code>    &lt;/section&gt;</code></td>
+                </tr><tr id="L250">
+                  <td class="line-number"><a href="#L250">250</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L251">
+                  <td class="line-number"><a href="#L251">251</a></td>
+                  <td class="code-line"><code>    &lt;section class=&quot;docs-section&quot;&gt;</code></td>
+                </tr><tr id="L252">
+                  <td class="line-number"><a href="#L252">252</a></td>
+                  <td class="code-line"><code>      &lt;h2&gt;Browser package fields and limits&lt;/h2&gt;</code></td>
+                </tr><tr id="L253">
+                  <td class="line-number"><a href="#L253">253</a></td>
+                  <td class="code-line"><code>      &lt;table class=&quot;docs-table&quot;&gt;</code></td>
+                </tr><tr id="L254">
+                  <td class="line-number"><a href="#L254">254</a></td>
+                  <td class="code-line"><code>        &lt;thead&gt;</code></td>
+                </tr><tr id="L255">
+                  <td class="line-number"><a href="#L255">255</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;th&gt;Setting&lt;/th&gt;&lt;th&gt;Default or limit&lt;/th&gt;&lt;th&gt;Description&lt;/th&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L256">
+                  <td class="line-number"><a href="#L256">256</a></td>
+                  <td class="code-line"><code>        &lt;/thead&gt;</code></td>
+                </tr><tr id="L257">
+                  <td class="line-number"><a href="#L257">257</a></td>
+                  <td class="code-line"><code>        &lt;tbody&gt;</code></td>
+                </tr><tr id="L258">
+                  <td class="line-number"><a href="#L258">258</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;package_id&lt;/code&gt;, &lt;code&gt;journey_id&lt;/code&gt;&lt;/td&gt;&lt;td&gt;max 128 bytes each&lt;/td&gt;&lt;td&gt;Package and journey identifiers.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L259">
+                  <td class="line-number"><a href="#L259">259</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;manifest_version&lt;/code&gt;&lt;/td&gt;&lt;td&gt;required&lt;/td&gt;&lt;td&gt;Package schema version.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L260">
+                  <td class="line-number"><a href="#L260">260</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;runtime.engine&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;chromium&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Only Chromium is currently accepted.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L261">
+                  <td class="line-number"><a href="#L261">261</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;runtime.locale&lt;/code&gt;, &lt;code&gt;timezone&lt;/code&gt;&lt;/td&gt;&lt;td&gt;required&lt;/td&gt;&lt;td&gt;Browser locale and timezone ID.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L262">
+                  <td class="line-number"><a href="#L262">262</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;viewport_width&lt;/code&gt;, &lt;code&gt;viewport_height&lt;/code&gt;&lt;/td&gt;&lt;td&gt;1 to 4,096&lt;/td&gt;&lt;td&gt;Browser viewport dimensions.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L263">
+                  <td class="line-number"><a href="#L263">263</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;cache_mode&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;disabled&lt;/code&gt; or &lt;code&gt;session_state&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Session-state reuse mode.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L264">
+                  <td class="line-number"><a href="#L264">264</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;steps&lt;/code&gt;&lt;/td&gt;&lt;td&gt;max 64&lt;/td&gt;&lt;td&gt;Navigate, click, fill, press, wait, assert, screenshot, context open, context close.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L265">
+                  <td class="line-number"><a href="#L265">265</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;max_runtime_secs&lt;/code&gt;&lt;/td&gt;&lt;td&gt;1 to 600&lt;/td&gt;&lt;td&gt;Whole journey runtime limit.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L266">
+                  <td class="line-number"><a href="#L266">266</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;per_step_timeout_ms&lt;/code&gt;&lt;/td&gt;&lt;td&gt;100 to 60,000&lt;/td&gt;&lt;td&gt;Per-step timeout.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L267">
+                  <td class="line-number"><a href="#L267">267</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;artifact_policy&lt;/code&gt;&lt;/td&gt;&lt;td&gt;all false by default&lt;/td&gt;&lt;td&gt;Enable video, trace, and screenshot-on-failure capture.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L268">
+                  <td class="line-number"><a href="#L268">268</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;session_cache&lt;/code&gt;&lt;/td&gt;&lt;td&gt;disabled by default&lt;/td&gt;&lt;td&gt;Optional namespace and max age for session state.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L269">
+                  <td class="line-number"><a href="#L269">269</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;tags&lt;/code&gt;&lt;/td&gt;&lt;td&gt;max 32&lt;/td&gt;&lt;td&gt;Tag keys max 64 bytes; values max 256 bytes.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L270">
+                  <td class="line-number"><a href="#L270">270</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;secrets&lt;/code&gt;&lt;/td&gt;&lt;td&gt;max 32&lt;/td&gt;&lt;td&gt;Secret keys max 128 bytes; values max 2,048 bytes.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L271">
+                  <td class="line-number"><a href="#L271">271</a></td>
+                  <td class="code-line"><code>        &lt;/tbody&gt;</code></td>
+                </tr><tr id="L272">
+                  <td class="line-number"><a href="#L272">272</a></td>
+                  <td class="code-line"><code>      &lt;/table&gt;</code></td>
+                </tr><tr id="L273">
+                  <td class="line-number"><a href="#L273">273</a></td>
+                  <td class="code-line"><code>    &lt;/section&gt;</code></td>
+                </tr><tr id="L274">
+                  <td class="line-number"><a href="#L274">274</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L275">
+                  <td class="line-number"><a href="#L275">275</a></td>
+                  <td class="code-line"><code>    &lt;section class=&quot;docs-section&quot;&gt;</code></td>
+                </tr><tr id="L276">
+                  <td class="line-number"><a href="#L276">276</a></td>
+                  <td class="code-line"><code>      &lt;h2&gt;Compute job fields and limits&lt;/h2&gt;</code></td>
+                </tr><tr id="L277">
+                  <td class="line-number"><a href="#L277">277</a></td>
+                  <td class="code-line"><code>      &lt;table class=&quot;docs-table&quot;&gt;</code></td>
+                </tr><tr id="L278">
+                  <td class="line-number"><a href="#L278">278</a></td>
+                  <td class="code-line"><code>        &lt;thead&gt;</code></td>
+                </tr><tr id="L279">
+                  <td class="line-number"><a href="#L279">279</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;th&gt;Setting&lt;/th&gt;&lt;th&gt;Default or limit&lt;/th&gt;&lt;th&gt;Description&lt;/th&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L280">
+                  <td class="line-number"><a href="#L280">280</a></td>
+                  <td class="code-line"><code>        &lt;/thead&gt;</code></td>
+                </tr><tr id="L281">
+                  <td class="line-number"><a href="#L281">281</a></td>
+                  <td class="code-line"><code>        &lt;tbody&gt;</code></td>
+                </tr><tr id="L282">
+                  <td class="line-number"><a href="#L282">282</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;request_id&lt;/code&gt;&lt;/td&gt;&lt;td&gt;required, max 128 bytes&lt;/td&gt;&lt;td&gt;Client request identifier.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L283">
+                  <td class="line-number"><a href="#L283">283</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;workload.type&lt;/code&gt;&lt;/td&gt;&lt;td&gt;required&lt;/td&gt;&lt;td&gt;&lt;code&gt;integer_map&lt;/code&gt;, &lt;code&gt;monte_carlo_pi&lt;/code&gt;, or &lt;code&gt;wasi_preview1&lt;/code&gt;.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L284">
+                  <td class="line-number"><a href="#L284">284</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;shards&lt;/code&gt;&lt;/td&gt;&lt;td&gt;1 to 256&lt;/td&gt;&lt;td&gt;Each shard ID max 128 bytes.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L285">
+                  <td class="line-number"><a href="#L285">285</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;integer values&lt;/code&gt;&lt;/td&gt;&lt;td&gt;max 8,192 per shard&lt;/td&gt;&lt;td&gt;Absolute value must be at most 1,000,000.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L286">
+                  <td class="line-number"><a href="#L286">286</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;monte_carlo samples&lt;/code&gt;&lt;/td&gt;&lt;td&gt;1 to 10,000,000 per shard&lt;/td&gt;&lt;td&gt;Samples per shard with seed.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L287">
+                  <td class="line-number"><a href="#L287">287</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;module_hex&lt;/code&gt;&lt;/td&gt;&lt;td&gt;max 64 KiB&lt;/td&gt;&lt;td&gt;Inline WASI module.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L288">
+                  <td class="line-number"><a href="#L288">288</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;module_ref&lt;/code&gt;&lt;/td&gt;&lt;td&gt;max 64 MiB&lt;/td&gt;&lt;td&gt;Storage-backed WASI module reference.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L289">
+                  <td class="line-number"><a href="#L289">289</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;wasi args&lt;/code&gt;&lt;/td&gt;&lt;td&gt;max 16, 256 bytes each&lt;/td&gt;&lt;td&gt;Command arguments.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L290">
+                  <td class="line-number"><a href="#L290">290</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;wasi env&lt;/code&gt;&lt;/td&gt;&lt;td&gt;max 16&lt;/td&gt;&lt;td&gt;Uppercase, digit, underscore keys; values max 512 bytes.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L291">
+                  <td class="line-number"><a href="#L291">291</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;wasi input files&lt;/code&gt;&lt;/td&gt;&lt;td&gt;max 16&lt;/td&gt;&lt;td&gt;Each max 64 KiB; total max 128 KiB.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L292">
+                  <td class="line-number"><a href="#L292">292</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;max_runtime_secs&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;300&lt;/code&gt;, range 1 to 3,600&lt;/td&gt;&lt;td&gt;Compute runtime budget.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L293">
+                  <td class="line-number"><a href="#L293">293</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;replication&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;1&lt;/code&gt;, max 8&lt;/td&gt;&lt;td&gt;Number of matching executions requested.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L294">
+                  <td class="line-number"><a href="#L294">294</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;sandbox.max_memory_bytes&lt;/code&gt;&lt;/td&gt;&lt;td&gt;64 MiB default, 1 MiB to 512 MiB&lt;/td&gt;&lt;td&gt;WASI memory budget.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L295">
+                  <td class="line-number"><a href="#L295">295</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;sandbox.max_fuel&lt;/code&gt;&lt;/td&gt;&lt;td&gt;500,000,000 default, max 20,000,000,000&lt;/td&gt;&lt;td&gt;Wasmtime fuel limit.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L296">
+                  <td class="line-number"><a href="#L296">296</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;sandbox.max_stdout_bytes&lt;/code&gt;&lt;/td&gt;&lt;td&gt;4 KiB default, max 16 KiB&lt;/td&gt;&lt;td&gt;Captured stdout sample.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L297">
+                  <td class="line-number"><a href="#L297">297</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;sandbox.max_stderr_bytes&lt;/code&gt;&lt;/td&gt;&lt;td&gt;4 KiB default, max 16 KiB&lt;/td&gt;&lt;td&gt;Captured stderr sample.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L298">
+                  <td class="line-number"><a href="#L298">298</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;sandbox.allow_network&lt;/code&gt;&lt;/td&gt;&lt;td&gt;false only&lt;/td&gt;&lt;td&gt;Network access is rejected for production jobs.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L299">
+                  <td class="line-number"><a href="#L299">299</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;artifact_policy.outputs&lt;/code&gt;&lt;/td&gt;&lt;td&gt;max 16&lt;/td&gt;&lt;td&gt;Artifact paths must start with &lt;code&gt;artifacts/&lt;/code&gt;.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L300">
+                  <td class="line-number"><a href="#L300">300</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;artifact_policy.max_total_bytes&lt;/code&gt;&lt;/td&gt;&lt;td&gt;max 64 MiB&lt;/td&gt;&lt;td&gt;Total artifact byte allowance.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L301">
+                  <td class="line-number"><a href="#L301">301</a></td>
+                  <td class="code-line"><code>        &lt;/tbody&gt;</code></td>
+                </tr><tr id="L302">
+                  <td class="line-number"><a href="#L302">302</a></td>
+                  <td class="code-line"><code>      &lt;/table&gt;</code></td>
+                </tr><tr id="L303">
+                  <td class="line-number"><a href="#L303">303</a></td>
+                  <td class="code-line"><code>    &lt;/section&gt;</code></td>
+                </tr><tr id="L304">
+                  <td class="line-number"><a href="#L304">304</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L305">
+                  <td class="line-number"><a href="#L305">305</a></td>
+                  <td class="code-line"><code>    &lt;section class=&quot;docs-section&quot;&gt;</code></td>
+                </tr><tr id="L306">
+                  <td class="line-number"><a href="#L306">306</a></td>
+                  <td class="code-line"><code>      &lt;h2&gt;Storage settings&lt;/h2&gt;</code></td>
+                </tr><tr id="L307">
+                  <td class="line-number"><a href="#L307">307</a></td>
+                  <td class="code-line"><code>      &lt;table class=&quot;docs-table&quot;&gt;</code></td>
+                </tr><tr id="L308">
+                  <td class="line-number"><a href="#L308">308</a></td>
+                  <td class="code-line"><code>        &lt;thead&gt;</code></td>
+                </tr><tr id="L309">
+                  <td class="line-number"><a href="#L309">309</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;th&gt;Setting&lt;/th&gt;&lt;th&gt;Default or limit&lt;/th&gt;&lt;th&gt;Description&lt;/th&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L310">
+                  <td class="line-number"><a href="#L310">310</a></td>
+                  <td class="code-line"><code>        &lt;/thead&gt;</code></td>
+                </tr><tr id="L311">
+                  <td class="line-number"><a href="#L311">311</a></td>
+                  <td class="code-line"><code>        &lt;tbody&gt;</code></td>
+                </tr><tr id="L312">
+                  <td class="line-number"><a href="#L312">312</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;storage bundle --input&lt;/code&gt;&lt;/td&gt;&lt;td&gt;required&lt;/td&gt;&lt;td&gt;File or directory to bundle.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L313">
+                  <td class="line-number"><a href="#L313">313</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--out-dir&lt;/code&gt;&lt;/td&gt;&lt;td&gt;required&lt;/td&gt;&lt;td&gt;Directory where bundle files are written.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L314">
+                  <td class="line-number"><a href="#L314">314</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--host&lt;/code&gt;&lt;/td&gt;&lt;td&gt;required&lt;/td&gt;&lt;td&gt;Host address in the storage contract spec.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L315">
+                  <td class="line-number"><a href="#L315">315</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--contract-id&lt;/code&gt;&lt;/td&gt;&lt;td&gt;generated if omitted&lt;/td&gt;&lt;td&gt;Storage contract ID.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L316">
+                  <td class="line-number"><a href="#L316">316</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--mode&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;encrypted&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;encrypted&lt;/code&gt; or &lt;code&gt;public-raw&lt;/code&gt;.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L317">
+                  <td class="line-number"><a href="#L317">317</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--index-path&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;index.html&lt;/code&gt; for directories&lt;/td&gt;&lt;td&gt;Public raw static-site index path.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L318">
+                  <td class="line-number"><a href="#L318">318</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--chunk-size-bytes&lt;/code&gt;&lt;/td&gt;&lt;td&gt;65,536&lt;/td&gt;&lt;td&gt;Range 1,024 bytes to 64 MiB.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L319">
+                  <td class="line-number"><a href="#L319">319</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--duration-secs&lt;/code&gt;&lt;/td&gt;&lt;td&gt;2,592,000&lt;/td&gt;&lt;td&gt;Max 31,536,000 seconds.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L320">
+                  <td class="line-number"><a href="#L320">320</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--proof-interval-secs&lt;/code&gt;&lt;/td&gt;&lt;td&gt;60&lt;/td&gt;&lt;td&gt;Max 86,400 seconds.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L321">
+                  <td class="line-number"><a href="#L321">321</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--proof-sample-count&lt;/code&gt;&lt;/td&gt;&lt;td&gt;4&lt;/td&gt;&lt;td&gt;Max 64 challenged chunks per proof window.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L322">
+                  <td class="line-number"><a href="#L322">322</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;--reward-rate-per-64mib-second&lt;/code&gt;&lt;/td&gt;&lt;td&gt;1 ST&lt;/td&gt;&lt;td&gt;Reward rate per 64 MiB-second.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L323">
+                  <td class="line-number"><a href="#L323">323</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;contract size&lt;/code&gt;&lt;/td&gt;&lt;td&gt;max 1 TiB&lt;/td&gt;&lt;td&gt;Maximum storage contract byte size.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L324">
+                  <td class="line-number"><a href="#L324">324</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;manifest paths&lt;/code&gt;&lt;/td&gt;&lt;td&gt;max 512 bytes&lt;/td&gt;&lt;td&gt;Public paths and module-ref paths.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L325">
+                  <td class="line-number"><a href="#L325">325</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;content types&lt;/code&gt;&lt;/td&gt;&lt;td&gt;max 64 entries, 128 bytes each&lt;/td&gt;&lt;td&gt;Static-site content type map.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L326">
+                  <td class="line-number"><a href="#L326">326</a></td>
+                  <td class="code-line"><code>        &lt;/tbody&gt;</code></td>
+                </tr><tr id="L327">
+                  <td class="line-number"><a href="#L327">327</a></td>
+                  <td class="code-line"><code>      &lt;/table&gt;</code></td>
+                </tr><tr id="L328">
+                  <td class="line-number"><a href="#L328">328</a></td>
+                  <td class="code-line"><code>      &lt;p class=&quot;copy-block&quot;&gt;</code></td>
+                </tr><tr id="L329">
+                  <td class="line-number"><a href="#L329">329</a></td>
+                  <td class="code-line"><code>        A storage host binds with &lt;code&gt;storage host --store-dir&lt;/code&gt;,</code></td>
+                </tr><tr id="L330">
+                  <td class="line-number"><a href="#L330">330</a></td>
+                  <td class="code-line"><code>        &lt;code&gt;--bind&lt;/code&gt; defaulting to &lt;code&gt;127.0.0.1:9100&lt;/code&gt;, and optional</code></td>
+                </tr><tr id="L331">
+                  <td class="line-number"><a href="#L331">331</a></td>
+                  <td class="code-line"><code>        &lt;code&gt;--node&lt;/code&gt; for domain route lookups.</code></td>
+                </tr><tr id="L332">
+                  <td class="line-number"><a href="#L332">332</a></td>
+                  <td class="code-line"><code>      &lt;/p&gt;</code></td>
+                </tr><tr id="L333">
+                  <td class="line-number"><a href="#L333">333</a></td>
+                  <td class="code-line"><code>    &lt;/section&gt;</code></td>
+                </tr><tr id="L334">
+                  <td class="line-number"><a href="#L334">334</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L335">
+                  <td class="line-number"><a href="#L335">335</a></td>
+                  <td class="code-line"><code>    &lt;section class=&quot;docs-section&quot;&gt;</code></td>
+                </tr><tr id="L336">
+                  <td class="line-number"><a href="#L336">336</a></td>
+                  <td class="code-line"><code>      &lt;h2&gt;DNS settings&lt;/h2&gt;</code></td>
+                </tr><tr id="L337">
+                  <td class="line-number"><a href="#L337">337</a></td>
+                  <td class="code-line"><code>      &lt;table class=&quot;docs-table&quot;&gt;</code></td>
+                </tr><tr id="L338">
+                  <td class="line-number"><a href="#L338">338</a></td>
+                  <td class="code-line"><code>        &lt;thead&gt;</code></td>
+                </tr><tr id="L339">
+                  <td class="line-number"><a href="#L339">339</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;th&gt;Setting&lt;/th&gt;&lt;th&gt;Default or limit&lt;/th&gt;&lt;th&gt;Description&lt;/th&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L340">
+                  <td class="line-number"><a href="#L340">340</a></td>
+                  <td class="code-line"><code>        &lt;/thead&gt;</code></td>
+                </tr><tr id="L341">
+                  <td class="line-number"><a href="#L341">341</a></td>
+                  <td class="code-line"><code>        &lt;tbody&gt;</code></td>
+                </tr><tr id="L342">
+                  <td class="line-number"><a href="#L342">342</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;offering_id&lt;/code&gt;&lt;/td&gt;&lt;td&gt;max 128 bytes&lt;/td&gt;&lt;td&gt;Domain offering ID.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L343">
+                  <td class="line-number"><a href="#L343">343</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;suffix&lt;/code&gt;&lt;/td&gt;&lt;td&gt;max 253 bytes&lt;/td&gt;&lt;td&gt;DNS suffix controlled by a validator.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L344">
+                  <td class="line-number"><a href="#L344">344</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;gateway_url&lt;/code&gt;&lt;/td&gt;&lt;td&gt;max 512 bytes&lt;/td&gt;&lt;td&gt;Storage gateway URL for the offering.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L345">
+                  <td class="line-number"><a href="#L345">345</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;label&lt;/code&gt;&lt;/td&gt;&lt;td&gt;max 63 bytes&lt;/td&gt;&lt;td&gt;Leased DNS label under the offering suffix.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L346">
+                  <td class="line-number"><a href="#L346">346</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;duration_secs&lt;/code&gt;&lt;/td&gt;&lt;td&gt;1 to 31,536,000&lt;/td&gt;&lt;td&gt;Lease duration and renewal duration.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L347">
+                  <td class="line-number"><a href="#L347">347</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;target_contract_id&lt;/code&gt;&lt;/td&gt;&lt;td&gt;required&lt;/td&gt;&lt;td&gt;Storage contract served by the route.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L348">
+                  <td class="line-number"><a href="#L348">348</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;&lt;code&gt;price&lt;/code&gt;&lt;/td&gt;&lt;td&gt;1 DNS per subdomain-second&lt;/td&gt;&lt;td&gt;Lease cost is duration multiplied by the per-second DNS rate.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L349">
+                  <td class="line-number"><a href="#L349">349</a></td>
+                  <td class="code-line"><code>        &lt;/tbody&gt;</code></td>
+                </tr><tr id="L350">
+                  <td class="line-number"><a href="#L350">350</a></td>
+                  <td class="code-line"><code>      &lt;/table&gt;</code></td>
+                </tr><tr id="L351">
+                  <td class="line-number"><a href="#L351">351</a></td>
+                  <td class="code-line"><code>    &lt;/section&gt;</code></td>
+                </tr><tr id="L352">
+                  <td class="line-number"><a href="#L352">352</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L353">
+                  <td class="line-number"><a href="#L353">353</a></td>
+                  <td class="code-line"><code>    &lt;section class=&quot;docs-section&quot;&gt;</code></td>
+                </tr><tr id="L354">
+                  <td class="line-number"><a href="#L354">354</a></td>
+                  <td class="code-line"><code>      &lt;h2&gt;Fees and costs&lt;/h2&gt;</code></td>
+                </tr><tr id="L355">
+                  <td class="line-number"><a href="#L355">355</a></td>
+                  <td class="code-line"><code>      &lt;table class=&quot;docs-table&quot;&gt;</code></td>
+                </tr><tr id="L356">
+                  <td class="line-number"><a href="#L356">356</a></td>
+                  <td class="code-line"><code>        &lt;thead&gt;</code></td>
+                </tr><tr id="L357">
+                  <td class="line-number"><a href="#L357">357</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;th&gt;Area&lt;/th&gt;&lt;th&gt;Constant&lt;/th&gt;&lt;th&gt;Value&lt;/th&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L358">
+                  <td class="line-number"><a href="#L358">358</a></td>
+                  <td class="code-line"><code>        &lt;/thead&gt;</code></td>
+                </tr><tr id="L359">
+                  <td class="line-number"><a href="#L359">359</a></td>
+                  <td class="code-line"><code>        &lt;tbody&gt;</code></td>
+                </tr><tr id="L360">
+                  <td class="line-number"><a href="#L360">360</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Token precision&lt;/td&gt;&lt;td&gt;&lt;code&gt;TOKEN_DECIMALS&lt;/code&gt;&lt;/td&gt;&lt;td&gt;6 decimal places&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L361">
+                  <td class="line-number"><a href="#L361">361</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Health check&lt;/td&gt;&lt;td&gt;&lt;code&gt;HEALTH_CHECK_BASE_COST&lt;/code&gt;&lt;/td&gt;&lt;td&gt;1 HT&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L362">
+                  <td class="line-number"><a href="#L362">362</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Health timeout surcharge&lt;/td&gt;&lt;td&gt;&lt;code&gt;HEALTH_TIMEOUT_SURCHARGE_STEP_COST&lt;/code&gt;&lt;/td&gt;&lt;td&gt;0.1 HT per extra 1,000 ms after 3,000 ms&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L363">
+                  <td class="line-number"><a href="#L363">363</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Health complexity surcharge&lt;/td&gt;&lt;td&gt;&lt;code&gt;HEALTH_COMPLEXITY_SURCHARGE_UNIT_COST&lt;/code&gt;&lt;/td&gt;&lt;td&gt;0.025 HT per unit after 8 headers, query params, and assertions&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L364">
+                  <td class="line-number"><a href="#L364">364</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Health body surcharge&lt;/td&gt;&lt;td&gt;&lt;code&gt;HEALTH_BODY_SURCHARGE_PER_KIB&lt;/code&gt;&lt;/td&gt;&lt;td&gt;0.1 HT per KiB after 1 KiB&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L365">
+                  <td class="line-number"><a href="#L365">365</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Browser check&lt;/td&gt;&lt;td&gt;&lt;code&gt;BROWSER_CHECK_BASE_COST&lt;/code&gt;&lt;/td&gt;&lt;td&gt;2 HT&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L366">
+                  <td class="line-number"><a href="#L366">366</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Browser step surcharge&lt;/td&gt;&lt;td&gt;&lt;code&gt;BROWSER_STEP_SURCHARGE_COST&lt;/code&gt;&lt;/td&gt;&lt;td&gt;0.125 HT per step after 8&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L367">
+                  <td class="line-number"><a href="#L367">367</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Browser runtime surcharge&lt;/td&gt;&lt;td&gt;&lt;code&gt;BROWSER_RUNTIME_SURCHARGE_COST&lt;/code&gt;&lt;/td&gt;&lt;td&gt;0.25 HT per 10 seconds after 20 seconds&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L368">
+                  <td class="line-number"><a href="#L368">368</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Browser video&lt;/td&gt;&lt;td&gt;&lt;code&gt;BROWSER_VIDEO_SURCHARGE_COST&lt;/code&gt;&lt;/td&gt;&lt;td&gt;0.75 HT&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L369">
+                  <td class="line-number"><a href="#L369">369</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Browser trace&lt;/td&gt;&lt;td&gt;&lt;code&gt;BROWSER_TRACE_SURCHARGE_COST&lt;/code&gt;&lt;/td&gt;&lt;td&gt;0.25 HT&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L370">
+                  <td class="line-number"><a href="#L370">370</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Monitor slot&lt;/td&gt;&lt;td&gt;&lt;code&gt;MONITOR_SLOT_RESERVATION_FEE&lt;/code&gt;&lt;/td&gt;&lt;td&gt;0.01 HT&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L371">
+                  <td class="line-number"><a href="#L371">371</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Monitor ping ingress&lt;/td&gt;&lt;td&gt;&lt;code&gt;MONITOR_PING_INGRESS_FEE&lt;/code&gt;&lt;/td&gt;&lt;td&gt;0.001 HT&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L372">
+                  <td class="line-number"><a href="#L372">372</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Monitor alert delivery&lt;/td&gt;&lt;td&gt;&lt;code&gt;MONITOR_ALERT_DELIVERY_FEE&lt;/code&gt;&lt;/td&gt;&lt;td&gt;0.005 HT&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L373">
+                  <td class="line-number"><a href="#L373">373</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Compute job&lt;/td&gt;&lt;td&gt;&lt;code&gt;COMPUTE_JOB_BASE_COST&lt;/code&gt;&lt;/td&gt;&lt;td&gt;1 CT&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L374">
+                  <td class="line-number"><a href="#L374">374</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Compute shard&lt;/td&gt;&lt;td&gt;&lt;code&gt;COMPUTE_SHARD_BASE_COST&lt;/code&gt;&lt;/td&gt;&lt;td&gt;0.1 CT per shard&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L375">
+                  <td class="line-number"><a href="#L375">375</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Compute runtime surcharge&lt;/td&gt;&lt;td&gt;&lt;code&gt;COMPUTE_RUNTIME_SURCHARGE_STEP_COST&lt;/code&gt;&lt;/td&gt;&lt;td&gt;0.25 CT per extra 60 seconds after 300 seconds&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L376">
+                  <td class="line-number"><a href="#L376">376</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;WASI surcharge&lt;/td&gt;&lt;td&gt;&lt;code&gt;COMPUTE_WASI_SURCHARGE_COST&lt;/code&gt;&lt;/td&gt;&lt;td&gt;1 CT&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L377">
+                  <td class="line-number"><a href="#L377">377</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Storage reward&lt;/td&gt;&lt;td&gt;&lt;code&gt;STORAGE_REWARD_PER_QUANTUM_SECOND&lt;/code&gt;&lt;/td&gt;&lt;td&gt;1 ST per 64 MiB-second&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L378">
+                  <td class="line-number"><a href="#L378">378</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;DNS lease&lt;/td&gt;&lt;td&gt;&lt;code&gt;DNS_LEASE_COST_PER_SUBDOMAIN_SECOND&lt;/code&gt;&lt;/td&gt;&lt;td&gt;1 DNS per second&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L379">
+                  <td class="line-number"><a href="#L379">379</a></td>
+                  <td class="code-line"><code>        &lt;/tbody&gt;</code></td>
+                </tr><tr id="L380">
+                  <td class="line-number"><a href="#L380">380</a></td>
+                  <td class="code-line"><code>      &lt;/table&gt;</code></td>
+                </tr><tr id="L381">
+                  <td class="line-number"><a href="#L381">381</a></td>
+                  <td class="code-line"><code>    &lt;/section&gt;</code></td>
+                </tr><tr id="L382">
+                  <td class="line-number"><a href="#L382">382</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L383">
+                  <td class="line-number"><a href="#L383">383</a></td>
+                  <td class="code-line"><code>    &lt;section class=&quot;docs-section&quot;&gt;</code></td>
+                </tr><tr id="L384">
+                  <td class="line-number"><a href="#L384">384</a></td>
+                  <td class="code-line"><code>      &lt;h2&gt;HTTP endpoints&lt;/h2&gt;</code></td>
+                </tr><tr id="L385">
+                  <td class="line-number"><a href="#L385">385</a></td>
+                  <td class="code-line"><code>      &lt;table class=&quot;docs-table&quot;&gt;</code></td>
+                </tr><tr id="L386">
+                  <td class="line-number"><a href="#L386">386</a></td>
+                  <td class="code-line"><code>        &lt;thead&gt;</code></td>
+                </tr><tr id="L387">
+                  <td class="line-number"><a href="#L387">387</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;th&gt;Surface&lt;/th&gt;&lt;th&gt;Endpoint&lt;/th&gt;&lt;th&gt;Use&lt;/th&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L388">
+                  <td class="line-number"><a href="#L388">388</a></td>
+                  <td class="code-line"><code>        &lt;/thead&gt;</code></td>
+                </tr><tr id="L389">
+                  <td class="line-number"><a href="#L389">389</a></td>
+                  <td class="code-line"><code>        &lt;tbody&gt;</code></td>
+                </tr><tr id="L390">
+                  <td class="line-number"><a href="#L390">390</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Control&lt;/td&gt;&lt;td&gt;&lt;code&gt;GET /v1/control/status&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Node status.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L391">
+                  <td class="line-number"><a href="#L391">391</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Control&lt;/td&gt;&lt;td&gt;&lt;code&gt;GET /v1/control/account/:address&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Account balances and nonce.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L392">
+                  <td class="line-number"><a href="#L392">392</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Control&lt;/td&gt;&lt;td&gt;&lt;code&gt;GET /v1/control/ledger&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Ledger snapshot.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L393">
+                  <td class="line-number"><a href="#L393">393</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Control&lt;/td&gt;&lt;td&gt;&lt;code&gt;POST /v1/control/submit&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Submit signed transactions.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L394">
+                  <td class="line-number"><a href="#L394">394</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Control&lt;/td&gt;&lt;td&gt;&lt;code&gt;GET /v1/control/jobs/:tx_hash&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Read finalized or pending job details.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L395">
+                  <td class="line-number"><a href="#L395">395</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Control&lt;/td&gt;&lt;td&gt;&lt;code&gt;/v1/control/monitors*&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Create, update, pause, resume, top up, rotate, list slots, and list alerts.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L396">
+                  <td class="line-number"><a href="#L396">396</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Control&lt;/td&gt;&lt;td&gt;&lt;code&gt;GET /v1/control/storage/:contract_id&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Read storage contract state.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L397">
+                  <td class="line-number"><a href="#L397">397</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Control&lt;/td&gt;&lt;td&gt;&lt;code&gt;GET /v1/control/domain-route/:host&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Resolve a leased host to a storage contract.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L398">
+                  <td class="line-number"><a href="#L398">398</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Ping&lt;/td&gt;&lt;td&gt;&lt;code&gt;/v1/ping/:monitor_id/:token&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Secret URL heartbeat success, start, and fail signals.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L399">
+                  <td class="line-number"><a href="#L399">399</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Ping&lt;/td&gt;&lt;td&gt;&lt;code&gt;POST /v1/ping/:monitor_id&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Signed heartbeat ping.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L400">
+                  <td class="line-number"><a href="#L400">400</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Gossip&lt;/td&gt;&lt;td&gt;&lt;code&gt;/v1/internal/*&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Internal transaction, receipt, proof, heartbeat, block, approval, and monitor confirmation messages.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L401">
+                  <td class="line-number"><a href="#L401">401</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Agent&lt;/td&gt;&lt;td&gt;&lt;code&gt;/v1/internal/agent/*&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Delegated health, browser, compute, and artifact service endpoints.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L402">
+                  <td class="line-number"><a href="#L402">402</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Storage host&lt;/td&gt;&lt;td&gt;&lt;code&gt;/v1/storage/contracts/:contract_id/*&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Manifest, chunk, and proof endpoints.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L403">
+                  <td class="line-number"><a href="#L403">403</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Storage host&lt;/td&gt;&lt;td&gt;&lt;code&gt;/public/:contract_id/*&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Public raw static bundle serving.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L404">
+                  <td class="line-number"><a href="#L404">404</a></td>
+                  <td class="code-line"><code>          &lt;tr&gt;&lt;td&gt;Storage host&lt;/td&gt;&lt;td&gt;&lt;code&gt;/.well-known/gossip-protocol-route&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Domain gateway route metadata.&lt;/td&gt;&lt;/tr&gt;</code></td>
+                </tr><tr id="L405">
+                  <td class="line-number"><a href="#L405">405</a></td>
+                  <td class="code-line"><code>        &lt;/tbody&gt;</code></td>
+                </tr><tr id="L406">
+                  <td class="line-number"><a href="#L406">406</a></td>
+                  <td class="code-line"><code>      &lt;/table&gt;</code></td>
+                </tr><tr id="L407">
+                  <td class="line-number"><a href="#L407">407</a></td>
+                  <td class="code-line"><code>    &lt;/section&gt;</code></td>
+                </tr><tr id="L408">
+                  <td class="line-number"><a href="#L408">408</a></td>
+                  <td class="code-line"><code>  &lt;/main&gt;</code></td>
+                </tr><tr id="L409">
+                  <td class="line-number"><a href="#L409">409</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L410">
+                  <td class="line-number"><a href="#L410">410</a></td>
+                  <td class="code-line"><code>  &lt;footer&gt;</code></td>
+                </tr><tr id="L411">
+                  <td class="line-number"><a href="#L411">411</a></td>
+                  <td class="code-line"><code>    &lt;span&gt;Gossip Protocol&lt;/span&gt;</code></td>
+                </tr><tr id="L412">
+                  <td class="line-number"><a href="#L412">412</a></td>
+                  <td class="code-line"><code>    &lt;span&gt;Peer-witnessed monitoring, compute, storage, DNS, swaps, and publishing.&lt;/span&gt;</code></td>
+                </tr><tr id="L413">
+                  <td class="line-number"><a href="#L413">413</a></td>
+                  <td class="code-line"><code>  &lt;/footer&gt;</code></td>
+                </tr><tr id="L414">
+                  <td class="line-number"><a href="#L414">414</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L415">
+                  <td class="line-number"><a href="#L415">415</a></td>
+                  <td class="code-line"><code>  &lt;script src=&quot;/assets/app.js&quot; defer&gt;&lt;/script&gt;</code></td>
+                </tr><tr id="L416">
+                  <td class="line-number"><a href="#L416">416</a></td>
+                  <td class="code-line"><code>&lt;/body&gt;</code></td>
+                </tr><tr id="L417">
+                  <td class="line-number"><a href="#L417">417</a></td>
+                  <td class="code-line"><code>&lt;/html&gt;</code></td>
+                </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>Gossip Protocol</span>
+    <span>Peer-witnessed monitoring, compute, storage, DNS, swaps, and publishing.</span>
+  </footer>
+
+  <script src="/assets/app.js" defer></script>
+</body>
+</html>

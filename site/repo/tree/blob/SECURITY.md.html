@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SECURITY.md - Gossip Protocol Source Mirror</title>
+  <meta name="description" content="Static source viewer for SECURITY.md.">
+  <meta property="og:title" content="SECURITY.md - Gossip Protocol Source Mirror">
+  <meta property="og:description" content="Static source viewer for SECURITY.md.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://gossip-protocol.com/repo/tree/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/styles.css?v=responsive-3" as="style">
+  <link rel="stylesheet" href="/assets/styles.css?v=responsive-3">
+</head>
+<body>
+  <canvas id="network-canvas" aria-hidden="true"></canvas>
+
+  <main class="docs-page repo-browser">
+    <nav class="docs-nav" aria-label="Repository mirror navigation">
+      <a href="/">Home</a>
+      <a href="/docs/">Docs</a>
+      <a href="/repo/">Repo</a>
+      <a href="/repo/tree/">Source tree</a>
+      <a href="https://github.com/vibevibellc/gossip_protocol">GitHub</a>
+    </nav>
+
+    <section class="docs-hero repo-file-hero">
+      <p class="eyebrow">source file</p>
+      <h1>SECURITY.md</h1>
+      <p class="hero-text">3.0 KB mirrored from the public source tree.</p>
+      <div class="hero-actions hero-actions-left" aria-label="Source file actions">
+        <a class="cta-button cta-button-primary" href="/repo/tree/raw/SECURITY.md">Open raw</a>
+        <a class="cta-button cta-button-secondary" href="/repo/tree/">Parent directory</a>
+        <a class="cta-button cta-button-secondary" href="#rendered-markdown">Rendered Markdown</a>
+      </div>
+    </section>
+
+    <section class="docs-section repo-markdown-section" id="rendered-markdown">
+      <h2>Rendered Markdown</h2>
+      <article class="repo-markdown-body">
+        <h1>Security Policy</h1>
+<p>Gossip Protocol is a reference implementation for a federated validator network. Public source code does not imply that any public validator set, token issuance policy, treasury policy, or production network is open for permissionless participation.</p>
+<h2>Reporting Security Issues</h2>
+<p>Please report suspected vulnerabilities privately through the repository security advisory flow when available. Do not open public issues for exploitable bugs, private key exposure, authentication bypasses, sandbox escapes, or denial of service paths.</p>
+<h2>Secrets And Wallets</h2>
+<p>Do not commit:</p>
+<ul><li>validator wallets or requester wallets</li><li>wallet passphrases</li><li>bearer tokens for control, gossip, storage, or agent APIs</li><li>browser secret-store files</li><li>TLS private keys or certificate renewal configuration</li><li>generated state, journals, blocks, artifacts, logs, or local databases</li></ul>
+<p>The default <code>.gitignore</code> excludes common local runtime directories and secret file formats, but operators remain responsible for external secret management.</p>
+<h2>Public Node Exposure</h2>
+<p>The default node, storage-host, and agent bind addresses are loopback-oriented for local development. Before exposing any endpoint to the internet:</p>
+<ul><li>terminate TLS at a hardened reverse proxy</li><li>set <code>--control-api-token</code>, <code>--gossip-api-token</code>, and agent <code>--api-token</code> values where applicable</li><li>rate-limit public submit, quote, ping, and status endpoints</li><li>restrict <code>/v1/internal/*</code> to known peer addresses</li><li>keep validator wallets encrypted and load passphrases through environment variables or a secret manager</li><li>keep state directories on persistent storage with backups</li></ul>
+<p>If a bearer token is not configured for an API surface, the implementation treats that surface as unauthenticated. Do not rely on network obscurity for public deployments.</p>
+<h2>High-Risk Runtime Flags</h2>
+<p>The following behaviors are for local testing or tightly controlled internal networks:</p>
+<ul><li>allowing HTTP health-check targets</li><li>allowing private, loopback, link-local, or otherwise internal health-check targets</li><li>executing browser journeys with broad secret-store access</li><li>accepting unreviewed WASI modules or oversized artifacts from unknown users</li></ul>
+<p>Public validators should keep SSRF protections enabled, bound request sizes small, and review resource-cost limits before taking user traffic.</p>
+<h2>Compute And Browser Execution</h2>
+<p>Compute jobs are WASI-module based and browser checks execute through a separate runner contract. Treat both as untrusted workloads:</p>
+<ul><li>run validators and delegated agents under restricted OS users</li><li>avoid broad filesystem preopens</li><li>isolate artifact directories from operator secrets</li><li>keep browser profiles, cache directories, and secret stores per deployment</li><li>review dependency updates for Wasmtime, Tokio, Axum, Reqwest, and Playwright</li></ul>
+<h2>Dependencies</h2>
+<p>Before a public release, run:</p>
+<pre class="repo-markdown-code" data-language="bash"><code>cargo fmt --check
+cargo test
+cargo clippy --all-targets -- -D warnings</code></pre>
+<p>Also run dependency-vulnerability tooling such as <code>cargo audit</code> or <code>cargo deny</code> when available, and <code>npm audit</code> for <code>browser_runner/</code> when a lockfile is present.</p>
+      </article>
+    </section>
+
+    <section class="docs-section repo-file-section">
+      <h2>Source</h2>
+      <div class="repo-breadcrumbs"><a href="/repo/tree/">gossip_protocol</a></div>
+      <div class="repo-code-wrap">
+        <table class="repo-code">
+          <tbody>
+            <tr id="L1">
+                  <td class="line-number"><a href="#L1">1</a></td>
+                  <td class="code-line"><code># Security Policy</code></td>
+                </tr><tr id="L2">
+                  <td class="line-number"><a href="#L2">2</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L3">
+                  <td class="line-number"><a href="#L3">3</a></td>
+                  <td class="code-line"><code>Gossip Protocol is a reference implementation for a federated validator network.</code></td>
+                </tr><tr id="L4">
+                  <td class="line-number"><a href="#L4">4</a></td>
+                  <td class="code-line"><code>Public source code does not imply that any public validator set, token issuance</code></td>
+                </tr><tr id="L5">
+                  <td class="line-number"><a href="#L5">5</a></td>
+                  <td class="code-line"><code>policy, treasury policy, or production network is open for permissionless</code></td>
+                </tr><tr id="L6">
+                  <td class="line-number"><a href="#L6">6</a></td>
+                  <td class="code-line"><code>participation.</code></td>
+                </tr><tr id="L7">
+                  <td class="line-number"><a href="#L7">7</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L8">
+                  <td class="line-number"><a href="#L8">8</a></td>
+                  <td class="code-line"><code>## Reporting Security Issues</code></td>
+                </tr><tr id="L9">
+                  <td class="line-number"><a href="#L9">9</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L10">
+                  <td class="line-number"><a href="#L10">10</a></td>
+                  <td class="code-line"><code>Please report suspected vulnerabilities privately through the repository security</code></td>
+                </tr><tr id="L11">
+                  <td class="line-number"><a href="#L11">11</a></td>
+                  <td class="code-line"><code>advisory flow when available. Do not open public issues for exploitable bugs,</code></td>
+                </tr><tr id="L12">
+                  <td class="line-number"><a href="#L12">12</a></td>
+                  <td class="code-line"><code>private key exposure, authentication bypasses, sandbox escapes, or denial of</code></td>
+                </tr><tr id="L13">
+                  <td class="line-number"><a href="#L13">13</a></td>
+                  <td class="code-line"><code>service paths.</code></td>
+                </tr><tr id="L14">
+                  <td class="line-number"><a href="#L14">14</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L15">
+                  <td class="line-number"><a href="#L15">15</a></td>
+                  <td class="code-line"><code>## Secrets And Wallets</code></td>
+                </tr><tr id="L16">
+                  <td class="line-number"><a href="#L16">16</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L17">
+                  <td class="line-number"><a href="#L17">17</a></td>
+                  <td class="code-line"><code>Do not commit:</code></td>
+                </tr><tr id="L18">
+                  <td class="line-number"><a href="#L18">18</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L19">
+                  <td class="line-number"><a href="#L19">19</a></td>
+                  <td class="code-line"><code>- validator wallets or requester wallets</code></td>
+                </tr><tr id="L20">
+                  <td class="line-number"><a href="#L20">20</a></td>
+                  <td class="code-line"><code>- wallet passphrases</code></td>
+                </tr><tr id="L21">
+                  <td class="line-number"><a href="#L21">21</a></td>
+                  <td class="code-line"><code>- bearer tokens for control, gossip, storage, or agent APIs</code></td>
+                </tr><tr id="L22">
+                  <td class="line-number"><a href="#L22">22</a></td>
+                  <td class="code-line"><code>- browser secret-store files</code></td>
+                </tr><tr id="L23">
+                  <td class="line-number"><a href="#L23">23</a></td>
+                  <td class="code-line"><code>- TLS private keys or certificate renewal configuration</code></td>
+                </tr><tr id="L24">
+                  <td class="line-number"><a href="#L24">24</a></td>
+                  <td class="code-line"><code>- generated state, journals, blocks, artifacts, logs, or local databases</code></td>
+                </tr><tr id="L25">
+                  <td class="line-number"><a href="#L25">25</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L26">
+                  <td class="line-number"><a href="#L26">26</a></td>
+                  <td class="code-line"><code>The default `.gitignore` excludes common local runtime directories and secret</code></td>
+                </tr><tr id="L27">
+                  <td class="line-number"><a href="#L27">27</a></td>
+                  <td class="code-line"><code>file formats, but operators remain responsible for external secret management.</code></td>
+                </tr><tr id="L28">
+                  <td class="line-number"><a href="#L28">28</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L29">
+                  <td class="line-number"><a href="#L29">29</a></td>
+                  <td class="code-line"><code>## Public Node Exposure</code></td>
+                </tr><tr id="L30">
+                  <td class="line-number"><a href="#L30">30</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L31">
+                  <td class="line-number"><a href="#L31">31</a></td>
+                  <td class="code-line"><code>The default node, storage-host, and agent bind addresses are loopback-oriented</code></td>
+                </tr><tr id="L32">
+                  <td class="line-number"><a href="#L32">32</a></td>
+                  <td class="code-line"><code>for local development. Before exposing any endpoint to the internet:</code></td>
+                </tr><tr id="L33">
+                  <td class="line-number"><a href="#L33">33</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L34">
+                  <td class="line-number"><a href="#L34">34</a></td>
+                  <td class="code-line"><code>- terminate TLS at a hardened reverse proxy</code></td>
+                </tr><tr id="L35">
+                  <td class="line-number"><a href="#L35">35</a></td>
+                  <td class="code-line"><code>- set `--control-api-token`, `--gossip-api-token`, and agent `--api-token`</code></td>
+                </tr><tr id="L36">
+                  <td class="line-number"><a href="#L36">36</a></td>
+                  <td class="code-line"><code>  values where applicable</code></td>
+                </tr><tr id="L37">
+                  <td class="line-number"><a href="#L37">37</a></td>
+                  <td class="code-line"><code>- rate-limit public submit, quote, ping, and status endpoints</code></td>
+                </tr><tr id="L38">
+                  <td class="line-number"><a href="#L38">38</a></td>
+                  <td class="code-line"><code>- restrict `/v1/internal/*` to known peer addresses</code></td>
+                </tr><tr id="L39">
+                  <td class="line-number"><a href="#L39">39</a></td>
+                  <td class="code-line"><code>- keep validator wallets encrypted and load passphrases through environment</code></td>
+                </tr><tr id="L40">
+                  <td class="line-number"><a href="#L40">40</a></td>
+                  <td class="code-line"><code>  variables or a secret manager</code></td>
+                </tr><tr id="L41">
+                  <td class="line-number"><a href="#L41">41</a></td>
+                  <td class="code-line"><code>- keep state directories on persistent storage with backups</code></td>
+                </tr><tr id="L42">
+                  <td class="line-number"><a href="#L42">42</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L43">
+                  <td class="line-number"><a href="#L43">43</a></td>
+                  <td class="code-line"><code>If a bearer token is not configured for an API surface, the implementation treats</code></td>
+                </tr><tr id="L44">
+                  <td class="line-number"><a href="#L44">44</a></td>
+                  <td class="code-line"><code>that surface as unauthenticated. Do not rely on network obscurity for public</code></td>
+                </tr><tr id="L45">
+                  <td class="line-number"><a href="#L45">45</a></td>
+                  <td class="code-line"><code>deployments.</code></td>
+                </tr><tr id="L46">
+                  <td class="line-number"><a href="#L46">46</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L47">
+                  <td class="line-number"><a href="#L47">47</a></td>
+                  <td class="code-line"><code>## High-Risk Runtime Flags</code></td>
+                </tr><tr id="L48">
+                  <td class="line-number"><a href="#L48">48</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L49">
+                  <td class="line-number"><a href="#L49">49</a></td>
+                  <td class="code-line"><code>The following behaviors are for local testing or tightly controlled internal</code></td>
+                </tr><tr id="L50">
+                  <td class="line-number"><a href="#L50">50</a></td>
+                  <td class="code-line"><code>networks:</code></td>
+                </tr><tr id="L51">
+                  <td class="line-number"><a href="#L51">51</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L52">
+                  <td class="line-number"><a href="#L52">52</a></td>
+                  <td class="code-line"><code>- allowing HTTP health-check targets</code></td>
+                </tr><tr id="L53">
+                  <td class="line-number"><a href="#L53">53</a></td>
+                  <td class="code-line"><code>- allowing private, loopback, link-local, or otherwise internal health-check</code></td>
+                </tr><tr id="L54">
+                  <td class="line-number"><a href="#L54">54</a></td>
+                  <td class="code-line"><code>  targets</code></td>
+                </tr><tr id="L55">
+                  <td class="line-number"><a href="#L55">55</a></td>
+                  <td class="code-line"><code>- executing browser journeys with broad secret-store access</code></td>
+                </tr><tr id="L56">
+                  <td class="line-number"><a href="#L56">56</a></td>
+                  <td class="code-line"><code>- accepting unreviewed WASI modules or oversized artifacts from unknown users</code></td>
+                </tr><tr id="L57">
+                  <td class="line-number"><a href="#L57">57</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L58">
+                  <td class="line-number"><a href="#L58">58</a></td>
+                  <td class="code-line"><code>Public validators should keep SSRF protections enabled, bound request sizes</code></td>
+                </tr><tr id="L59">
+                  <td class="line-number"><a href="#L59">59</a></td>
+                  <td class="code-line"><code>small, and review resource-cost limits before taking user traffic.</code></td>
+                </tr><tr id="L60">
+                  <td class="line-number"><a href="#L60">60</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L61">
+                  <td class="line-number"><a href="#L61">61</a></td>
+                  <td class="code-line"><code>## Compute And Browser Execution</code></td>
+                </tr><tr id="L62">
+                  <td class="line-number"><a href="#L62">62</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L63">
+                  <td class="line-number"><a href="#L63">63</a></td>
+                  <td class="code-line"><code>Compute jobs are WASI-module based and browser checks execute through a separate</code></td>
+                </tr><tr id="L64">
+                  <td class="line-number"><a href="#L64">64</a></td>
+                  <td class="code-line"><code>runner contract. Treat both as untrusted workloads:</code></td>
+                </tr><tr id="L65">
+                  <td class="line-number"><a href="#L65">65</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L66">
+                  <td class="line-number"><a href="#L66">66</a></td>
+                  <td class="code-line"><code>- run validators and delegated agents under restricted OS users</code></td>
+                </tr><tr id="L67">
+                  <td class="line-number"><a href="#L67">67</a></td>
+                  <td class="code-line"><code>- avoid broad filesystem preopens</code></td>
+                </tr><tr id="L68">
+                  <td class="line-number"><a href="#L68">68</a></td>
+                  <td class="code-line"><code>- isolate artifact directories from operator secrets</code></td>
+                </tr><tr id="L69">
+                  <td class="line-number"><a href="#L69">69</a></td>
+                  <td class="code-line"><code>- keep browser profiles, cache directories, and secret stores per deployment</code></td>
+                </tr><tr id="L70">
+                  <td class="line-number"><a href="#L70">70</a></td>
+                  <td class="code-line"><code>- review dependency updates for Wasmtime, Tokio, Axum, Reqwest, and Playwright</code></td>
+                </tr><tr id="L71">
+                  <td class="line-number"><a href="#L71">71</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L72">
+                  <td class="line-number"><a href="#L72">72</a></td>
+                  <td class="code-line"><code>## Dependencies</code></td>
+                </tr><tr id="L73">
+                  <td class="line-number"><a href="#L73">73</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L74">
+                  <td class="line-number"><a href="#L74">74</a></td>
+                  <td class="code-line"><code>Before a public release, run:</code></td>
+                </tr><tr id="L75">
+                  <td class="line-number"><a href="#L75">75</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L76">
+                  <td class="line-number"><a href="#L76">76</a></td>
+                  <td class="code-line"><code>```bash</code></td>
+                </tr><tr id="L77">
+                  <td class="line-number"><a href="#L77">77</a></td>
+                  <td class="code-line"><code>cargo fmt --check</code></td>
+                </tr><tr id="L78">
+                  <td class="line-number"><a href="#L78">78</a></td>
+                  <td class="code-line"><code>cargo test</code></td>
+                </tr><tr id="L79">
+                  <td class="line-number"><a href="#L79">79</a></td>
+                  <td class="code-line"><code>cargo clippy --all-targets -- -D warnings</code></td>
+                </tr><tr id="L80">
+                  <td class="line-number"><a href="#L80">80</a></td>
+                  <td class="code-line"><code>```</code></td>
+                </tr><tr id="L81">
+                  <td class="line-number"><a href="#L81">81</a></td>
+                  <td class="code-line"><code> </code></td>
+                </tr><tr id="L82">
+                  <td class="line-number"><a href="#L82">82</a></td>
+                  <td class="code-line"><code>Also run dependency-vulnerability tooling such as `cargo audit` or `cargo deny`</code></td>
+                </tr><tr id="L83">
+                  <td class="line-number"><a href="#L83">83</a></td>
+                  <td class="code-line"><code>when available, and `npm audit` for `browser_runner/` when a lockfile is</code></td>
+                </tr><tr id="L84">
+                  <td class="line-number"><a href="#L84">84</a></td>
+                  <td class="code-line"><code>present.</code></td>
+                </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>Gossip Protocol</span>
+    <span>Peer-witnessed monitoring, compute, storage, DNS, swaps, and publishing.</span>
+  </footer>
+
+  <script src="/assets/app.js" defer></script>
+</body>
+</html>

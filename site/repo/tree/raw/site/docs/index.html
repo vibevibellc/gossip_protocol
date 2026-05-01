@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gossip Protocol Docs</title>
+  <meta name="description" content="Documentation for Gossip Protocol functionality, node operation, protocol settings, and JSON specs.">
+  <meta property="og:title" content="Gossip Protocol Docs">
+  <meta property="og:description" content="Functionality and settings reference for Gossip Protocol.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://gossip-protocol.com/docs/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/styles.css?v=responsive-3" as="style">
+  <link rel="stylesheet" href="/assets/styles.css?v=responsive-3">
+</head>
+<body>
+  <canvas id="network-canvas" aria-hidden="true"></canvas>
+
+  <main class="docs-page">
+    <nav class="docs-nav" aria-label="Documentation navigation">
+      <a href="/">Home</a>
+      <a href="/docs/">Docs</a>
+      <a href="/repo/">Repo</a>
+      <a href="/docs/functionality.html">Functionality</a>
+      <a href="/docs/settings.html">Settings</a>
+    </nav>
+
+    <section class="docs-hero">
+      <p class="eyebrow">documentation</p>
+      <h1>Gossip Protocol reference</h1>
+      <p class="hero-text">
+        A first-pass operator and builder reference for the Rust implementation. These documents
+        describe the public command surface, node roles, transaction types, JSON specs, protocol
+        limits, and default settings currently present in the codebase.
+      </p>
+    </section>
+
+    <section class="docs-section">
+      <h2>Start here</h2>
+      <div class="docs-grid">
+        <a class="docs-card" href="/docs/functionality.html">
+          <h3>Functionality</h3>
+          <p>
+            How validators, agents, storage hosts, wallets, monitoring, browser checks, compute,
+            DNS leases, swaps, receipts, and blocks fit together.
+          </p>
+        </a>
+        <a class="docs-card" href="/docs/settings.html">
+          <h3>Settings</h3>
+          <p>
+            Command flags, JSON spec fields, defaults, fee constants, runtime limits, storage
+            limits, browser package limits, and API endpoints.
+          </p>
+        </a>
+      </div>
+    </section>
+
+    <section class="docs-section">
+      <h2>Implementation status</h2>
+      <div class="copy-block">
+        <p>
+          Gossip Protocol is a reference implementation, not a hosted SaaS control plane. The
+          source of truth for operational behavior is the Rust crate, especially
+          <code>src/cli.rs</code>, <code>src/protocol.rs</code>, <code>src/node.rs</code>,
+          <code>src/compute.rs</code>, <code>src/browser.rs</code>, and <code>src/storage.rs</code>.
+        </p>
+        <p>
+          The documentation starts with the core surfaces that are already implemented: wallet
+          creation, genesis creation, validator nodes, signed transactions, peer gossip, monitor
+          heartbeats, browser journeys, sharded compute, storage contracts, public raw bundles,
+          DNS route leases, settlement adapters, probe agents, and storage hosts.
+        </p>
+      </div>
+    </section>
+
+    <section class="docs-section">
+      <h2>Build and smoke test</h2>
+      <pre><code>cargo fmt
+cargo test
+cargo clippy --all-targets -- -D warnings
+python3 scripts/local_compute_smoke.py
+python3 scripts/local_testnet_smoke.py</code></pre>
+    </section>
+  </main>
+
+  <footer>
+    <span>Gossip Protocol</span>
+    <span>Peer-witnessed monitoring, compute, storage, DNS, swaps, and publishing.</span>
+  </footer>
+
+  <script src="/assets/app.js" defer></script>
+</body>
+</html>
